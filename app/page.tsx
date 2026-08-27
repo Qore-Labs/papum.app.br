@@ -7,13 +7,13 @@ import { RestaurantShowcase } from "./_components/restaurant-showcase";
 
 export default function Home() {
   return (
-    <>
+    <main className="flex flex-1 flex-col">
       <HeroSection />
       <ExpressBar />
       <RestaurantShowcase />
       <HowItWorks />
       <AppStatsSection />
       <CtaBanner />
-    </>
+    </main>
   );
 }
