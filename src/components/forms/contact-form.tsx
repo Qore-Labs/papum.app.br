@@ -2,17 +2,12 @@
 
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
-import { z } from "zod";
 
 import { Button } from "@/components/ui/button";
-
-const contactFormSchema = z.object({
-  name: z.string().min(2, "Informe seu nome"),
-  email: z.string().email("E-mail inválido"),
-  message: z.string().min(10, "A mensagem deve ter ao menos 10 caracteres"),
-});
-
-type ContactFormValues = z.infer<typeof contactFormSchema>;
+import {
+  contactFormSchema,
+  type ContactFormValues,
+} from "@/schemas/contact-form";
 
 export function ContactForm() {
   const {
