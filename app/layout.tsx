@@ -4,6 +4,7 @@ import "./globals.css";
 
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { siteConfig } from "@/utils/config/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -22,9 +23,9 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Pápum! | Seu delivery tá no ar",
-  description:
-    "Monte seu cardápio virtual em minutos. Simples, rápido e sem complicação — o seu delivery na velocidade que você precisa.",
+  metadataBase: new URL(siteConfig.url),
+  title: siteConfig.title,
+  description: siteConfig.description,
 };
 
 export default function RootLayout({
