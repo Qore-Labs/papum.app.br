@@ -42,6 +42,9 @@ Se for Client Component, adicione `"use client";` como primeira linha do arquivo
    - Props tipadas com `interface {ComponentName}Props`.
    - Toda composição de classes Tailwind usa `cn()` de `@/lib/utils`, principalmente se o componente aceita `className` de fora.
    - Componentes em `src/components/ui` não devem importar hooks de dados, contexto de domínio ou fazer fetch — apenas apresentação. Se o pedido exigir lógica de negócio, sugira colocar em `src/components/<domínio>/` em vez de `src/components/ui`.
+   - **Fronteira client mínima:** se só um pedaço do componente precisa de interatividade (`usePathname`, `useState`, handlers de evento), extraia esse pedaço para um componente `"use client"` próprio e deixe o restante como Server Component. Nunca marque um header/footer/seção inteiros como client por causa de um detalhe interativo.
+   - **Dados estáticos fora do componente:** listas e objetos que não vêm de API (colunas de footer, passos, stats, links) moram em `src/utils/contents/<nome>.ts`. Config global do site (nome, descrição, URL base, links de navegação padrão, redes sociais) mora em `src/utils/config/site.ts` (`siteConfig`). O componente importa e só renderiza.
+   - **Links:** destino interno usa `<Link>` de `next/link`; destino externo usa `<a target="_blank" rel="noopener noreferrer">`. Quando o destino é dinâmico, ramifique com `isExternalHref` de `@/lib/utils`.
    - Não crie arquivo de teste ou storybook a menos que o usuário peça.
 
 5. Depois de criar o arquivo, rode `pnpm lint` e `pnpm format:check` no arquivo criado (ou rode via ESLint/Prettier diretamente) para garantir que está de acordo com o padrão do projeto, e corrija o que acusar.
