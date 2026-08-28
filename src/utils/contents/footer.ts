@@ -39,6 +39,5 @@ export const FOOTER_SOCIAL_LINKS = [
 ];
 
 export const FOOTER_LEGAL = {
-  copyright: "© 2026 PáPum! Delivery. All rights reserved.",
   madeWith: "Feito com carinho para os melhores restaurantes.",
 };
