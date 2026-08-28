@@ -5,11 +5,15 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 
+import { isExternalHref } from "@/lib/utils";
 import type { NavLink } from "@/utils/config/site";
 
 interface MobileNavToggleProps {
   links: NavLink[];
 }
+
+const linkClassName =
+  "rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-white/10 data-[active=true]:bg-white/10";
 
 export function MobileNavToggle({ links }: MobileNavToggleProps) {
   const [isOpen, setIsOpen] = useState(false);
@@ -29,17 +33,30 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
 
       {isOpen && (
         <nav className="bg-brand-orange absolute inset-x-0 top-full flex flex-col gap-1 px-4 pb-4 shadow-lg">
-          {links.map((link) => (
-            <Link
-              key={link.href}
-              href={link.href}
-              className="rounded-md px-3 py-2 text-sm font-medium text-white hover:bg-white/10 data-[active=true]:bg-white/10"
-              data-active={link.href === pathname}
-              onClick={() => setIsOpen(false)}
-            >
-              {link.label}
-            </Link>
-          ))}
+          {links.map((link) =>
+            isExternalHref(link.href) ? (
+              <a
+                key={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                className={linkClassName}
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </a>
+            ) : (
+              <Link
+                key={link.href}
+                href={link.href}
+                className={linkClassName}
+                data-active={link.href === pathname}
+                onClick={() => setIsOpen(false)}
+              >
+                {link.label}
+              </Link>
+            ),
+          )}
         </nav>
       )}
     </div>
