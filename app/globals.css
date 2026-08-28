@@ -9,6 +9,8 @@
   --brand-red: #e11d2e;
   --brand-red-dark: #c01625;
   --brand-dark: #14110d;
+  --brand-ink: #1b1c1c;
+  --brand-muted: #5d3f3d;
 }
 
 @theme inline {
@@ -19,9 +21,13 @@
   --color-brand-red: var(--brand-red);
   --color-brand-red-dark: var(--brand-red-dark);
   --color-brand-dark: var(--brand-dark);
+  --color-brand-ink: var(--brand-ink);
+  --color-brand-muted: var(--brand-muted);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-poppins);
+  --font-jakarta: var(--font-plus-jakarta-sans);
+  --font-vietnam: var(--font-be-vietnam-pro);
 }
 
 @media (prefers-color-scheme: dark) {
