@@ -3,13 +3,25 @@
 :root {
   --background: #ffffff;
   --foreground: #171717;
+
+  --brand-orange: #ff7a1a;
+  --brand-orange-dark: #e5690a;
+  --brand-red: #e11d2e;
+  --brand-red-dark: #c01625;
+  --brand-dark: #14110d;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
+  --color-brand-orange: var(--brand-orange);
+  --color-brand-orange-dark: var(--brand-orange-dark);
+  --color-brand-red: var(--brand-red);
+  --color-brand-red-dark: var(--brand-red-dark);
+  --color-brand-dark: var(--brand-dark);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
+  --font-heading: var(--font-poppins);
 }
 
 @media (prefers-color-scheme: dark) {
