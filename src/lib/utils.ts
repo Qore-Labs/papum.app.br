@@ -4,3 +4,7 @@ import { twMerge } from "tailwind-merge";
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
+
+export function isExternalHref(href: string) {
+  return /^(?:[a-z][a-z\d+.-]*:|\/\/)/i.test(href);
+}
