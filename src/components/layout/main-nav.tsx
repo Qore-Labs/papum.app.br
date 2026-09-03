@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-import { isExternalHref } from "@/lib/utils";
 import type { NavLink } from "@/utils/config/site";
 
 interface MainNavProps {
@@ -18,28 +17,16 @@ export function MainNav({ links }: MainNavProps) {
 
   return (
     <nav className="hidden items-center gap-8 md:flex">
-      {links.map((link) =>
-        isExternalHref(link.href) ? (
-          <a
-            key={link.href}
-            href={link.href}
-            target="_blank"
-            rel="noopener noreferrer"
-            className={linkClassName}
-          >
-            {link.label}
-          </a>
-        ) : (
-          <Link
-            key={link.href}
-            href={link.href}
-            className={linkClassName}
-            data-active={link.href === pathname}
-          >
-            {link.label}
-          </Link>
-        ),
-      )}
+      {links.map((link) => (
+        <Link
+          key={link.href}
+          href={link.href}
+          className={linkClassName}
+          data-active={link.href === pathname}
+        >
+          {link.label}
+        </Link>
+      ))}
     </nav>
   );
 }

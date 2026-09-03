@@ -62,7 +62,9 @@ export function Footer() {
         </div>
 
         <div className="mt-16 flex flex-col gap-2 border-t border-zinc-200 pt-6 text-xs text-zinc-500 sm:flex-row sm:items-center sm:justify-between">
-          <p>{FOOTER_LEGAL.copyright}</p>
+          <p>
+            © {new Date().getFullYear()} PáPum! Delivery. All rights reserved.
+          </p>
           <p>{FOOTER_LEGAL.madeWith}</p>
         </div>
       </div>
