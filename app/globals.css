@@ -16,6 +16,11 @@
   --home-red: #bb001b;
   --home-ink: #1b1c1c;
 
+  --auth-field: #e9e8e8;
+  --auth-border: #e7bcb9;
+  --auth-social: #f5f3f3;
+  --auth-link: #dc2626;
+
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -33,6 +38,10 @@
   --color-home-orange: var(--home-orange);
   --color-home-red: var(--home-red);
   --color-home-ink: var(--home-ink);
+  --color-auth-field: var(--auth-field);
+  --color-auth-border: var(--auth-border);
+  --color-auth-social: var(--auth-social);
+  --color-auth-link: var(--auth-link);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-poppins);
