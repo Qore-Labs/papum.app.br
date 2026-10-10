@@ -1,6 +1,6 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { MobileNavToggle } from "@/components/layout/mobile-nav-toggle";
 
@@ -8,6 +8,54 @@ const LINKS = [
   { href: "/", label: "Home" },
   { href: "/planos", label: "Planos" },
 ];
+
+const originalShowModal = Object.getOwnPropertyDescriptor(
+  HTMLDialogElement.prototype,
+  "showModal",
+);
+const originalClose = Object.getOwnPropertyDescriptor(
+  HTMLDialogElement.prototype,
+  "close",
+);
+
+beforeAll(() => {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn().mockImplementation((query: string) => ({
+      media: query,
+      matches: false,
+      addEventListener: vi.fn(),
+      removeEventListener: vi.fn(),
+    })),
+  );
+
+  Object.defineProperty(HTMLDialogElement.prototype, "showModal", {
+    configurable: true,
+    value(this: HTMLDialogElement) {
+      this.setAttribute("open", "");
+    },
+  });
+  Object.defineProperty(HTMLDialogElement.prototype, "close", {
+    configurable: true,
+    value(this: HTMLDialogElement) {
+      this.removeAttribute("open");
+    },
+  });
+});
+
+afterAll(() => {
+  vi.unstubAllGlobals();
+  for (const [name, descriptor] of [
+    ["showModal", originalShowModal],
+    ["close", originalClose],
+  ] as const) {
+    if (descriptor) {
+      Object.defineProperty(HTMLDialogElement.prototype, name, descriptor);
+    } else {
+      Reflect.deleteProperty(HTMLDialogElement.prototype, name);
+    }
+  }
+});
 
 describe("MobileNavToggle", () => {
   it("não exibe os links de navegação antes de abrir o menu", () => {
@@ -24,6 +72,7 @@ describe("MobileNavToggle", () => {
 
     await user.click(screen.getByRole("button", { name: "Abrir menu" }));
 
+    expect(screen.getByRole("dialog", { name: "Menu" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Planos" })).toBeInTheDocument();
   });
@@ -35,9 +84,11 @@ describe("MobileNavToggle", () => {
     await user.click(screen.getByRole("button", { name: "Abrir menu" }));
     await user.click(screen.getByRole("button", { name: "Fechar menu" }));
 
-    expect(
-      screen.queryByRole("link", { name: "Home" }),
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("link", { name: "Home" }),
+      ).not.toBeInTheDocument();
+    });
   });
 
   it("fecha o menu ao clicar em um link", async () => {
@@ -47,8 +98,10 @@ describe("MobileNavToggle", () => {
     await user.click(screen.getByRole("button", { name: "Abrir menu" }));
     await user.click(screen.getByRole("link", { name: "Home" }));
 
-    expect(
-      screen.queryByRole("link", { name: "Home" }),
-    ).not.toBeInTheDocument();
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("link", { name: "Home" }),
+      ).not.toBeInTheDocument();
+    });
   });
 });
