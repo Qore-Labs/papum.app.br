@@ -1,5 +1,23 @@
 This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
+## Organização das campanhas
+
+As páginas continuam separadas por grupos de rotas:
+
+```text
+app/
+  (site)/       # Site institucional e sua navegação
+  (auth)/       # Páginas de autenticação
+  (marketing)/  # Landing pages de campanhas
+    layout.tsx
+    lancamento/
+      page.tsx  # URL: /lancamento
+```
+
+Os nomes entre parênteses organizam o código e não fazem parte da URL. Cada nova campanha deve ter sua própria pasta dentro de `(marketing)`, com conteúdo e metadados específicos. O layout do grupo compartilha a tipografia; cada landing define sua composição, header e footer.
+
+A landing de lançamento usa `WaitlistForm`, em `src/components/forms/waitlist-form.tsx`, com validação em `src/schemas/waitlist-form.ts`. Neste estágio, a entrega é somente frontend: nenhum e-mail é gravado e o formulário não confirma um cadastro sem resposta da integração. A propriedade `subscribeAction` está preparada para receber a futura Server Action. A integração deverá também validar os dados no servidor.
+
 ## Getting Started
 
 First, run the development server:

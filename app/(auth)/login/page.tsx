@@ -25,7 +25,7 @@ export default function LoginPage() {
 
       <div className="flex w-full items-center justify-center bg-white p-6 sm:p-12 lg:w-[533px] lg:shrink-0">
         <div className="flex w-full max-w-md flex-col gap-8">
-          <div className="relative h-[86.357px] w-[304.34px] self-center overflow-hidden">
+          <div className="relative aspect-[304.34/86.357] w-full max-w-[304.34px] self-center overflow-hidden">
             <Image
               src="/login/papum-logo-lockup.png"
               alt={siteConfig.name}
@@ -57,7 +57,7 @@ export default function LoginPage() {
           <div className="flex flex-col gap-4">
             <button
               type="button"
-              className="border-brand-muted/20 font-jakarta text-brand-ink flex items-center justify-center gap-3 rounded-xl border bg-[#f5f3f3] px-4 py-3.5 text-sm font-semibold shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]"
+              className="border-brand-muted/20 font-jakarta text-brand-ink focus-visible:outline-brand-orange flex items-center justify-center gap-3 rounded-xl border bg-[#f5f3f3] px-4 py-3.5 text-sm font-semibold shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               <Image
                 src="/login/google-icon.svg"
@@ -69,7 +69,7 @@ export default function LoginPage() {
             </button>
             <button
               type="button"
-              className="border-brand-muted/20 font-jakarta text-brand-ink flex items-center justify-center gap-3 rounded-xl border bg-[#f5f3f3] px-4 py-3.5 text-sm font-semibold shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)]"
+              className="border-brand-muted/20 font-jakarta text-brand-ink focus-visible:outline-brand-orange flex items-center justify-center gap-3 rounded-xl border bg-[#f5f3f3] px-4 py-3.5 text-sm font-semibold shadow-[0px_1px_2px_0px_rgba(0,0,0,0.05)] focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               <Image
                 src="/login/facebook-icon.svg"
@@ -85,7 +85,7 @@ export default function LoginPage() {
             Ainda não tem conta?{" "}
             <Link
               href="/cadastro"
-              className="font-jakarta text-brand-red font-bold"
+              className="font-jakarta text-brand-red focus-visible:outline-brand-orange rounded-sm font-bold focus-visible:outline-2 focus-visible:outline-offset-2"
             >
               Cadastre-se
             </Link>

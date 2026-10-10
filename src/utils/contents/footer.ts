@@ -1,5 +1,24 @@
+import type { ComponentType, SVGProps } from "react";
+
 import { AtIcon, CommunityIcon, GlobeIcon } from "@/components/ui/icons";
 import { siteConfig } from "@/utils/config/site";
+
+interface FooterLink {
+  href: string;
+  label: string;
+}
+
+interface FooterColumn {
+  id: string;
+  title: string;
+  links: FooterLink[];
+}
+
+interface FooterSocialLink extends FooterLink {
+  id: string;
+  icon: ComponentType<SVGProps<SVGSVGElement>>;
+  iconClassName: string;
+}
 
 /**
  * Conteúdo estático do footer — não vem da API.
@@ -7,6 +26,7 @@ import { siteConfig } from "@/utils/config/site";
  */
 export const FOOTER_COLUMNS = [
   {
+    id: "papum",
     title: "PÁPUM!",
     links: [
       { href: "/sobre", label: "Sobre" },
@@ -15,6 +35,7 @@ export const FOOTER_COLUMNS = [
     ],
   },
   {
+    id: "explore",
     title: "EXPLORE",
     links: [
       { href: "/planos", label: "Planos" },
@@ -23,6 +44,7 @@ export const FOOTER_COLUMNS = [
     ],
   },
   {
+    id: "suporte",
     title: "SUPORTE",
     links: [
       { href: "/faq", label: "FAQ" },
@@ -30,14 +52,32 @@ export const FOOTER_COLUMNS = [
       { href: "/politica-de-privacidade", label: "Política de Privacidade" },
     ],
   },
-];
+] satisfies FooterColumn[];
 
 export const FOOTER_SOCIAL_LINKS = [
-  { href: siteConfig.social.instagram, label: "Instagram", icon: AtIcon },
-  { href: siteConfig.social.facebook, label: "Facebook", icon: CommunityIcon },
-  { href: siteConfig.social.linkedin, label: "LinkedIn", icon: GlobeIcon },
-];
+  {
+    id: "linkedin",
+    href: siteConfig.social.linkedin,
+    label: "LinkedIn",
+    icon: GlobeIcon,
+    iconClassName: "size-3",
+  },
+  {
+    id: "facebook",
+    href: siteConfig.social.facebook,
+    label: "Facebook",
+    icon: CommunityIcon,
+    iconClassName: "h-2 w-3.5",
+  },
+  {
+    id: "instagram",
+    href: siteConfig.social.instagram,
+    label: "Instagram",
+    icon: AtIcon,
+    iconClassName: "size-3",
+  },
+] satisfies FooterSocialLink[];
 
 export const FOOTER_LEGAL = {
-  madeWith: "Feito com carinho para os melhores restaurantes.",
+  madeWith: "Feito com paixão pela culinária.",
 };

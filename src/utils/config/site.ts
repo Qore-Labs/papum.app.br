@@ -9,6 +9,12 @@ export interface NavLink {
   label: string;
 }
 
+export interface SiteSocialLinks {
+  instagram: string;
+  facebook: string;
+  linkedin: string;
+}
+
 export interface SiteConfig {
   name: string;
   title: string;
@@ -16,11 +22,7 @@ export interface SiteConfig {
   tagline: string;
   url: string;
   navLinks: NavLink[];
-  social: {
-    instagram: string;
-    facebook: string;
-    linkedin: string;
-  };
+  social: SiteSocialLinks;
 }
 
 export const siteConfig = {

@@ -19,13 +19,13 @@ describe("isExternalHref", () => {
     "//cdn.com",
     "mailto:a@b.co",
     "tel:+5511999999999",
-  ])("reconhece %s como externo", (href) => {
+  ])("reconhece %s como externo", (href: string) => {
     expect(isExternalHref(href)).toBe(true);
   });
 
   it.each(["/", "/planos", "/planos/premium", "#secao"])(
     "reconhece %s como interno",
-    (href) => {
+    (href: string) => {
       expect(isExternalHref(href)).toBe(false);
     },
   );
