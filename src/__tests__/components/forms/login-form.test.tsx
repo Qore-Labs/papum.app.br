@@ -1,8 +1,13 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import { LoginForm } from "@/components/forms/login-form";
+
+const { push } = vi.hoisted(() => ({ push: vi.fn() }));
+vi.mock("next/navigation", () => ({ useRouter: () => ({ push }) }));
+
+beforeEach(() => push.mockClear());
 
 describe("LoginForm", () => {
   it("associa os erros aos campos e foca o primeiro campo inválido", async () => {
@@ -12,6 +17,7 @@ describe("LoginForm", () => {
     await user.click(screen.getByRole("button", { name: /^Entrar$/ }));
 
     expect(await screen.findAllByRole("alert")).toHaveLength(2);
+    expect(push).not.toHaveBeenCalled();
     const identifier = screen.getByRole("textbox", {
       name: "Email ou Telefone",
     });
@@ -64,7 +70,7 @@ describe("LoginForm", () => {
     expect(password).toHaveValue("senha-de-teste");
   });
 
-  it("preserva os dados e informa indisponibilidade sem registrar credenciais no console", async () => {
+  it("abre a prévia do dashboard após validar os campos, sem registrar credenciais", async () => {
     const user = userEvent.setup();
     const consoleLog = vi
       .spyOn(console, "log")
@@ -80,14 +86,11 @@ describe("LoginForm", () => {
       await user.type(password, "senha-de-teste");
       await user.click(screen.getByRole("button", { name: /^Entrar$/ }));
 
-      expect(await screen.findByRole("alert")).toHaveTextContent(
-        "Não foi possível entrar agora.",
-      );
+      await waitFor(() => expect(push).toHaveBeenCalledWith("/dashboard"));
       expect(identifier).toHaveValue("cliente@example.com");
       expect(password).toHaveValue("senha-de-teste");
       expect(consoleLog).not.toHaveBeenCalled();
 
-      await user.type(identifier, "x");
       expect(screen.queryByRole("alert")).not.toBeInTheDocument();
     } finally {
       consoleLog.mockRestore();

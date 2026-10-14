@@ -91,7 +91,7 @@ export default function LoginPage() {
           <p className="font-vietnam text-brand-muted flex min-h-11 flex-wrap items-center justify-center gap-x-0.75 text-center text-sm leading-5 sm:min-h-5.25">
             Ainda não tem conta?{" "}
             <Link
-              href="/cadastro"
+              href="/lancamento"
               prefetch={false}
               className="font-jakarta text-auth-link focus-visible:outline-auth-link inline-flex min-h-11 items-center rounded-sm font-bold hover:underline focus-visible:outline-2 focus-visible:outline-offset-4 sm:min-h-5"
             >

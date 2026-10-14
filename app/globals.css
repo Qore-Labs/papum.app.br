@@ -21,6 +21,16 @@
   --auth-social: #f5f3f3;
   --auth-link: #dc2626;
 
+  --admin-surface: #f2f2f2;
+  --admin-header: #fb8d01;
+  --admin-input: #e7e7e7;
+  --admin-control: #e8e8e8;
+  --admin-accent: #ff7900;
+  --admin-accent-ink: #9a4600;
+  --admin-description: #584235;
+  --admin-field: #e2e2e2;
+  --admin-yellow: #ffbb00;
+
   --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
   --ease-drawer: cubic-bezier(0.32, 0.72, 0, 1);
 }
@@ -42,11 +52,22 @@
   --color-auth-border: var(--auth-border);
   --color-auth-social: var(--auth-social);
   --color-auth-link: var(--auth-link);
+  --color-admin-surface: var(--admin-surface);
+  --color-admin-header: var(--admin-header);
+  --color-admin-input: var(--admin-input);
+  --color-admin-control: var(--admin-control);
+  --color-admin-accent: var(--admin-accent);
+  --color-admin-accent-ink: var(--admin-accent-ink);
+  --color-admin-description: var(--admin-description);
+  --color-admin-field: var(--admin-field);
+  --color-admin-yellow: var(--admin-yellow);
+  --font-inter: var(--font-inter-body);
   --font-sans: var(--font-geist-sans);
   --font-mono: var(--font-geist-mono);
   --font-heading: var(--font-poppins);
   --font-jakarta: var(--font-plus-jakarta-sans);
   --font-vietnam: var(--font-be-vietnam-pro);
+  --font-arimo: var(--font-arimo-body);
 }
 
 @media (prefers-color-scheme: dark) {
@@ -60,6 +81,86 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+@layer base {
+  [data-admin-shell]
+    :is(
+      button,
+      a[href],
+      select,
+      summary,
+      [role="button"],
+      input:is(
+        [type="checkbox"],
+        [type="radio"],
+        [type="file"],
+        [type="date"],
+        [type="time"],
+        [type="range"],
+        [type="color"],
+        [type="button"],
+        [type="submit"],
+        [type="reset"]
+      ),
+      label:has(input:is([type="checkbox"], [type="radio"]))
+    ):not(:disabled):not([aria-disabled="true"]) {
+    cursor: pointer;
+  }
+}
+
+.admin-popover {
+  position: fixed;
+  inset: auto;
+  margin: 0;
+  max-width: calc(100vw - 1.5rem);
+  max-height: calc(100dvh - 1.5rem);
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  opacity: 0;
+  transform: translate(
+    var(--popover-slide-x, 0px),
+    var(--popover-slide-y, -8px)
+  );
+  pointer-events: none;
+  transition:
+    opacity 180ms var(--ease-out),
+    transform 180ms var(--ease-out),
+    display 180ms allow-discrete,
+    overlay 180ms allow-discrete;
+}
+
+.admin-popover:popover-open {
+  opacity: 1;
+  transform: translate(0, 0);
+  pointer-events: auto;
+}
+
+@starting-style {
+  .admin-popover:popover-open {
+    opacity: 0;
+    transform: translate(
+      var(--popover-slide-x, 0px),
+      var(--popover-slide-y, -8px)
+    );
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-popover,
+  .admin-popover:popover-open {
+    transform: none;
+    transition:
+      opacity 100ms var(--ease-out),
+      display 100ms allow-discrete,
+      overlay 100ms allow-discrete;
+  }
+
+  @starting-style {
+    .admin-popover:popover-open {
+      transform: none;
+    }
+  }
 }
 
 .mobile-nav-dialog {
@@ -96,6 +197,92 @@ body {
 
 html:has(.mobile-nav-dialog[open]) {
   overflow: hidden;
+}
+
+.admin-nav-dialog {
+  position: fixed;
+  inset: 0 0 0 auto;
+  width: min(85vw, 20rem);
+  max-width: none;
+  height: 100dvh;
+  max-height: none;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  border: 0;
+  background: #fafaf9;
+  color: #1c1917;
+  transform: translateX(100%);
+  transition:
+    transform 260ms var(--ease-drawer),
+    display 260ms allow-discrete,
+    overlay 260ms allow-discrete;
+}
+
+.admin-nav-dialog[open] {
+  transform: translateX(0);
+}
+
+html:has([data-admin-shell]) {
+  scrollbar-gutter: stable;
+}
+
+@media (min-width: 1024px) {
+  [data-admin-shell]:has([data-admin-section="menu"]) [data-admin-sidebar] {
+    padding-top: 2.8125rem;
+    padding-bottom: 2.625rem;
+  }
+  [data-admin-shell]:has([data-admin-section="customers"])
+    [data-admin-sidebar] {
+    padding-top: 2.8125rem;
+    padding-bottom: 2.25rem;
+  }
+  [data-admin-shell]:has([data-admin-section="settings"]) [data-admin-sidebar] {
+    padding-top: 2.8125rem;
+  }
+}
+
+.admin-nav-dialog::backdrop {
+  background: rgb(0 0 0 / 0.6);
+  opacity: 0;
+  transition:
+    opacity 260ms var(--ease-out),
+    display 260ms allow-discrete,
+    overlay 260ms allow-discrete;
+}
+
+.admin-nav-dialog[open]::backdrop {
+  opacity: 1;
+}
+
+@starting-style {
+  .admin-nav-dialog[open] {
+    transform: translateX(100%);
+  }
+  .admin-nav-dialog[open]::backdrop {
+    opacity: 0;
+  }
+}
+
+.admin-nav-dialog[data-instant="true"],
+.admin-nav-dialog[data-instant="true"]::backdrop {
+  transition: none;
+}
+
+html:has(.admin-nav-dialog[open]) {
+  overflow: hidden;
+}
+
+html:has(#menu-item-editor[open], #customer-editor[open]) {
+  overflow: hidden;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .admin-nav-dialog,
+  .admin-nav-dialog::backdrop {
+    transition: none;
+  }
 }
 
 @media (prefers-reduced-motion: no-preference) {

@@ -3,6 +3,7 @@
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Eye } from "lucide-react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { useState } from "react";
 import { useForm } from "react-hook-form";
 
@@ -11,8 +12,8 @@ import { MailIcon, PasswordHiddenIcon } from "@/components/ui/icons";
 import { loginFormSchema, type LoginFormValues } from "@/schemas/login-form";
 
 export function LoginForm() {
+  const router = useRouter();
   const [showPassword, setShowPassword] = useState(false);
-  const [submitError, setSubmitError] = useState<string | null>(null);
 
   const {
     register,
@@ -23,8 +24,8 @@ export function LoginForm() {
   });
 
   const onSubmit = async () => {
-    // TODO: conectar uma Server Action de autenticação.
-    setSubmitError("Não foi possível entrar agora. Tente novamente em breve.");
+    // Navegação da prévia frontend; a futura Server Action validará a autenticação.
+    router.push("/dashboard");
   };
 
   return (
@@ -58,9 +59,7 @@ export function LoginForm() {
               aria-describedby={
                 errors.identifier ? "identifier-error" : undefined
               }
-              {...register("identifier", {
-                onChange: () => setSubmitError(null),
-              })}
+              {...register("identifier")}
             />
             <MailIcon
               aria-hidden="true"
@@ -105,9 +104,7 @@ export function LoginForm() {
               className="text-brand-ink placeholder:text-brand-muted/80 font-vietnam bg-auth-field ring-auth-border/15 focus-visible:outline-auth-link h-13 w-full rounded-xl py-4 pr-12 pl-4 text-base leading-5 shadow-xs ring-1 outline-hidden ring-inset focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-solid disabled:opacity-70"
               aria-invalid={Boolean(errors.password)}
               aria-describedby={errors.password ? "password-error" : undefined}
-              {...register("password", {
-                onChange: () => setSubmitError(null),
-              })}
+              {...register("password")}
             />
             <button
               type="button"
@@ -147,14 +144,6 @@ export function LoginForm() {
       >
         {isSubmitting ? "Entrando..." : "Entrar"}
       </Button>
-      {submitError && (
-        <p
-          role="alert"
-          className="font-vietnam text-auth-link text-center text-sm leading-5"
-        >
-          {submitError}
-        </p>
-      )}
     </form>
   );
 }
