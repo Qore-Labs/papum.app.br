@@ -8,7 +8,11 @@ import {
   FOOTER_SOCIAL_LINKS,
 } from "@/utils/contents/footer";
 
-export function Footer() {
+interface FooterProps {
+  prefetch?: boolean;
+}
+
+export function Footer({ prefetch }: FooterProps) {
   return (
     <footer className="border-t border-zinc-200 bg-[#d6d6d6]">
       <div className="mx-auto max-w-320 px-8 pt-16 pb-6 max-sm:px-6 xl:pb-7.5">
@@ -50,6 +54,7 @@ export function Footer() {
                   <li key={link.href}>
                     <Link
                       href={link.href}
+                      prefetch={prefetch}
                       className="focus-visible:outline-home-red rounded-sm text-sm leading-[23px] text-zinc-600 hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2"
                     >
                       {link.label}

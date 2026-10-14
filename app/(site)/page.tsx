@@ -319,6 +319,8 @@ export default function Home() {
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4 xl:mt-[29px] xl:translate-x-[5px]">
               <Link
                 href="/login"
+                target="_blank"
+                rel="noopener noreferrer"
                 className={cn(
                   "bg-home-red rounded-full px-10 py-4 text-center text-base leading-6 font-semibold text-white transition-colors hover:bg-red-800 motion-reduce:transition-none xl:px-12",
                   focusClass,

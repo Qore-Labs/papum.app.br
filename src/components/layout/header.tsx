@@ -24,6 +24,8 @@ export function Header() {
           <MainNav links={siteConfig.navLinks} />
           <Link
             href="/login"
+            target="_blank"
+            rel="noopener noreferrer"
             className="hidden rounded-full bg-[#ffbb00] px-7 py-2.5 text-base leading-6 font-semibold text-[#613100] transition-colors hover:bg-amber-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none md:inline-flex"
           >
             Sign up

@@ -1,0 +1,236 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - link "Pular para o conteúdo" [ref=e3] [cursor=pointer]:
+      - /url: "#admin-main"
+    - banner [ref=e4]:
+      - generic [ref=e5]:
+        - link "Pápum! — página inicial do painel" [ref=e6] [cursor=pointer]:
+          - /url: /dashboard
+        - generic [ref=e37]:
+          - button "Abrir menu do gerente Marcus V." [ref=e38]:
+            - generic [ref=e39]:
+              - generic [ref=e40]: Marcus V.
+              - generic [ref=e41]: GERENTE
+          - button "Abrir menu do painel" [ref=e44]
+    - main [ref=e48]:
+      - generic [ref=e49]:
+        - search "Busca de clientes" [ref=e50]:
+          - generic [ref=e51]: Buscar clientes
+          - searchbox "Buscar clientes" [ref=e52]
+        - generic [ref=e53]:
+          - button "Ver notificações" [ref=e54]
+          - button "Abrir ajuda" [ref=e59]
+      - generic [ref=e63]:
+        - generic [ref=e64]:
+          - generic [ref=e65]:
+            - heading "Base de Clientes" [level=1] [ref=e66]
+            - paragraph [ref=e67]: Gerencie e analise o comportamento de compra dos seus clientes recorrentes.
+          - button "Novo Cliente" [ref=e68]
+        - region [ref=e71]:
+          - generic [ref=e72]:
+            - heading "Listagem de Clientes" [level=2] [ref=e73]
+            - group "Filtrar clientes" [ref=e74]:
+              - button "Todos" [pressed] [ref=e75]
+              - button "Recentes" [ref=e76]
+              - button "Mais Ativos" [ref=e77]
+          - status [ref=e78]: 7 clientes encontrados.
+          - list "Clientes da prévia" [ref=e79]:
+            - listitem [ref=e80]:
+              - generic [ref=e81]:
+                - generic [ref=e84]:
+                  - paragraph [ref=e85]: Ana Beatriz Silva
+                  - paragraph [ref=e86]: ana.beatriz@email.com
+                - button "Ações de Ana Beatriz Silva" [ref=e87]
+              - generic [ref=e90]:
+                - generic [ref=e91]:
+                  - term [ref=e92]: Contato
+                  - definition [ref=e93]: (11) 98765-4321
+                - generic [ref=e94]:
+                  - term [ref=e95]: Status
+                  - definition [ref=e96]:
+                    - generic [ref=e97]: VIP
+                - generic [ref=e98]:
+                  - term [ref=e99]: Último pedido
+                  - definition [ref=e100]: Hoje, 12:45
+                - generic [ref=e101]:
+                  - term [ref=e102]: Total gasto
+                  - definition [ref=e103]: R$ 1.250,20
+            - listitem [ref=e104]:
+              - generic [ref=e105]:
+                - generic [ref=e108]:
+                  - paragraph [ref=e109]: Ricardo Oliveira
+                  - paragraph [ref=e110]: ricardo.oliveira@email.com
+                - button "Ações de Ricardo Oliveira" [ref=e111]
+              - generic [ref=e114]:
+                - generic [ref=e115]:
+                  - term [ref=e116]: Contato
+                  - definition [ref=e117]: (11) 98765-4321
+                - generic [ref=e118]:
+                  - term [ref=e119]: Status
+                  - definition [ref=e120]:
+                    - generic [ref=e121]: Ativo
+                - generic [ref=e122]:
+                  - term [ref=e123]: Último pedido
+                  - definition [ref=e124]: Ontem, 20:15
+                - generic [ref=e125]:
+                  - term [ref=e126]: Total gasto
+                  - definition [ref=e127]: R$ 450,20
+            - listitem [ref=e128]:
+              - generic [ref=e129]:
+                - generic [ref=e132]:
+                  - paragraph [ref=e133]: Mariana Costa
+                  - paragraph [ref=e134]: mariana.c@email.com
+                - button "Ações de Mariana Costa" [ref=e135]
+              - generic [ref=e138]:
+                - generic [ref=e139]:
+                  - term [ref=e140]: Contato
+                  - definition [ref=e141]: (11) 98765-4321
+                - generic [ref=e142]:
+                  - term [ref=e143]: Status
+                  - definition [ref=e144]:
+                    - generic [ref=e145]: Inativo
+                - generic [ref=e146]:
+                  - term [ref=e147]: Último pedido
+                  - definition [ref=e148]: Há 15 dias
+                - generic [ref=e149]:
+                  - term [ref=e150]: Total gasto
+                  - definition [ref=e151]: R$ 89,90
+            - listitem [ref=e152]:
+              - generic [ref=e153]:
+                - generic [ref=e156]:
+                  - paragraph [ref=e157]: Felipe Mendes
+                  - paragraph [ref=e158]: fmendes@email.com
+                - button "Ações de Felipe Mendes" [ref=e159]
+              - generic [ref=e162]:
+                - generic [ref=e163]:
+                  - term [ref=e164]: Contato
+                  - definition [ref=e165]: (11) 98765-4321
+                - generic [ref=e166]:
+                  - term [ref=e167]: Status
+                  - definition [ref=e168]:
+                    - generic [ref=e169]: Ativo
+                - generic [ref=e170]:
+                  - term [ref=e171]: Último pedido
+                  - definition [ref=e172]: Ontem, 19:30
+                - generic [ref=e173]:
+                  - term [ref=e174]: Total gasto
+                  - definition [ref=e175]: R$ 215,00
+            - listitem [ref=e176]:
+              - generic [ref=e177]:
+                - generic [ref=e180]:
+                  - paragraph [ref=e181]: Ana Beatriz Silva
+                  - paragraph [ref=e182]: ana.beatriz@email.com
+                - button "Ações de Ana Beatriz Silva" [ref=e183]
+              - generic [ref=e186]:
+                - generic [ref=e187]:
+                  - term [ref=e188]: Contato
+                  - definition [ref=e189]: (11) 98765-4321
+                - generic [ref=e190]:
+                  - term [ref=e191]: Status
+                  - definition [ref=e192]:
+                    - generic [ref=e193]: VIP
+                - generic [ref=e194]:
+                  - term [ref=e195]: Último pedido
+                  - definition [ref=e196]: Hoje, 12:45
+                - generic [ref=e197]:
+                  - term [ref=e198]: Total gasto
+                  - definition [ref=e199]: R$ 1.250,20
+            - listitem [ref=e200]:
+              - generic [ref=e201]:
+                - generic [ref=e204]:
+                  - paragraph [ref=e205]: Ricardo Oliveira
+                  - paragraph [ref=e206]: ricardo.oliveira@email.com
+                - button "Ações de Ricardo Oliveira" [ref=e207]
+              - generic [ref=e210]:
+                - generic [ref=e211]:
+                  - term [ref=e212]: Contato
+                  - definition [ref=e213]: (11) 98765-4321
+                - generic [ref=e214]:
+                  - term [ref=e215]: Status
+                  - definition [ref=e216]:
+                    - generic [ref=e217]: Ativo
+                - generic [ref=e218]:
+                  - term [ref=e219]: Último pedido
+                  - definition [ref=e220]: Ontem, 20:15
+                - generic [ref=e221]:
+                  - term [ref=e222]: Total gasto
+                  - definition [ref=e223]: R$ 450,20
+            - listitem [ref=e224]:
+              - generic [ref=e225]:
+                - generic [ref=e228]:
+                  - paragraph [ref=e229]: Mariana Costa
+                  - paragraph [ref=e230]: mariana.c@email.com
+                - button "Ações de Mariana Costa" [ref=e231]
+              - generic [ref=e234]:
+                - generic [ref=e235]:
+                  - term [ref=e236]: Contato
+                  - definition [ref=e237]: (11) 98765-4321
+                - generic [ref=e238]:
+                  - term [ref=e239]: Status
+                  - definition [ref=e240]:
+                    - generic [ref=e241]: Inativo
+                - generic [ref=e242]:
+                  - term [ref=e243]: Último pedido
+                  - definition [ref=e244]: Há 15 dias
+                - generic [ref=e245]:
+                  - term [ref=e246]: Total gasto
+                  - definition [ref=e247]: R$ 89,90
+          - generic [ref=e248]:
+            - paragraph [ref=e249]: Mostrando 1–7 de 7 clientes
+            - navigation "Paginação de clientes" [ref=e250]:
+              - button "Página anterior" [disabled] [ref=e251]
+              - button "Página 1" [ref=e254]: "1"
+              - button "Próxima página" [disabled] [ref=e255]
+    - contentinfo [ref=e259]:
+      - generic [ref=e260]:
+        - generic [ref=e261]:
+          - generic [ref=e262]:
+            - img "PáPum!" [ref=e263]
+            - paragraph [ref=e293]: A revolução na forma de pedir comida. Rápido, fresco e direto na sua porta.
+            - generic [ref=e294]:
+              - link "LinkedIn" [ref=e295] [cursor=pointer]:
+                - /url: https://linkedin.com
+              - link "Facebook" [ref=e298] [cursor=pointer]:
+                - /url: https://facebook.com
+              - link "Instagram" [ref=e301] [cursor=pointer]:
+                - /url: https://instagram.com
+          - generic [ref=e304]:
+            - heading "PÁPUM!" [level=3] [ref=e305]
+            - list [ref=e306]:
+              - listitem [ref=e307]:
+                - link "Sobre" [ref=e308] [cursor=pointer]:
+                  - /url: /sobre
+              - listitem [ref=e309]:
+                - link "Como Funciona" [ref=e310] [cursor=pointer]:
+                  - /url: /como-funciona
+              - listitem [ref=e311]:
+                - link "Parceiros" [ref=e312] [cursor=pointer]:
+                  - /url: /parceiros
+          - generic [ref=e313]:
+            - heading "EXPLORE" [level=3] [ref=e314]
+            - list [ref=e315]:
+              - listitem [ref=e316]:
+                - link "Planos" [ref=e317] [cursor=pointer]:
+                  - /url: /planos
+              - listitem [ref=e318]:
+                - link "Serviços" [ref=e319] [cursor=pointer]:
+                  - /url: /servicos
+              - listitem [ref=e320]:
+                - link "Promoções" [ref=e321] [cursor=pointer]:
+                  - /url: /promocoes
+          - generic [ref=e322]:
+            - heading "SUPORTE" [level=3] [ref=e323]
+            - list [ref=e324]:
+              - listitem [ref=e325]:
+                - link "FAQ" [ref=e326] [cursor=pointer]:
+                  - /url: /faq
+              - listitem [ref=e327]:
+                - link "Termos de Uso" [ref=e328] [cursor=pointer]:
+                  - /url: /termos-de-uso
+              - listitem [ref=e329]:
+                - link "Política de Privacidade" [ref=e330] [cursor=pointer]:
+                  - /url: /politica-de-privacidade
+        - generic [ref=e331]:
+          - paragraph [ref=e332]: © 2026 PáPum! Delivery. All rights reserved.
+          - paragraph [ref=e333]: Feito com paixão pela culinária.
+  - button "Open Next.js Dev Tools" [ref=e339] [cursor=pointer]
