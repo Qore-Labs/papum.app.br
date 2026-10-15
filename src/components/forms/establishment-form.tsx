@@ -262,7 +262,7 @@ export function EstablishmentForm({
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="from-home-orange h-11.25 gap-2 rounded-xl bg-linear-[167.67deg_in_srgb] to-[#e6182a] px-6 text-base leading-6 font-bold text-black hover:opacity-90 md:w-57.75"
+              className="from-home-orange h-11.25 gap-2 rounded-xl bg-linear-[167.67deg_in_srgb] to-[#e6182a] px-6 text-base leading-6 font-bold text-white hover:opacity-90 md:w-57.75"
             >
               {isSubmitting ? "Validando..." : "Finalizar Cadastro"}
               <AdminSubmitArrowIcon aria-hidden="true" />

@@ -60,7 +60,10 @@ export function MenuItemForm({ product, onClose, onSave }: MenuItemFormProps) {
       id="menu-item-editor"
       aria-labelledby="menu-item-editor-title"
       aria-describedby="menu-item-editor-description"
-      onClose={onClose}
+      onClose={(event) => {
+        // A queued close event can arrive after StrictMode has reopened the dialog.
+        if (!event.currentTarget.open) onClose();
+      }}
       onClick={(event) => {
         if (event.target !== event.currentTarget) return;
         const box = event.currentTarget.getBoundingClientRect();

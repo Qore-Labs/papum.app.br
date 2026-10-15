@@ -230,16 +230,11 @@ html:has([data-admin-shell]) {
 
 @media (min-width: 1024px) {
   [data-admin-shell]:has([data-admin-section="menu"]) [data-admin-sidebar] {
-    padding-top: 2.8125rem;
     padding-bottom: 2.625rem;
   }
   [data-admin-shell]:has([data-admin-section="customers"])
     [data-admin-sidebar] {
-    padding-top: 2.8125rem;
     padding-bottom: 2.25rem;
-  }
-  [data-admin-shell]:has([data-admin-section="settings"]) [data-admin-sidebar] {
-    padding-top: 2.8125rem;
   }
 }
 
