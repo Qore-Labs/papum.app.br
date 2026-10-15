@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { WaitlistForm } from "@/components/forms/waitlist-form";
 import { LogoWhite } from "@/components/ui/icons";
+import { subscribeToLaunch } from "@/lib/actions/subscribe-to-launch";
 import { siteConfig } from "@/utils/config/site";
 import { LAUNCH_STATS } from "@/utils/contents/launch";
 
@@ -98,7 +99,10 @@ export default function LancamentoPage() {
         </p>
 
         <div className="mt-10 flex w-full justify-center">
-          <WaitlistForm />
+          <WaitlistForm
+            subscribeAction={subscribeToLaunch}
+            turnstileSiteKey={process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY}
+          />
         </div>
 
         <p className="mt-8 mb-3 max-w-full text-sm leading-5 text-zinc-400">
@@ -122,9 +126,21 @@ export default function LancamentoPage() {
         </dl>
       </main>
 
-      <footer className="relative border-t border-white/38 px-6 py-6 text-center text-xs leading-5 sm:text-sm">
-        © {new Date().getFullYear()} PáPum! Delivery. Todos os direitos
-        reservados.
+      <footer className="relative flex flex-col items-center justify-center gap-2 border-t border-white/38 px-6 py-6 text-center text-xs leading-5 sm:flex-row sm:gap-6 sm:text-sm">
+        <p>
+          © {new Date().getFullYear()} PáPum! Delivery. Todos os direitos
+          reservados.
+        </p>
+        {/^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA4_ID ?? "") && (
+          <button
+            type="button"
+            data-analytics-preferences
+            aria-controls="analytics-preferences"
+            className="min-h-11 text-sm text-zinc-300 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+          >
+            Preferências de privacidade
+          </button>
+        )}
       </footer>
     </div>
   );

@@ -1,12 +1,9 @@
 import type { ComponentType, SVGProps } from "react";
 
 import { AtIcon, CommunityIcon, GlobeIcon } from "@/components/ui/icons";
-import { siteConfig } from "@/utils/config/site";
+import { siteConfig, type NavLink } from "@/utils/config/site";
 
-interface FooterLink {
-  href: string;
-  label: string;
-}
+export type FooterLink = NavLink;
 
 interface FooterColumn {
   id: string;
@@ -26,21 +23,15 @@ interface FooterSocialLink extends FooterLink {
  */
 export const FOOTER_COLUMNS = [
   {
-    id: "papum",
-    title: "PÁPUM!",
-    links: [
-      { href: "/sobre", label: "Sobre" },
-      { href: "/como-funciona", label: "Como Funciona" },
-      { href: "/parceiros", label: "Parceiros" },
-    ],
-  },
-  {
     id: "explore",
     title: "EXPLORE",
     links: [
-      { href: "/planos", label: "Planos" },
-      { href: "/servicos", label: "Serviços" },
-      { href: "/promocoes", label: "Promoções" },
+      {
+        href: "/lancamento",
+        label: "Planos",
+        openInNewTab: true,
+        analyticsCta: "plans",
+      },
     ],
   },
   {

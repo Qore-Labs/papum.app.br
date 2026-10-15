@@ -6,7 +6,7 @@ A integração foi preparada a partir da documentação fornecida da API Laravel
 
 O cliente de servidor `getDeliveryApi()` usa mocks por padrão. Ele ainda não foi conectado às páginas ou aos formulários. Trocar a variável de ambiente seleciona o transporte desse cliente; **não ativa automaticamente a integração das telas**.
 
-Não há credenciais reais, URL de produção, novas rotas de proxy ou Server Actions públicas nesta entrega. O acesso real ao backend ainda precisa ser validado com uma instância disponível.
+Não há credenciais reais, URL de produção, novas rotas de proxy ou Server Actions públicas para a API do dashboard nesta entrega. O acesso real ao backend ainda precisa ser validado com uma instância disponível. A captação da página de lançamento tem uma [integração independente com Resend e GA4](marketing-integrations.md).
 
 ## Organização
 

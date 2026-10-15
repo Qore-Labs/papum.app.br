@@ -24,6 +24,10 @@ export function MainNav({ links }: MainNavProps) {
         <Link
           key={link.href}
           href={link.href}
+          data-analytics-cta={link.analyticsCta}
+          data-analytics-location="header"
+          target={link.openInNewTab ? "_blank" : undefined}
+          rel={link.openInNewTab ? "noopener noreferrer" : undefined}
           className={linkClassName}
           data-active={link.href === pathname}
         >

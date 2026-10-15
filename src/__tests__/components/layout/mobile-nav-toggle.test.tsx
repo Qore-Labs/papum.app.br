@@ -3,11 +3,17 @@ import userEvent from "@testing-library/user-event";
 import { afterAll, beforeAll, describe, expect, it, vi } from "vitest";
 
 import { MobileNavToggle } from "@/components/layout/mobile-nav-toggle";
+import type { NavLink } from "@/utils/config/site";
 
 const LINKS = [
   { href: "/", label: "Home" },
-  { href: "/planos", label: "Planos" },
-];
+  {
+    href: "/lancamento",
+    label: "Planos",
+    openInNewTab: true,
+    analyticsCta: "plans",
+  },
+] satisfies NavLink[];
 
 const originalShowModal = Object.getOwnPropertyDescriptor(
   HTMLDialogElement.prototype,
@@ -103,5 +109,17 @@ describe("MobileNavToggle", () => {
         screen.queryByRole("link", { name: "Home" }),
       ).not.toBeInTheDocument();
     });
+  });
+
+  it("encaminha planos e começar agora ao lançamento em uma nova aba", async () => {
+    const user = userEvent.setup();
+    render(<MobileNavToggle links={LINKS} />);
+    await user.click(screen.getByRole("button", { name: "Abrir menu" }));
+    for (const name of ["Planos", "Começar agora"]) {
+      const link = screen.getByRole("link", { name });
+      expect(link).toHaveAttribute("href", "/lancamento");
+      expect(link).toHaveAttribute("target", "_blank");
+      expect(link).toHaveAttribute("rel", "noopener noreferrer");
+    }
   });
 });

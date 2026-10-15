@@ -6,13 +6,15 @@ import {
   FOOTER_COLUMNS,
   FOOTER_LEGAL,
   FOOTER_SOCIAL_LINKS,
+  type FooterLink,
 } from "@/utils/contents/footer";
 
 interface FooterProps {
   prefetch?: boolean;
+  analyticsEnabled?: boolean;
 }
 
-export function Footer({ prefetch }: FooterProps) {
+export function Footer({ prefetch, analyticsEnabled = false }: FooterProps) {
   return (
     <footer className="border-t border-zinc-200 bg-[#d6d6d6]">
       <div className="mx-auto max-w-320 px-8 pt-16 pb-6 max-sm:px-6 xl:pb-7.5">
@@ -26,7 +28,7 @@ export function Footer({ prefetch }: FooterProps) {
             <p className="mt-6 max-w-80 text-sm leading-[23px] text-zinc-600">
               {siteConfig.tagline}
             </p>
-            <div className="mt-5 flex gap-4">
+            {/* <div className="mt-5 flex gap-4">
               {FOOTER_SOCIAL_LINKS.map(
                 ({ id, href, label, icon: Icon, iconClassName }) => (
                   <a
@@ -41,19 +43,25 @@ export function Footer({ prefetch }: FooterProps) {
                   </a>
                 ),
               )}
-            </div>
+            </div> */}
           </div>
 
-          {FOOTER_COLUMNS.map((column) => (
+          {/* {FOOTER_COLUMNS.map((column) => (
             <div key={column.id}>
               <h3 className="text-home-red text-xs font-semibold tracking-[0.05em] uppercase">
                 {column.title}
               </h3>
               <ul className="mt-4 space-y-2">
-                {column.links.map((link) => (
+                {column.links.map((link: FooterLink) => (
                   <li key={link.href}>
                     <Link
                       href={link.href}
+                      data-analytics-cta={link.analyticsCta}
+                      data-analytics-location="footer"
+                      target={link.openInNewTab ? "_blank" : undefined}
+                      rel={
+                        link.openInNewTab ? "noopener noreferrer" : undefined
+                      }
                       prefetch={prefetch}
                       className="focus-visible:outline-home-red rounded-sm text-sm leading-[23px] text-zinc-600 hover:text-zinc-900 focus-visible:outline-2 focus-visible:outline-offset-2"
                     >
@@ -63,14 +71,26 @@ export function Footer({ prefetch }: FooterProps) {
                 ))}
               </ul>
             </div>
-          ))}
+          ))} */}
         </div>
 
         <div className="mt-16 flex flex-col gap-2 border-t border-zinc-200 px-6 pt-8 text-sm text-zinc-600 max-sm:px-0 sm:flex-row sm:items-center sm:justify-between xl:mt-13">
           <p>
-            © {new Date().getFullYear()} PáPum! Delivery. All rights reserved.
+            © {new Date().getFullYear()} PáPum! Delivery. Todos os direitos
+            reservados.
           </p>
           <p className="text-xs text-zinc-600">{FOOTER_LEGAL.madeWith}</p>
+          {analyticsEnabled &&
+            /^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA4_ID ?? "") && (
+              <button
+                type="button"
+                data-analytics-preferences
+                aria-controls="analytics-preferences"
+                className="min-h-11 text-left text-sm text-zinc-700 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
+              >
+                Preferências de privacidade
+              </button>
+            )}
         </div>
       </div>
     </footer>

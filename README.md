@@ -16,7 +16,7 @@ app/
 
 Os nomes entre parênteses organizam o código e não fazem parte da URL. Cada nova campanha deve ter sua própria pasta dentro de `(marketing)`, com conteúdo e metadados específicos. O layout do grupo compartilha a tipografia; cada landing define sua composição, header e footer.
 
-A landing de lançamento usa `WaitlistForm`, em `src/components/forms/waitlist-form.tsx`, com validação em `src/schemas/waitlist-form.ts`. Neste estágio, a entrega é somente frontend: nenhum e-mail é gravado e o formulário não confirma um cadastro sem resposta da integração. A propriedade `subscribeAction` está preparada para receber a futura Server Action. A integração deverá também validar os dados no servidor.
+A landing de lançamento usa `WaitlistForm`, com validação no cliente e no servidor. A Server Action verifica o visitante com Turnstile e envia uma notificação interna e uma confirmação pelo Resend. O GA4 mede os CTAs e o cadastro confirmado após consentimento. Consulte [configuração de analytics e e-mails](docs/marketing-integrations.md): sem as chaves, o envio fica indisponível e não confirma um cadastro fictício. Os CTAs de planos e início abrem `/lancamento` em outra aba.
 
 ## Integração com a API
 

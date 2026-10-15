@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono, Poppins } from "next/font/google";
 import "./globals.css";
 
+import { MarketingAnalytics } from "@/components/analytics/marketing-analytics";
 import { siteConfig } from "@/utils/config/site";
 
 const geistSans = Geist({
@@ -36,7 +37,10 @@ export default function RootLayout({
       lang="pt-BR"
       className={`${geistSans.variable} ${geistMono.variable} ${poppins.variable} h-full antialiased`}
     >
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <MarketingAnalytics measurementId={process.env.NEXT_PUBLIC_GA4_ID} />
+      </body>
     </html>
   );
 }
