@@ -1,32 +1,47 @@
 "use client";
 
 import { zodResolver } from "@hookform/resolvers/zod";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
+import { TurnstileVerification } from "@/components/forms/turnstile-verification";
+import { trackLaunchLead } from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import {
   waitlistFormSchema,
   type WaitlistFormValues,
 } from "@/schemas/waitlist-form";
+import type {
+  LaunchInterestRequest,
+  WaitlistSubmissionResult,
+} from "@/types/waitlist";
 
-export interface WaitlistSubmissionResult {
-  status: "success" | "error";
-  message: string;
-}
+export type { WaitlistSubmissionResult } from "@/types/waitlist";
 
 interface WaitlistFormProps {
   subscribeAction?: (
-    values: WaitlistFormValues,
+    values: LaunchInterestRequest,
   ) => Promise<WaitlistSubmissionResult>;
+  turnstileSiteKey?: string;
 }
 
 const unavailableMessage =
   "Não foi possível concluir o cadastro agora. Tente novamente em breve.";
 
-export function WaitlistForm({ subscribeAction }: WaitlistFormProps) {
+export function WaitlistForm({
+  subscribeAction,
+  turnstileSiteKey,
+}: WaitlistFormProps) {
   const [result, setResult] = useState<WaitlistSubmissionResult | null>(null);
+  const [verificationToken, setVerificationToken] = useState("");
+  const [verificationAttempt, setVerificationAttempt] = useState(0);
+  const [website, setWebsite] = useState("");
+  const onVerified = useCallback(
+    (token: string) => setVerificationToken(token),
+    [],
+  );
+  const onInvalidVerification = useCallback(() => setVerificationToken(""), []);
   const {
     register,
     handleSubmit,
@@ -43,13 +58,30 @@ export function WaitlistForm({ subscribeAction }: WaitlistFormProps) {
       setResult({ status: "error", message: unavailableMessage });
       return;
     }
+    if (turnstileSiteKey && !verificationToken) {
+      setResult({
+        status: "error",
+        message: "Conclua a verificação de segurança e tente novamente.",
+      });
+      return;
+    }
 
     try {
-      const response = await subscribeAction(values);
+      const response = await subscribeAction({
+        ...values,
+        verificationToken,
+        website,
+      });
       setResult(response);
-      if (response.status === "success") reset();
+      if (response.status === "success") {
+        reset();
+        trackLaunchLead();
+      }
     } catch {
       setResult({ status: "error", message: unavailableMessage });
+    } finally {
+      setVerificationToken("");
+      setVerificationAttempt((current) => current + 1);
     }
   }
 
@@ -61,6 +93,18 @@ export function WaitlistForm({ subscribeAction }: WaitlistFormProps) {
       aria-busy={isSubmitting}
       className="w-full max-w-112"
     >
+      <div hidden aria-hidden="true">
+        <label htmlFor="waitlist-website">Deixe este campo vazio</label>
+        <input
+          id="waitlist-website"
+          name="website"
+          type="text"
+          value={website}
+          onChange={(event) => setWebsite(event.target.value)}
+          tabIndex={-1}
+          autoComplete="off"
+        />
+      </div>
       <div className="flex flex-col gap-3 sm:flex-row">
         <div className="min-w-0 flex-1">
           <label htmlFor="waitlist-email" className="sr-only">
@@ -90,6 +134,19 @@ export function WaitlistForm({ subscribeAction }: WaitlistFormProps) {
           {isSubmitting ? "Enviando..." : "Quero ser avisado"}
         </Button>
       </div>
+
+      {turnstileSiteKey && (
+        <TurnstileVerification
+          key={verificationAttempt}
+          siteKey={turnstileSiteKey}
+          onToken={onVerified}
+          onInvalid={onInvalidVerification}
+        />
+      )}
+      <p className="mt-3 text-center text-xs leading-5 text-zinc-300">
+        Ao enviar, você pede para receber novidades sobre o lançamento. Pode
+        cancelar respondendo ao e-mail.
+      </p>
 
       {errors.email && (
         <p

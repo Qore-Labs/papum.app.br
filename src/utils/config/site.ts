@@ -1,3 +1,5 @@
+import type { MarketingCta } from "@/lib/analytics";
+
 /**
  * Configuração global do site: identidade, metadados default e links externos.
  * Fonte única de verdade — consumido por `app/layout.tsx` (metadata),
@@ -7,6 +9,8 @@
 export interface NavLink {
   href: string;
   label: string;
+  openInNewTab?: boolean;
+  analyticsCta?: MarketingCta;
 }
 
 export interface SiteSocialLinks {
@@ -35,12 +39,17 @@ export const siteConfig = {
   url: "https://papum.app.br",
   navLinks: [
     { href: "/", label: "Home" },
-    { href: "/planos", label: "Planos" },
-    { href: "/servicos", label: "Serviços" },
+    {
+      href: "/lancamento",
+      label: "Planos",
+      openInNewTab: true,
+      analyticsCta: "plans",
+    },
+    // { href: "/servicos", label: "Serviços" },
   ],
   social: {
     instagram: "https://instagram.com",
     facebook: "https://facebook.com",
-    linkedin: "https://linkedin.com",
+    linkedin: "https://www.linkedin.com/company/binaryinc/",
   },
 } satisfies SiteConfig;

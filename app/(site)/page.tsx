@@ -170,7 +170,11 @@ export default function Home() {
               </p>
             </div>
             <Link
-              href="/planos"
+              href="/lancamento"
+              target="_blank"
+              rel="noopener noreferrer"
+              data-analytics-cta="plans"
+              data-analytics-location="benefits"
               className={cn(
                 "relative z-10 w-fit rounded-full bg-white px-10 py-3 text-center text-base leading-6 font-semibold text-[#613100] transition-colors hover:bg-orange-50 motion-reduce:transition-none",
                 focusClass,
@@ -318,9 +322,11 @@ export default function Home() {
             </p>
             <div className="mt-8 flex flex-wrap items-center justify-center gap-4 xl:mt-[29px] xl:translate-x-[5px]">
               <Link
-                href="/login"
+                href="/lancamento"
                 target="_blank"
                 rel="noopener noreferrer"
+                data-analytics-cta="start_now"
+                data-analytics-location="final_cta"
                 className={cn(
                   "bg-home-red rounded-full px-10 py-4 text-center text-base leading-6 font-semibold text-white transition-colors hover:bg-red-800 motion-reduce:transition-none xl:px-12",
                   focusClass,
@@ -329,7 +335,11 @@ export default function Home() {
                 Começar Agora
               </Link>
               <Link
-                href="/planos"
+                href="/lancamento"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-analytics-cta="plans"
+                data-analytics-location="final_cta"
                 className={cn(
                   "rounded-full border-2 border-white px-10 py-4 text-center text-base leading-6 font-semibold text-white transition-colors hover:bg-white/10 motion-reduce:transition-none xl:px-[43px]",
                   focusClass,

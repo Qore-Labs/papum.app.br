@@ -11,3 +11,10 @@ export const waitlistFormSchema = z.object({
 });
 
 export type WaitlistFormValues = z.infer<typeof waitlistFormSchema>;
+
+export const launchInterestRequestSchema = waitlistFormSchema
+  .extend({
+    verificationToken: z.string().max(2048),
+    website: z.string().max(200),
+  })
+  .strict();

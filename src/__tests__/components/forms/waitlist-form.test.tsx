@@ -1,11 +1,17 @@
 import { act, render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { describe, expect, it, vi } from "vitest";
+import { beforeEach, describe, expect, it, vi } from "vitest";
 
 import {
   WaitlistForm,
   type WaitlistSubmissionResult,
 } from "@/components/forms/waitlist-form";
+import { trackLaunchLead } from "@/lib/analytics";
+
+vi.mock("@/lib/analytics", () => ({ trackLaunchLead: vi.fn() }));
+beforeEach(() => {
+  vi.clearAllMocks();
+});
 
 describe("WaitlistForm", () => {
   it("pede o e-mail e leva o foco ao campo quando está vazio", async () => {
@@ -35,6 +41,7 @@ describe("WaitlistForm", () => {
       "Informe um e-mail válido.",
     );
     expect(subscribeAction).not.toHaveBeenCalled();
+    expect(trackLaunchLead).not.toHaveBeenCalled();
   });
 
   it("não confirma um cadastro enquanto a integração não está conectada", async () => {
@@ -66,11 +73,14 @@ describe("WaitlistForm", () => {
 
     expect(subscribeAction).toHaveBeenCalledWith({
       email: "cliente@restaurante.com",
+      verificationToken: "",
+      website: "",
     });
     expect(await screen.findByRole("status")).toHaveTextContent(
       "Você será avisado",
     );
     expect(email).toHaveValue("");
+    expect(trackLaunchLead).toHaveBeenCalledOnce();
   });
 
   it("preserva o e-mail quando o envio falha", async () => {
@@ -88,6 +98,7 @@ describe("WaitlistForm", () => {
       "Tente novamente em breve.",
     );
     expect(email).toHaveValue("cliente@restaurante.com");
+    expect(trackLaunchLead).not.toHaveBeenCalled();
   });
 
   it("impede um novo envio enquanto aguarda a resposta", async () => {
@@ -125,5 +136,29 @@ describe("WaitlistForm", () => {
       ).toBeEnabled();
     });
     expect(subscribeAction).toHaveBeenCalledTimes(1);
+  });
+
+  it("pede verificação sem enviar ou contar conversão enquanto não houver token", async () => {
+    const user = userEvent.setup();
+    const subscribeAction = vi.fn();
+    render(
+      <WaitlistForm
+        subscribeAction={subscribeAction}
+        turnstileSiteKey="test-site-key"
+      />,
+    );
+    await user.type(
+      screen.getByRole("textbox", { name: "Seu e-mail" }),
+      "cliente@exemplo.com",
+    );
+    await user.click(screen.getByRole("button", { name: "Quero ser avisado" }));
+    expect(await screen.findByRole("alert")).toHaveTextContent(
+      "Conclua a verificação",
+    );
+    expect(subscribeAction).not.toHaveBeenCalled();
+    expect(trackLaunchLead).not.toHaveBeenCalled();
+    expect(screen.getByRole("textbox", { name: "Seu e-mail" })).toHaveValue(
+      "cliente@exemplo.com",
+    );
   });
 });

@@ -26,7 +26,7 @@ export default function SiteLayout({
     >
       <Header />
       <div className="flex flex-1 flex-col">{children}</div>
-      <Footer />
+      <Footer analyticsEnabled />
     </div>
   );
 }
