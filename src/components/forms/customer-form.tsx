@@ -57,7 +57,10 @@ export function CustomerForm({ customer, onClose, onSave }: CustomerFormProps) {
       id="customer-editor"
       aria-labelledby="customer-editor-title"
       aria-describedby="customer-editor-description"
-      onClose={onClose}
+      onClose={(event) => {
+        // A queued close event can arrive after StrictMode has reopened the dialog.
+        if (!event.currentTarget.open) onClose();
+      }}
       onClick={(event) => {
         if (event.target !== event.currentTarget) return;
         const box = event.currentTarget.getBoundingClientRect();

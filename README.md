@@ -18,6 +18,10 @@ Os nomes entre parênteses organizam o código e não fazem parte da URL. Cada n
 
 A landing de lançamento usa `WaitlistForm`, em `src/components/forms/waitlist-form.tsx`, com validação em `src/schemas/waitlist-form.ts`. Neste estágio, a entrega é somente frontend: nenhum e-mail é gravado e o formulário não confirma um cadastro sem resposta da integração. A propriedade `subscribeAction` está preparada para receber a futura Server Action. A integração deverá também validar os dados no servidor.
 
+## Integração com a API
+
+O cliente da API e os fluxos de autenticação estão preparados no servidor, com mocks como padrão. As telas continuam na prévia frontend, sem requisições ao backend. Consulte [configuração, contratos e pendências da integração](docs/api-integration.md) e o arquivo `.env.example` antes de conectar os dados reais.
+
 ## Getting Started
 
 First, run the development server:
