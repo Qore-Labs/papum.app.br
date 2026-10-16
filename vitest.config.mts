@@ -16,6 +16,7 @@ export default defineConfig({
   },
   plugins: [react()],
   test: {
+    include: ["src/__tests__/**/*.test.{ts,tsx}"],
     environment: "jsdom",
     setupFiles: ["./vitest.setup.mts"],
   },

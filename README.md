@@ -24,21 +24,30 @@ O cliente da API e os fluxos de autenticação estão preparados no servidor, co
 
 ## Getting Started
 
-First, run the development server:
+Use Node.js 24 (versão de referência em `.node-version`) e pnpm 11.15.1:
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+corepack enable
+pnpm install --frozen-lockfile
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
 You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+
+## CI e testes
+
+O GitHub Actions confere lint, formatação, tipos, Vitest, build e fluxos de navegador em desktop, tablet e mobile. O Dependabot propõe atualizações semanais. Consulte [execução local, isolamento dos testes e deploy](docs/ci.md).
+
+```sh
+pnpm lint
+pnpm format:check
+pnpm typecheck
+pnpm test
+pnpm exec playwright install chromium
+pnpm test:e2e
+```
 
 This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
 
