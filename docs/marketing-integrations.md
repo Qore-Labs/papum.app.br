@@ -71,9 +71,23 @@ Referências: [preços](https://resend.com/pricing), [domínio verificado](https
 ## 3. Turnstile — proteção gratuita do formulário
 
 1. Crie um widget em Cloudflare → Turnstile, no modo Managed. Não é necessário transferir o DNS do site para a Cloudflare.
-2. Autorize os hostnames de produção (`papum.app.br`, `www.papum.app.br`). Para testar com envio real localmente, autorize também `localhost` no widget e em `WAITLIST_ALLOWED_HOSTNAMES`.
+2. Autorize os hostnames utilizados (`papum.app.br`, `www.papum.app.br`, `papumappbr.vercel.app`) no gerenciamento de hostnames do widget. Para testar com envio real localmente, autorize também `localhost` no widget e em `WAITLIST_ALLOWED_HOSTNAMES`.
 3. Configure a sitekey pública em `NEXT_PUBLIC_TURNSTILE_SITE_KEY` e a secret key em `TURNSTILE_SECRET_KEY`, somente no servidor.
 4. Tokens expiram e são de uso único. O formulário reinicia a verificação após uma tentativa de envio; tokens inválidos, repetidos, de outra ação ou hostname não chegam ao Resend.
+
+### Falhas na verificação
+
+O widget mostra a referência numérica do erro e permite repetir desafios com falha de conexão ou expiração sem apagar o e-mail. Se o próprio script não carregar, oferece recarregar a página. Erros de configuração pedem intervenção da equipe, preservando o bloqueio de envio.
+
+- `110200`: domínio não autorizado no painel do Turnstile. Adicione o hostname exato usado no navegador (inclusive o hostname próprio da Vercel, se utilizar esse endereço).
+- `110100` / `110110`: conferir a sitekey e o widget no painel.
+- `200500`: o iframe não carregou; conferir bloqueio a `challenges.cloudflare.com`, extensões, rede e navegador.
+- `200100`: conferir data/hora e cache do aparelho.
+- `110600` / `110620`: reiniciar desafio expirado.
+
+Cloudflare e `WAITLIST_ALLOWED_HOSTNAMES` são verificações separadas: autorize o domínio no widget e inclua-o também na configuração do servidor. Use apenas hostnames, sem `https://`, porta ou `/lancamento`. Não autorize `vercel.app` inteiro. Alterações em variáveis da hospedagem precisam de novo deploy; mudanças da sitekey pública precisam de novo build. Não há bypass da verificação nem envio de e-mail quando ela falha.
+
+Referências: [códigos de erro](https://developers.cloudflare.com/turnstile/troubleshooting/client-side-errors/error-codes/), [hostnames](https://developers.cloudflare.com/turnstile/additional-configuration/hostname-management/).
 
 O envio também tem honeypot, validação Zod no servidor, destinatário interno definido por configuração, escape de HTML, timeouts e erros públicos sem mensagens internas dos provedores. Turnstile não substitui controle de abuso/limites de infraestrutura se o volume crescer; acompanhe consumo e bloqueios no painel.
 
@@ -90,7 +104,7 @@ RESEND_FROM_EMAIL=contato@binaryinc.com.br
 RESEND_NOTIFICATION_EMAIL=contato@binaryinc.com.br
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=sua_sitekey_publica
 TURNSTILE_SECRET_KEY=sua_chave_secreta
-WAITLIST_ALLOWED_HOSTNAMES=papum.app.br,www.papum.app.br
+WAITLIST_ALLOWED_HOSTNAMES=papum.app.br,www.papum.app.br,papumappbr.vercel.app
 ```
 
 Reinicie `pnpm dev` após configurar o ambiente. Variáveis públicas entram no bundle: em produção, configure-as antes de executar um novo build/deploy. Não substitua esses valores por chaves de teste em produção.
@@ -106,4 +120,6 @@ Reinicie `pnpm dev` após configurar o ambiente. Variáveis públicas entram no 
 
 Os testes simulam as chamadas aos provedores; nenhum e-mail real é enviado por eles. A validação final com domínio verificado, credenciais reais e entrega na caixa de entrada deve ser feita após a configuração das contas.
 
-Conferência local: 209 testes passaram; consentimento, recusa, retorno do foco, abertura de novas abas e falha sem confirmação de cadastro foram verificados em navegador real. A LP foi conferida em 390, 768 e 1440 px e o e-mail em 390 e 1440 px, sem overflow horizontal. Na prévia de analytics foi usado um ID fictício com o script Google interceptado, sem coleta real.
+Conferência local: 226 testes passaram; consentimento, recusa, retorno do foco, abertura de novas abas e falha sem confirmação de cadastro foram verificados em navegador real. A LP foi conferida em 390, 768 e 1440 px e o e-mail em 390 e 1440 px, sem overflow horizontal. Na prévia de analytics foi usado um ID fictício com o script Google interceptado, sem coleta real.
+
+A recuperação do Turnstile foi conferida com SDK simulado e envio desativado: repetição por teclado, retorno do foco ao widget, preservação do e-mail, remoção do aviso de verificação pendente após sucesso e mensagem de domínio não autorizado. Na página publicada em `papumappbr.vercel.app/lancamento`, o Cloudflare retornou `110200` em 16/10/2026; liberar esse hostname no widget e atualizar a variável na Vercel são etapas de configuração das contas.
