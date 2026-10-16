@@ -28,6 +28,8 @@ interface WaitlistFormProps {
 
 const unavailableMessage =
   "Não foi possível concluir o cadastro agora. Tente novamente em breve.";
+const verificationRequiredMessage =
+  "Conclua a verificação de segurança e tente novamente.";
 
 export function WaitlistForm({
   subscribeAction,
@@ -37,10 +39,12 @@ export function WaitlistForm({
   const [verificationToken, setVerificationToken] = useState("");
   const [verificationAttempt, setVerificationAttempt] = useState(0);
   const [website, setWebsite] = useState("");
-  const onVerified = useCallback(
-    (token: string) => setVerificationToken(token),
-    [],
-  );
+  const onVerified = useCallback((token: string) => {
+    setVerificationToken(token);
+    setResult((current) =>
+      current?.message === verificationRequiredMessage ? null : current,
+    );
+  }, []);
   const onInvalidVerification = useCallback(() => setVerificationToken(""), []);
   const {
     register,
@@ -61,7 +65,7 @@ export function WaitlistForm({
     if (turnstileSiteKey && !verificationToken) {
       setResult({
         status: "error",
-        message: "Conclua a verificação de segurança e tente novamente.",
+        message: verificationRequiredMessage,
       });
       return;
     }
