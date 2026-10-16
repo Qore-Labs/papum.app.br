@@ -1,20 +1,13 @@
-import Link from "next/link";
-
 import { LogoWhite } from "@/components/ui/icons";
 import { siteConfig } from "@/utils/config/site";
-import {
-  FOOTER_COLUMNS,
-  FOOTER_LEGAL,
-  FOOTER_SOCIAL_LINKS,
-  type FooterLink,
-} from "@/utils/contents/footer";
+import { FOOTER_LEGAL } from "@/utils/contents/footer";
 
 interface FooterProps {
   prefetch?: boolean;
   analyticsEnabled?: boolean;
 }
 
-export function Footer({ prefetch, analyticsEnabled = false }: FooterProps) {
+export function Footer({ analyticsEnabled = false }: FooterProps) {
   return (
     <footer className="border-t border-zinc-200 bg-[#d6d6d6]">
       <div className="mx-auto max-w-320 px-8 pt-16 pb-6 max-sm:px-6 xl:pb-7.5">
