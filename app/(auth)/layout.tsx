@@ -19,6 +19,7 @@ export default function AuthLayout({
 }>) {
   return (
     <div
+      data-clarity-mask="true"
       className={`${plusJakartaSans.variable} ${beVietnamPro.variable} flex flex-1 flex-col`}
     >
       {children}

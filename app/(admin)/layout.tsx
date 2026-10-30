@@ -24,6 +24,7 @@ export default function AdminLayout({
   return (
     <div
       data-admin-shell
+      data-clarity-mask="true"
       className={`${inter.variable} ${jakarta.variable} ${vietnam.variable} font-inter bg-admin-surface flex flex-1 flex-col text-stone-900`}
     >
       <a

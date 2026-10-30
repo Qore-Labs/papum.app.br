@@ -1,6 +1,7 @@
 import { LogoWhite } from "@/components/ui/icons";
 import { siteConfig } from "@/utils/config/site";
 import { FOOTER_LEGAL } from "@/utils/contents/footer";
+import { hasMarketingAnalytics } from "@/utils/config/analytics";
 
 interface FooterProps {
   prefetch?: boolean;
@@ -10,7 +11,7 @@ interface FooterProps {
 export function Footer({ analyticsEnabled = false }: FooterProps) {
   return (
     <footer className="border-t border-zinc-200 bg-[#d6d6d6]">
-      <div className="mx-auto max-w-320 px-8 pt-16 pb-6 max-sm:px-6 xl:pb-7.5">
+      <div className="site-safe-gutter mx-auto max-w-320 pt-16 pb-[calc(1.5rem+env(safe-area-inset-bottom))] [--site-gutter:2rem] max-sm:[--site-gutter:1.5rem] xl:pb-7.5">
         <div className="grid grid-cols-2 gap-8 px-6 max-sm:px-0 md:grid-cols-5">
           <div className="col-span-2">
             <LogoWhite
@@ -69,21 +70,20 @@ export function Footer({ analyticsEnabled = false }: FooterProps) {
 
         <div className="mt-16 flex flex-col gap-2 border-t border-zinc-200 px-6 pt-8 text-sm text-zinc-600 max-sm:px-0 sm:flex-row sm:items-center sm:justify-between xl:mt-13">
           <p>
-            © {new Date().getFullYear()} PáPum! Delivery. Todos os direitos
+            © {new Date().getFullYear()} {siteConfig.name}. Todos os direitos
             reservados.
           </p>
           <p className="text-xs text-zinc-600">{FOOTER_LEGAL.madeWith}</p>
-          {analyticsEnabled &&
-            /^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA4_ID ?? "") && (
-              <button
-                type="button"
-                data-analytics-preferences
-                aria-controls="analytics-preferences"
-                className="min-h-11 text-left text-sm text-zinc-700 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
-              >
-                Preferências de privacidade
-              </button>
-            )}
+          {analyticsEnabled && hasMarketingAnalytics() && (
+            <button
+              type="button"
+              data-analytics-preferences
+              aria-controls="analytics-preferences"
+              className="min-h-11 text-left text-sm text-zinc-700 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
+            >
+              Preferências de privacidade
+            </button>
+          )}
         </div>
       </div>
     </footer>

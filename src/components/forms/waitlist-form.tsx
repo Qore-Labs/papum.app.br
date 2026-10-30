@@ -6,7 +6,11 @@ import { useForm } from "react-hook-form";
 
 import { Button } from "@/components/ui/button";
 import { TurnstileVerification } from "@/components/forms/turnstile-verification";
-import { trackLaunchLead } from "@/lib/analytics";
+import {
+  trackLaunchLead,
+  trackWaitlistAttempt,
+  trackWaitlistError,
+} from "@/lib/analytics";
 import { cn } from "@/lib/utils";
 import {
   waitlistFormSchema,
@@ -59,10 +63,12 @@ export function WaitlistForm({
   async function onSubmit(values: WaitlistFormValues) {
     setResult(null);
     if (!subscribeAction) {
+      trackWaitlistError("unavailable");
       setResult({ status: "error", message: unavailableMessage });
       return;
     }
     if (turnstileSiteKey && !verificationToken) {
+      trackWaitlistError("verification_required");
       setResult({
         status: "error",
         message: verificationRequiredMessage,
@@ -80,8 +86,9 @@ export function WaitlistForm({
       if (response.status === "success") {
         reset();
         trackLaunchLead();
-      }
+      } else trackWaitlistError("submission_failed");
     } catch {
+      trackWaitlistError("submission_failed");
       setResult({ status: "error", message: unavailableMessage });
     } finally {
       setVerificationToken("");
@@ -91,7 +98,13 @@ export function WaitlistForm({
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
+      onSubmit={(event) => {
+        trackWaitlistAttempt();
+        void handleSubmit(onSubmit, () => trackWaitlistError("invalid_email"))(
+          event,
+        );
+      }}
+      data-clarity-mask="true"
       noValidate
       aria-label="Receber aviso de lançamento"
       aria-busy={isSubmitting}

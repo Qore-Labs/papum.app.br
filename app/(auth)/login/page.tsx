@@ -10,8 +10,7 @@ import { SOCIAL_LOGIN_PROVIDERS } from "@/utils/contents/auth";
 
 export const metadata: Metadata = {
   title: `Entrar | ${siteConfig.name}`,
-  description:
-    "Acesse sua conta no Pápum! Delivery para pedir seus pratos favoritos.",
+  description: "Acesso à área de gestão da Papum Delivery para restaurantes.",
   alternates: { canonical: "/login" },
   robots: { index: false, follow: true },
 };
