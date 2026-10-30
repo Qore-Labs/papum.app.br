@@ -8,8 +8,8 @@ import { MobileNavToggle } from "./mobile-nav-toggle";
 
 export function Header() {
   return (
-    <header className="absolute inset-x-0 top-0 z-20 bg-[#fb8d01] shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
-      <div className="mx-auto flex h-20.5 max-w-320 items-center justify-between px-[29px] max-sm:px-5">
+    <header className="bg-home-header absolute inset-x-0 top-0 z-20 pt-[env(safe-area-inset-top)] shadow-[0_1px_1px_rgba(0,0,0,0.05)]">
+      <div className="site-safe-gutter mx-auto flex h-20.5 max-w-320 items-center justify-between [--site-gutter:29px] max-sm:[--site-gutter:1.25rem]">
         <Link
           href="/"
           aria-label="PáPum! — página inicial"

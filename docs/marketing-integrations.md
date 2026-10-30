@@ -2,16 +2,17 @@
 
 ## O que está conectado
 
-- “Começar agora”, “Planos”, “Explorar Planos” e “Ver Planos” abrem `/lancamento` em outra aba, inclusive no header, footer e menu mobile.
+- “Planos”, “Começar agora”, “Explorar Planos” e “Ver Planos” abrem `/lancamento` em outra aba. Os rótulos e a composição original da Home foram restaurados a pedido do usuário em 30/10/2026.
 - GA4 gratuito para cliques nos CTAs e conversões do formulário.
+- Microsoft Clarity para mapas de calor e reprodução de sessões consentidas na Home e em `/lancamento`, independente do GA4.
 - Resend para notificação interna e confirmação ao interessado, com texto e identidade Pápum Delivery.
 - Cloudflare Turnstile para verificar o visitante antes de permitir envios. O token é validado no servidor, incluindo hostname e ação `launch_waitlist`.
 
-Os IDs e as chaves não vêm preenchidos. Sem ID GA4 não há banner ou coleta; sem configuração de envio não há e-mails nem confirmação falsa de cadastro. A integração de marketing é independente de `DELIVERY_DATA_SOURCE`: o dashboard continua na prévia local.
+Sem IDs de analytics não há aviso nem coleta. Com ao menos uma integração habilitada, o aviso permite aceitar ou recusar; sem configuração de envio não há e-mails nem confirmação falsa de cadastro. A integração de marketing é independente de `DELIVERY_DATA_SOURCE`: o dashboard continua na prévia local.
 
 ## 1. Google Analytics 4 — gratuito
 
-1. Crie uma conta/propriedade em [Google Analytics](https://analytics.google.com/) e um fluxo de dados da Web para `https://papum.app.br`.
+1. Crie uma conta/propriedade em [Google Analytics](https://analytics.google.com/) e um fluxo de dados da Web para `https://www.papum.app.br`.
 2. Copie o ID de medição (formato `G-...`) para `NEXT_PUBLIC_GA4_ID` em `.env.local` e no ambiente de hospedagem.
 3. **Desative a medição otimizada/Enhanced Measurement desse fluxo.** O código envia as visualizações e eventos manualmente. Isso evita duplicação por mudanças de histórico e coleta automática de formulários, busca e URLs que podem conter dados pessoais. Mantenha Google Signals, personalização de anúncios e recursos de dados fornecidos por usuários desativados.
 4. Em Administrador → Eventos/Eventos principais, marque `generate_lead` como evento principal. Se o objetivo for uma conversão por visitante em cada sessão, configure a contagem como uma vez por sessão.
@@ -26,11 +27,34 @@ Os IDs e as chaves não vêm preenchidos. Sem ID GA4 não há banner ou coleta; 
 
 Os eventos próprios não incluem e-mail, hash de e-mail, token de segurança ou valores dos campos. As URLs enviadas por eles não incluem query ou fragmento. Login e dashboard não recebem eventos de marketing. Os relatórios permitem contar usuários e eventos; não identificam o e-mail de cada visitante.
 
-A tag só é carregada após “Permitir estatísticas”. “Recusar” mantém a coleta desativada. O botão “Preferências de privacidade”, no rodapé, permite mudar a escolha; revogar desativa novos envios e remove os cookies `_ga` acessíveis nesse domínio. A preferência fica no localStorage, com fallback por sessão quando ele estiver bloqueado.
+A tag só é carregada após “Permitir análise”. “Recusar” mantém a coleta desativada. O botão “Preferências de privacidade”, no rodapé, permite mudar a escolha; revogar desativa novos envios e remove os cookies `_ga`, `_ga_*`, `_clck` e `_clsk` acessíveis nesse domínio. A preferência fica no localStorage, com fallback por sessão quando ele estiver bloqueado. A chave `papum:analytics-consent:v2` exige nova escolha de quem havia aceitado apenas as estatísticas anteriores.
 
 Bloqueadores de anúncios e visitantes que recusarem analytics não entram nessas estatísticas. O formulário de contato funciona independentemente da escolha. Não espere que o número de conversões do GA4 corresponda a todos os contatos recebidos por e-mail.
 
 Referências: [GA4 gratuito](https://marketingplatform.google.com/about/analytics/), [eventos](https://developers.google.com/analytics/devguides/collection/ga4/events), [consentimento básico](https://developers.google.com/tag-platform/security/guides/consent?consentmode=basic).
+
+## Microsoft Clarity — sessões e mapas de calor
+
+O usuário forneceu o ID público `z5hqjof5ys`. Ele está configurado em `.env.local`; na Vercel, definir `NEXT_PUBLIC_CLARITY_PROJECT_ID=z5hqjof5ys` antes de um novo build. O ID identifica o projeto e não é uma chave secreta.
+
+O script oficial carrega após consentimento, somente em builds de produção, em `/` e `/lancamento`. Desenvolvimento e E2E comuns não gravam. Não é necessário configurar GA4 para usar Clarity. O aviso compartilhado informa reprodução de sessões, mascaramento do formulário, recusa e revogação pelo rodapé.
+
+- `consentv2` recebe `analytics_Storage: granted` no aceite e `ad_Storage: denied` sempre. A revogação nega analytics e encerra o runtime com `stop`; negar cookies isoladamente não garante ausência de gravação.
+- A saída para uma área privada interrompe a gravação e abre um documento novo antes de renderizar o destino. Login e admin também têm mascaramento preventivo e não carregam a tag.
+- O formulário, suas mensagens e a verificação Turnstile ficam sob `data-clarity-mask="true"`. Não são enviados campos, e-mails, hashes, tokens nem mensagens livres em eventos.
+- URLs com query, fragmentos não previstos ou referência com query/fragmento não iniciam Clarity. Isso também exclui visitas com parâmetros UTM; é uma limitação deliberada desta entrega para evitar captura de dados em URLs. Links com fragmentos públicos `#proposta` e `#como-funciona` são permitidos.
+- Se o visitante revogar enquanto o script ainda estiver carregando, a página é recarregada para encerrar o documento com a requisição pendente.
+
+| Evento                        | Momento                                                                                    |
+| ----------------------------- | ------------------------------------------------------------------------------------------ |
+| `cta_start_now` / `cta_plans` | Clique em CTA; nomes internos preservados, mesmo com rótulos voltados ao lançamento        |
+| `waitlist_submit`             | Uma tentativa de envio do formulário                                                       |
+| `waitlist_success`            | Resposta positiva real da ação de cadastro                                                 |
+| `waitlist_error`              | Categoria fixa: e-mail inválido, verificação pendente, indisponibilidade ou falha de envio |
+
+O contexto do CTA e a categoria do erro usam tags controladas. Depois da publicação, conferir no painel do projeto sessões consentidas, eventos, mapas de calor e o mascaramento, com dados fictícios. O acesso ao painel não esteve disponível nesta execução. O runtime oficial 0.8.72 foi testado localmente com uploads bloqueados: aceite, parada na revogação, retomada e ausência de runtime no login foram confirmados.
+
+Referências: [instalação](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-setup), [consentimento](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-consent-api-v2), [mascaramento](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-masking), [API](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-api).
 
 ## 2. Resend — notificação e confirmação
 
@@ -48,7 +72,9 @@ O nome exibido do remetente é **Pápum Delivery**. O corpo e o assunto da confi
 
 ### Texto da confirmação
 
-> Olá!
+> Seu contato chegou.
+>
+> Que bom ter você por aqui!
 >
 > Recebemos seu contato e ficamos felizes com seu interesse no Pápum Delivery.
 >
@@ -59,6 +85,8 @@ O nome exibido do remetente é **Pápum Delivery**. O corpo e o assunto da confi
 > Até já, Equipe Pápum Delivery
 
 Há versões HTML e texto simples. A mensagem também orienta responder ao e-mail para cancelar os avisos ou informar uma solicitação não reconhecida. Esses pedidos precisam ser atendidos pela equipe; não existe gerenciamento automático de inscrições nesta entrega.
+
+Os dois templates usam a logo Pápum em PNG, fundo claro e links de Instagram e site com ícones e rótulos de texto. A logo está em `public/email/papum-logo.png` e precisa estar disponível em `https://www.papum.app.br/email/papum-logo.png` após a publicação, assim como os ícones `instagram.png` e `website.png` da mesma pasta. A URL do Instagram em `siteConfig.social.instagram` é fictícia, autorizada para demonstração; substitua-a quando houver um perfil oficial. Conteúdo e links dos e-mails ficam em `src/utils/contents/launch-emails.ts`. A notificação interna tem uma ação de resposta e um rodapé próprio para a equipe.
 
 O envio usa um batch de duas mensagens com chave HMAC idempotente e payload determinístico. Tentativas equivalentes durante a janela de 24 horas do Resend não reenviam o par. Não há repetição automática de requisições de envio. Só retornamos sucesso quando a resposta contém dois IDs válidos; aceitação pelo provedor não garante entrega na caixa de entrada. Confira entregas, rejeições e bounces no painel.
 
@@ -99,6 +127,8 @@ Use `.env.example` como modelo. No `.env.local`/ambiente de hospedagem:
 
 ```dotenv
 NEXT_PUBLIC_GA4_ID=G-SEU_ID
+NEXT_PUBLIC_CLARITY_PROJECT_ID=z5hqjof5ys
+SITE_INDEXING_ENABLED=false
 RESEND_API_KEY=sua_chave_secreta
 RESEND_FROM_EMAIL=contato@binaryinc.com.br
 RESEND_NOTIFICATION_EMAIL=contato@binaryinc.com.br
@@ -111,8 +141,10 @@ Reinicie `pnpm dev` após configurar o ambiente. Variáveis públicas entram no 
 
 ## Organização e testes
 
-- `src/components/analytics/marketing-analytics.tsx`: tag e preferências.
+- `src/components/analytics/marketing-analytics.tsx`: tags, preferências e limite de gravação.
 - `src/lib/analytics.ts`: eventos permitidos, consentimento e URLs sem query.
+- `src/lib/clarity.ts`: fila oficial, consentimento, parada/retomada e eventos do Clarity.
+- `src/utils/config/analytics.ts`: IDs independentes e ambientes permitidos.
 - `src/lib/actions/subscribe-to-launch.ts`: entrada pública da Server Action, mantendo as proteções de origem do Next.
 - `src/lib/email/subscribe-to-launch.ts`: validação, Turnstile e envio no servidor.
 - `src/lib/email/launch-templates.ts`: conteúdo dos dois e-mails.
@@ -120,6 +152,6 @@ Reinicie `pnpm dev` após configurar o ambiente. Variáveis públicas entram no 
 
 Os testes simulam as chamadas aos provedores; nenhum e-mail real é enviado por eles. A validação final com domínio verificado, credenciais reais e entrega na caixa de entrada deve ser feita após a configuração das contas.
 
-Conferência local: 226 testes passaram; consentimento, recusa, retorno do foco, abertura de novas abas e falha sem confirmação de cadastro foram verificados em navegador real. A LP foi conferida em 390, 768 e 1440 px e o e-mail em 390 e 1440 px, sem overflow horizontal. Na prévia de analytics foi usado um ID fictício com o script Google interceptado, sem coleta real.
+Conferência inicial, anterior à integração Clarity: 226 testes passaram; consentimento, recusa, retorno do foco, abertura de novas abas e falha sem confirmação de cadastro foram verificados em navegador real. A LP foi conferida em 390, 768 e 1440 px e o e-mail em 390 e 1440 px, sem overflow horizontal. Na prévia de analytics foi usado um ID fictício com o script Google interceptado, sem coleta real. A validação mais recente está em [SEO e Clarity](seo-improvements-validation.md), com 237 testes aprovados e verificações adicionais nos dois motores de navegador.
 
 A recuperação do Turnstile foi conferida com SDK simulado e envio desativado: repetição por teclado, retorno do foco ao widget, preservação do e-mail, remoção do aviso de verificação pendente após sucesso e mensagem de domínio não autorizado. Na página publicada em `papumappbr.vercel.app/lancamento`, o Cloudflare retornou `110200` em 16/10/2026; liberar esse hostname no widget e atualizar a variável na Vercel são etapas de configuração das contas.

@@ -8,7 +8,11 @@ import {
 } from "@/components/forms/waitlist-form";
 import { trackLaunchLead } from "@/lib/analytics";
 
-vi.mock("@/lib/analytics", () => ({ trackLaunchLead: vi.fn() }));
+vi.mock("@/lib/analytics", () => ({
+  trackLaunchLead: vi.fn(),
+  trackWaitlistAttempt: vi.fn(),
+  trackWaitlistError: vi.fn(),
+}));
 beforeEach(() => {
   vi.clearAllMocks();
 });

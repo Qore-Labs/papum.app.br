@@ -13,6 +13,7 @@
   --brand-muted: #5d3f3d;
 
   --home-orange: #ff8a00;
+  --home-header: #fb8d01;
   --home-red: #bb001b;
   --home-ink: #1b1c1c;
 
@@ -46,6 +47,7 @@
   --color-brand-ink: var(--brand-ink);
   --color-brand-muted: var(--brand-muted);
   --color-home-orange: var(--home-orange);
+  --color-home-header: var(--home-header);
   --color-home-red: var(--home-red);
   --color-home-ink: var(--home-ink);
   --color-auth-field: var(--auth-field);
@@ -81,6 +83,29 @@ body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+/* Safari can sample the document background for its surrounding browser UI. */
+html:has([data-site-shell]) {
+  --background: var(--home-header);
+  --foreground: var(--home-ink);
+  background: var(--background);
+  color-scheme: light;
+}
+
+.site-safe-gutter {
+  padding-left: max(var(--site-gutter, 1.5rem), env(safe-area-inset-left));
+  padding-right: max(var(--site-gutter, 1.5rem), env(safe-area-inset-right));
+}
+
+.home-hero {
+  padding-top: calc(5rem + env(safe-area-inset-top));
+}
+
+@media (width < 768px) {
+  .home-hero {
+    padding-top: calc(8rem + env(safe-area-inset-top));
+  }
 }
 
 @layer base {
@@ -175,7 +200,7 @@ body {
   overflow-y: auto;
   overscroll-behavior: contain;
   border: 0;
-  background: #fb8d01;
+  background: var(--home-header);
   box-shadow: -16px 0 40px rgb(0 0 0 / 0.16);
   transform: translateX(100%);
   transition: transform 260ms var(--ease-drawer);

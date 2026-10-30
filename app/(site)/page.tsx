@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+import { SiteStructuredData } from "@/components/seo/site-structured-data";
 import { LightningIcon, StarIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import {
@@ -73,17 +74,18 @@ function AppStatCard({ stat }: { stat: AppStat }) {
 export default function Home() {
   return (
     <main className="flex flex-1 flex-col">
-      <section className="relative flex min-h-175 items-center overflow-hidden bg-[#10191b] pt-20 pb-10 max-md:min-h-0 max-md:pt-32 max-md:pb-0">
+      <SiteStructuredData />
+      <section className="home-hero relative flex min-h-175 items-center overflow-hidden bg-[#10191b] pb-10 max-md:min-h-0 max-md:pb-0">
         <Image
           src="/home/night-city-speed.png"
           alt=""
           fill
-          priority
+          loading="eager"
           sizes="100vw"
           className="object-cover object-[center_31%]"
         />
         <div className="absolute inset-0 bg-linear-to-r from-[#1b1c1c]/95 via-[#1b1c1c]/45 to-transparent" />
-        <div className="relative mx-auto grid w-full max-w-250 grid-cols-2 items-center gap-14 px-8 max-md:grid-cols-1 max-md:gap-3 max-sm:px-6">
+        <div className="site-safe-gutter relative mx-auto grid w-full max-w-250 grid-cols-2 items-center gap-14 [--site-gutter:2rem] max-md:grid-cols-1 max-md:gap-3 max-sm:[--site-gutter:1.5rem]">
           <div className="z-10 md:-translate-y-2">
             <h1 className="max-w-112 text-[clamp(3rem,5.6vw,4.5rem)] leading-none font-extrabold tracking-[-0.025em] text-white">
               Seu <br />
@@ -101,7 +103,8 @@ export default function Home() {
             alt="Scooter amarela de entrega"
             width={493}
             height={494}
-            priority
+            loading="eager"
+            fetchPriority="high"
             sizes="(min-width: 768px) 40vw, 90vw"
             className="relative z-10 h-auto w-full max-w-123 justify-self-end max-md:mx-auto max-md:max-w-100 md:translate-y-[46px] xl:w-[493px] xl:max-w-none xl:translate-x-[14px] xl:justify-self-start"
           />
@@ -112,7 +115,7 @@ export default function Home() {
         className="bg-[#e7e7e7] py-14 xl:pt-20 xl:pb-[29px]"
         aria-labelledby="speed-title"
       >
-        <div className="mx-auto max-w-320 px-6">
+        <div className="site-safe-gutter mx-auto max-w-320">
           <div className="mx-auto flex max-w-266 items-center gap-12 max-md:flex-wrap max-md:justify-center max-md:gap-6 xl:max-w-[1060px]">
             <div className="flex items-center gap-4">
               <span className="border-home-orange flex size-16 shrink-0 items-center justify-center rounded-full border-[3px]">
@@ -145,7 +148,7 @@ export default function Home() {
       </section>
 
       <section
-        className="bg-[#faf9f9] px-6 py-8 xl:h-[520px]"
+        className="site-safe-gutter bg-[#faf9f9] py-8 xl:h-[520px]"
         aria-label="Restaurantes parceiros"
       >
         <div className="mx-auto grid max-w-[1232px] grid-cols-[2fr_1fr] gap-8 max-lg:grid-cols-1 xl:grid-cols-[27fr_13fr]">
@@ -222,7 +225,7 @@ export default function Home() {
 
       <section
         id="como-funciona"
-        className="border-t-5 border-[#fb8d01] bg-[#f1f1f1] px-6 pt-14 pb-19 max-md:pb-20 xl:pb-[75px]"
+        className="site-safe-gutter border-t-5 border-[#fb8d01] bg-[#f1f1f1] pt-14 pb-19 max-md:pb-20 xl:pb-[75px]"
       >
         <div className="mx-auto max-w-320 text-center">
           <h2 className="text-home-ink text-[clamp(1.875rem,3vw,2.25rem)] leading-10 font-extrabold">
@@ -237,7 +240,7 @@ export default function Home() {
       </section>
 
       <section
-        className="overflow-hidden bg-white px-6 pt-24 pb-20 max-md:py-20 xl:pb-[79px]"
+        className="site-safe-gutter overflow-hidden bg-white pt-24 pb-20 max-md:py-20 xl:pb-[79px]"
         aria-labelledby="social-proof-title"
       >
         <div className="mx-auto grid max-w-244 grid-cols-2 items-center gap-5 max-md:grid-cols-1 max-md:gap-16">
@@ -286,7 +289,10 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="bg-white px-6 pb-9" aria-labelledby="final-cta-title">
+      <section
+        className="site-safe-gutter bg-white pb-9"
+        aria-labelledby="final-cta-title"
+      >
         <div className="relative mx-auto flex min-h-108 w-11/12 max-w-260 items-center overflow-visible rounded-[23px] bg-linear-to-r from-[#09090b] to-[#27272a] px-14 py-16 max-md:w-full max-md:overflow-hidden max-md:bg-[#09090b] max-md:px-8 max-md:pt-80 max-md:pb-14 xl:translate-x-4">
           <Image
             src="/home/entre-agora-e-monte.jpg"

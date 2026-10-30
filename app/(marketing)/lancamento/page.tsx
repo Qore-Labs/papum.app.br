@@ -6,11 +6,11 @@ import { WaitlistForm } from "@/components/forms/waitlist-form";
 import { LogoWhite } from "@/components/ui/icons";
 import { subscribeToLaunch } from "@/lib/actions/subscribe-to-launch";
 import { siteConfig } from "@/utils/config/site";
-import { LAUNCH_STATS } from "@/utils/contents/launch";
+import { hasMarketingAnalytics } from "@/utils/config/analytics";
 
-const title = `Lançamento em breve | ${siteConfig.name} Delivery`;
+const title = `Lançamento em breve | ${siteConfig.name}`;
 const description =
-  "Seu delivery tá quase no ar. Cadastre seu e-mail para saber quando o Pápum! Delivery lançar e acompanhe uma nova forma de vender e pedir comida.";
+  "A Papum Delivery está em pré-lançamento. Cadastre seu e-mail para receber novidades sobre a plataforma de gestão de delivery para restaurantes.";
 
 export const metadata: Metadata = {
   title,
@@ -93,9 +93,9 @@ export default function LancamentoPage() {
           <span className="text-home-orange block">tá quase no ar.</span>
         </h1>
         <p className="mt-4 max-w-128 text-base leading-7 text-zinc-300 sm:text-xl sm:leading-[32.5px]">
-          Obrigado pelo seu interesse! Estamos trabalhando para revolucionar o
-          delivery rápido e inteligente. Seja o primeiro a saber quando
-          lançarmos.
+          Estamos preparando uma plataforma para o cardápio e os pedidos do seu
+          restaurante. Cadastre seu interesse e acompanhe as novidades do
+          lançamento.
         </p>
 
         <div className="mt-10 flex w-full justify-center">
@@ -105,33 +105,18 @@ export default function LancamentoPage() {
           />
         </div>
 
-        <p className="mt-8 mb-3 max-w-full text-sm leading-5 text-zinc-400">
-          Junte-se a mais de{" "}
-          <strong className="font-semibold text-zinc-300">
-            500 restaurantes
-          </strong>{" "}
-          aguardando o lançamento
+        <p className="mt-8 max-w-112 text-sm leading-6 text-zinc-300">
+          A plataforma ainda não está disponível para uso. Por enquanto, o
+          cadastro serve para receber novidades por e-mail.
         </p>
-        <dl className="grid w-full grid-cols-3 items-center justify-center gap-3 rounded-[14px] bg-[#141414]/65 px-4 py-5 mix-blend-plus-lighter sm:flex sm:h-17.5 sm:w-143.5 sm:gap-8 sm:px-0 sm:pt-6 sm:pb-[17px]">
-          {LAUNCH_STATS.map((stat) => (
-            <div key={stat.id} className="flex flex-col items-center">
-              <dt className="order-2 mt-1 text-xs leading-5 text-zinc-300 sm:text-sm sm:whitespace-nowrap">
-                {stat.label}
-              </dt>
-              <dd className="text-brand-red order-1 text-2xl leading-[30px] font-extrabold whitespace-nowrap sm:text-3xl">
-                {stat.value}
-              </dd>
-            </div>
-          ))}
-        </dl>
       </main>
 
       <footer className="relative flex flex-col items-center justify-center gap-2 border-t border-white/38 px-6 py-6 text-center text-xs leading-5 sm:flex-row sm:gap-6 sm:text-sm">
         <p>
-          © {new Date().getFullYear()} PáPum! Delivery. Todos os direitos
+          © {new Date().getFullYear()} {siteConfig.name}. Todos os direitos
           reservados.
         </p>
-        {/^G-[A-Z0-9]+$/.test(process.env.NEXT_PUBLIC_GA4_ID ?? "") && (
+        {hasMarketingAnalytics() && (
           <button
             type="button"
             data-analytics-preferences

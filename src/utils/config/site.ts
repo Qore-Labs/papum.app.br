@@ -30,13 +30,13 @@ export interface SiteConfig {
 }
 
 export const siteConfig = {
-  name: "Pápum!",
-  title: "Pápum! | Seu delivery tá no ar",
+  name: "Papum Delivery",
+  title: "Papum Delivery - Gestão de Delivery",
   description:
-    "Monte seu cardápio virtual em minutos. Simples, rápido e sem complicação — o seu delivery na velocidade que você precisa.",
+    "Papum Delivery está em pré-lançamento. Conheça a proposta para organizar o cardápio digital e os pedidos do seu restaurante e receba novidades.",
   tagline:
     "A revolução na forma de pedir comida. Rápido, fresco e direto na sua porta.",
-  url: "https://papum.app.br",
+  url: "https://www.papum.app.br",
   navLinks: [
     { href: "/", label: "Home" },
     {
@@ -48,7 +48,8 @@ export const siteConfig = {
     // { href: "/servicos", label: "Serviços" },
   ],
   social: {
-    instagram: "https://instagram.com",
+    // Perfil fictício para demonstração. Substituir quando houver Instagram oficial.
+    instagram: "https://www.instagram.com/papum.delivery/",
     facebook: "https://facebook.com",
     linkedin: "https://www.linkedin.com/company/binaryinc/",
   },

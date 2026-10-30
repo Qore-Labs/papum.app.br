@@ -116,7 +116,7 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
         }}
         onClick={closeOnBackdropClick}
       >
-        <div className="flex min-h-full flex-col px-6 pt-5 pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
+        <div className="site-safe-gutter flex min-h-full flex-col pt-[calc(1.25rem+env(safe-area-inset-top))] pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
           <div className="flex items-center justify-between">
             <h2 id="mobile-menu-title" className="text-xl font-bold text-white">
               Menu

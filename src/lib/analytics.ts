@@ -1,3 +1,13 @@
+import {
+  revokeClarityConsent,
+  tagClarityCtaLocation,
+  trackClarityEvent,
+  trackClarityError,
+  type WaitlistErrorReason,
+} from "@/lib/clarity";
+import { isMarketingPath } from "@/utils/config/analytics";
+
+export { isMarketingPath };
 export type AnalyticsConsent = "granted" | "denied" | null;
 export type MarketingCta = "start_now" | "plans";
 export type MarketingLocation =
@@ -16,7 +26,7 @@ declare global {
   }
 }
 
-const consentKey = "papum:analytics-consent:v1";
+const consentKey = "papum:analytics-consent:v2";
 const consentEvent = "papum:analytics-consent";
 let sessionConsent: AnalyticsConsent = null;
 let sessionOnly = false;
@@ -26,10 +36,6 @@ const deniedAdvertising = {
   ad_user_data: "denied",
   ad_personalization: "denied",
 };
-
-export function isMarketingPath(pathname: string): boolean {
-  return ["/", "/lancamento", "/planos"].includes(pathname);
-}
 
 export function readAnalyticsConsent(): AnalyticsConsent {
   if (typeof window === "undefined") return null;
@@ -59,7 +65,13 @@ function clearAnalyticsCookies(): void {
   const domains = window.location.hostname.split(".");
   for (const cookie of document.cookie.split(";")) {
     const name = cookie.split("=")[0].trim();
-    if (name !== "_ga" && !name.startsWith("_ga_")) continue;
+    if (
+      name !== "_ga" &&
+      !name.startsWith("_ga_") &&
+      name !== "_clck" &&
+      name !== "_clsk"
+    )
+      continue;
     document.cookie = `${name}=; Max-Age=0; Path=/; SameSite=Lax`;
     for (let i = 0; i < domains.length - 1; i++) {
       document.cookie = `${name}=; Max-Age=0; Path=/; Domain=.${domains.slice(i).join(".")}; SameSite=Lax`;
@@ -79,6 +91,7 @@ export function setAnalyticsConsent(
     sessionOnly = true;
   }
   if (value === "denied") {
+    revokeClarityConsent();
     if (configuredId) setDisabled(configuredId, true);
     window.gtag?.("consent", "update", {
       analytics_storage: "denied",
@@ -147,33 +160,52 @@ export function trackMarketingCta(
   location: MarketingLocation,
 ): void {
   if (
-    !configuredId ||
     readAnalyticsConsent() !== "granted" ||
     !isMarketingPath(window.location.pathname)
   )
     return;
-  window.gtag?.("event", "cta_click", {
-    cta_name: cta,
-    cta_location: location,
-    page_path: window.location.pathname,
-    page_location: `${window.location.origin}${window.location.pathname}`,
-    page_referrer: "",
-  });
+  tagClarityCtaLocation(location);
+  trackClarityEvent(cta === "start_now" ? "cta_start_now" : "cta_plans");
+  if (configuredId)
+    window.gtag?.("event", "cta_click", {
+      cta_name: cta,
+      cta_location: location,
+      page_path: window.location.pathname,
+      page_location: `${window.location.origin}${window.location.pathname}`,
+      page_referrer: "",
+    });
 }
 
 export function trackLaunchLead(): void {
   if (
-    !configuredId ||
     readAnalyticsConsent() !== "granted" ||
     window.location.pathname !== "/lancamento"
   )
     return;
-  window.gtag?.("event", "generate_lead", {
-    form_name: "launch_waitlist",
-    page_path: "/lancamento",
-    page_location: `${window.location.origin}/lancamento`,
-    page_referrer: "",
-  });
+  trackClarityEvent("waitlist_success");
+  if (configuredId)
+    window.gtag?.("event", "generate_lead", {
+      form_name: "launch_waitlist",
+      page_path: "/lancamento",
+      page_location: `${window.location.origin}/lancamento`,
+      page_referrer: "",
+    });
+}
+
+export function trackWaitlistAttempt(): void {
+  if (
+    readAnalyticsConsent() === "granted" &&
+    window.location.pathname === "/lancamento"
+  )
+    trackClarityEvent("waitlist_submit");
+}
+
+export function trackWaitlistError(reason: WaitlistErrorReason): void {
+  if (
+    readAnalyticsConsent() === "granted" &&
+    window.location.pathname === "/lancamento"
+  )
+    trackClarityError(reason);
 }
 
 export function trackMarketingClick(event: MouseEvent): void {
