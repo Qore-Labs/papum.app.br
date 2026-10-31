@@ -32,7 +32,7 @@ describe("Limites da gravação Clarity", () => {
     const clarity = await import("@/lib/clarity");
     const analytics = await import("@/lib/analytics");
     analytics.setAnalyticsConsent("granted");
-    clarity.configureClarity("testproject");
+    clarity.configureClarity("testproject", "granted");
     analytics.trackMarketingCta("plans", "header");
     history.replaceState({}, "", "/lancamento");
     analytics.trackWaitlistAttempt();

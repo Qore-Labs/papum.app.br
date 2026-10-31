@@ -13,6 +13,32 @@ afterEach(() => {
 });
 
 describe("Analytics de marketing com consentimento", () => {
+  it("atribui a entrada Instagram sem query, campos pessoais ou cookies concedidos", async () => {
+    const analytics = await import("@/lib/analytics");
+    history.replaceState({}, "", "/instagram?email=privado@example.com");
+    window.gtag = vi.fn();
+    analytics.configureMarketingAnalytics("G-TEST123");
+    analytics.trackMarketingPage("/instagram");
+    analytics.trackWaitlistStart();
+    analytics.trackLaunchLead();
+    expect(window.gtag).toHaveBeenCalledWith(
+      "event",
+      "generate_lead",
+      expect.objectContaining({
+        campaign_source: "instagram",
+        campaign_medium: "social",
+        page_path: "/instagram",
+      }),
+    );
+    expect(window.gtag).toHaveBeenCalledWith(
+      "consent",
+      "update",
+      expect.objectContaining({ analytics_storage: "denied" }),
+    );
+    expect(JSON.stringify(vi.mocked(window.gtag).mock.calls)).not.toMatch(
+      /privado|email=/,
+    );
+  });
   it("mede uma única intenção do mockup no GA4 e Clarity e interrompe após recusa", async () => {
     const analytics = await import("@/lib/analytics");
     const clarity = await import("@/lib/clarity");
@@ -57,12 +83,23 @@ describe("Analytics de marketing com consentimento", () => {
       link.remove();
     }
   });
-  it("não configura nem envia eventos antes de receber consentimento", async () => {
+  it("inicia a medição sem conceder cookies e interrompe após desativação", async () => {
     const analytics = await import("@/lib/analytics");
     analytics.configureMarketingAnalytics("G-TEST123");
     analytics.trackMarketingCta("start_now", "final_cta");
-    expect(window.gtag).toBeUndefined();
-    expect(window.dataLayer).toBeUndefined();
+    expect(window.gtag).toBeDefined();
+    expect(Array.from(window.dataLayer?.at(-2) as IArguments)).toEqual([
+      "consent",
+      "update",
+      expect.objectContaining({
+        analytics_storage: "denied",
+        ad_storage: "denied",
+      }),
+    ]);
+    analytics.setAnalyticsConsent("denied");
+    window.gtag = vi.fn();
+    analytics.trackMarketingCta("start_now", "final_cta");
+    expect(window.gtag).not.toHaveBeenCalled();
   });
   it("mede cliques e conversão sem e-mail, query ou identificadores do formulário", async () => {
     const analytics = await import("@/lib/analytics");

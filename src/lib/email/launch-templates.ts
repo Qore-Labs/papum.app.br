@@ -4,6 +4,7 @@ import {
   LAUNCH_EMAIL_FOOTER_LINKS,
   NOTIFICATION_EMAIL_CONTENT,
 } from "@/utils/contents/launch-emails";
+import { LEAD_ORIGINS, type LeadEntry } from "@/utils/config/attribution";
 
 interface LaunchEmail {
   from: string;
@@ -19,6 +20,7 @@ interface LaunchEmailsInput {
   email: string;
   sender: string;
   notificationEmail: string;
+  entry?: LeadEntry;
 }
 
 interface EmailLayoutInput {
@@ -114,9 +116,11 @@ export function buildLaunchEmails({
   email,
   sender,
   notificationEmail,
+  entry = "lancamento",
 }: LaunchEmailsInput): LaunchEmail[] {
   const from = `Pápum Delivery <${sender}>`;
   const notification = NOTIFICATION_EMAIL_CONTENT;
+  const origin = LEAD_ORIGINS[entry];
   const confirmation = CONFIRMATION_EMAIL_CONTENT;
   const safeEmail = escapeHtml(email);
   const replyUrl = `mailto:${encodeURIComponent(email)}`;
@@ -138,7 +142,7 @@ export function buildLaunchEmails({
 <p style="margin:0 0 6px;color:${colors.secondary};font-size:14px;line-height:21px">${escapeHtml(notification.contactLabel)}</p>
 <a href="${replyUrl}" style="color:${colors.ink};font-size:17px;line-height:26px;font-weight:700;text-decoration:underline;word-break:break-all;overflow-wrap:anywhere">${safeEmail}</a>
 <p style="margin:20px 0 4px;color:${colors.secondary};font-size:14px;line-height:21px">${escapeHtml(notification.originLabel)}</p>
-<p style="margin:0;color:${colors.ink};font-size:15px;line-height:24px">${escapeHtml(notification.origin)}</p>
+<p style="margin:0;color:${colors.ink};font-size:15px;line-height:24px">${escapeHtml(origin)}</p>
 </td></tr></table>
 ${paragraph(notification.instruction)}
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin-top:24px;border-collapse:collapse"><tr><td align="center" bgcolor="${colors.accent}" style="border-radius:8px;background-color:${colors.accent};mso-padding-alt:12px 20px">
@@ -149,7 +153,7 @@ ${paragraph(notification.instruction)}
       text: [
         notification.heading,
         notification.introduction,
-        `${notification.contactLabel}: ${email}\n${notification.originLabel}: ${notification.origin}`,
+        `${notification.contactLabel}: ${email}\n${notification.originLabel}: ${origin}`,
         notification.instruction,
         LAUNCH_EMAIL_BRAND.signature,
         textFooterLinks,
@@ -164,8 +168,7 @@ ${paragraph(notification.instruction)}
       from,
       to: [email],
       reply_to: sender,
-      subject:
-        "Recebemos seu contato. Obrigado por chegar junto! | Pápum Delivery",
+      subject: "Recebemos seu contato | Pápum Delivery",
       html: emailLayout({
         preheader: confirmation.preheader,
         heading: confirmation.heading,

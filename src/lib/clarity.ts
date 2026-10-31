@@ -8,10 +8,11 @@ type ClarityCommand =
   | ["consentv2", ClarityConsent]
   | ["start" | "stop"]
   | ["event", ClarityEvent]
-  | ["set", "cta_location" | "error_reason", string];
+  | ["set", "cta_location" | "error_reason" | "source", string];
 export type ClarityEvent =
   | "cta_start_now"
   | "cta_plans"
+  | "waitlist_start"
   | "waitlist_submit"
   | "waitlist_success"
   | "waitlist_error";
@@ -34,7 +35,13 @@ declare global {
 let requested = false;
 let active = false;
 let runtimeLoaded = false;
-const safeAnchors = new Set(["", "#proposta", "#como-funciona"]);
+const safeAnchors = new Set([
+  "",
+  "#proposta",
+  "#produto",
+  "#como-funciona",
+  "#cadastro",
+]);
 
 export function isClarityUrlAllowed(url: URL): boolean {
   return (
@@ -61,8 +68,22 @@ export function isClarityLocationAllowed(): boolean {
   }
 }
 
-export function configureClarity(id: string): void {
-  if (!isValidClarityId(id) || !isClarityLocationAllowed() || active) return;
+let storageConsent: "granted" | "denied" | null = null;
+export function configureClarity(
+  id: string,
+  storage: "granted" | "denied" = "denied",
+): void {
+  if (!isValidClarityId(id) || !isClarityLocationAllowed()) return;
+  if (active) {
+    if (storageConsent !== storage) {
+      window.clarity?.("consentv2", {
+        ad_Storage: "denied",
+        analytics_Storage: storage,
+      });
+      storageConsent = storage;
+    }
+    return;
+  }
   const resuming = requested && runtimeLoaded;
   window.clarity ??= Object.assign(
     (...args: ClarityCommand) => {
@@ -72,11 +93,14 @@ export function configureClarity(id: string): void {
   );
   requested = true;
   active = true;
+  storageConsent = storage;
   window.clarity("consentv2", {
     ad_Storage: "denied",
-    analytics_Storage: "granted",
+    analytics_Storage: storage,
   });
   if (resuming) window.clarity("start");
+  if (window.location.pathname === "/instagram")
+    window.clarity("set", "source", "instagram");
 }
 
 export function revokeClarityConsent(): void {

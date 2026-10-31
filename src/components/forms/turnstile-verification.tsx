@@ -8,8 +8,9 @@ import { getTurnstileFailure, type TurnstileFailure } from "@/lib/turnstile";
 interface TurnstileOptions {
   sitekey: string;
   action: string;
-  theme: "dark";
-  size: "flexible";
+  theme: "dark" | "light";
+  size: "flexible" | "compact";
+  appearance: "always" | "interaction-only";
   callback: (token: string) => void;
   "expired-callback": () => void;
   "error-callback": (code?: string) => boolean;
@@ -28,12 +29,16 @@ interface TurnstileVerificationProps {
   siteKey: string;
   onToken: (token: string) => void;
   onInvalid: () => void;
+  appearance?: "always" | "interaction-only";
+  theme?: "dark" | "light";
 }
 
 export function TurnstileVerification({
   siteKey,
   onToken,
   onInvalid,
+  appearance = "always",
+  theme = "dark",
 }: TurnstileVerificationProps) {
   const container = useRef<HTMLDivElement>(null);
   const widgetId = useRef<string | null>(null);
@@ -53,8 +58,11 @@ export function TurnstileVerification({
       widgetId.current = turnstile.render(container.current, {
         sitekey: siteKey,
         action: "launch_waitlist",
-        theme: "dark",
-        size: "flexible",
+        theme,
+        size: window.matchMedia("(max-width: 359px)").matches
+          ? "compact"
+          : "flexible",
+        appearance,
         callback: (token) => {
           if (cancelled) return;
           setFailure(null);
@@ -84,7 +92,7 @@ export function TurnstileVerification({
       }
       widgetId.current = null;
     };
-  }, [onInvalid, onToken, ready, siteKey]);
+  }, [onInvalid, onToken, ready, siteKey, appearance, theme]);
 
   function retry() {
     if (scriptFailed || !window.turnstile || widgetId.current === null) {

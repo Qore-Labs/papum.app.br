@@ -100,7 +100,7 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
         aria-expanded={isOpen}
         aria-controls="mobile-navigation"
         onClick={openMenu}
-        className="flex size-11 items-center justify-center rounded-md text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="text-home-ink flex size-11 items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
       >
         <Menu className="size-6" aria-hidden="true" />
       </button>
@@ -140,7 +140,13 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
               isExternalHref(link.href) ? (
                 <a
                   key={link.href}
-                  href={link.href}
+                  href={
+                    link.href.startsWith("#") &&
+                    pathname !== "/" &&
+                    pathname !== "/instagram"
+                      ? `/${link.href}`
+                      : link.href
+                  }
                   data-analytics-cta={link.analyticsCta}
                   data-analytics-location="mobile_menu"
                   target="_blank"
@@ -154,7 +160,13 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
               ) : (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={
+                    link.href.startsWith("#") &&
+                    pathname !== "/" &&
+                    pathname !== "/instagram"
+                      ? `/${link.href}`
+                      : link.href
+                  }
                   data-analytics-cta={link.analyticsCta}
                   data-analytics-location="mobile_menu"
                   target={link.openInNewTab ? "_blank" : undefined}
@@ -176,16 +188,27 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
           </nav>
 
           <Link
-            href="/lancamento"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={
+              pathname === "/" || pathname === "/instagram"
+                ? "#cadastro"
+                : "/#cadastro"
+            }
             data-analytics-cta="start_now"
             data-analytics-location="mobile_menu"
-            aria-label="Receber novidades (abre em nova aba)"
-            onClick={closeMenu}
+            aria-label="Cadastrar-se"
+            onClick={() => {
+              closeMenu();
+              window.setTimeout(
+                () =>
+                  document
+                    .getElementById("waitlist-email")
+                    ?.focus({ preventScroll: true }),
+                280,
+              );
+            }}
             className="mt-auto flex min-h-12 items-center justify-center rounded-full bg-[#ffbb00] px-6 text-base font-semibold text-[#613100] transition-colors hover:bg-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
           >
-            Receber novidades
+            Cadastrar-se
           </Link>
         </div>
       </dialog>

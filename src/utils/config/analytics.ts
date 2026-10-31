@@ -1,5 +1,7 @@
 export function isMarketingPath(pathname: string): boolean {
-  return pathname === "/" || pathname === "/lancamento";
+  return (
+    pathname === "/" || pathname === "/instagram" || pathname === "/lancamento"
+  );
 }
 
 export function isValidClarityId(value?: string): value is string {
@@ -10,7 +12,12 @@ export function getMarketingAnalyticsConfig() {
   const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
   const clarityId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
   return {
-    measurementId: /^G-[A-Z0-9]+$/.test(ga4Id ?? "") ? ga4Id : undefined,
+    measurementId:
+      (process.env.NODE_ENV === "production" ||
+        process.env.PAPUM_E2E === "1") &&
+      /^G-[A-Z0-9]+$/.test(ga4Id ?? "")
+        ? ga4Id
+        : undefined,
     clarityProjectId:
       process.env.NODE_ENV === "production" &&
       process.env.PAPUM_E2E !== "1" &&

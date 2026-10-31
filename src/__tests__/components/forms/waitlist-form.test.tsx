@@ -12,12 +12,45 @@ vi.mock("@/lib/analytics", () => ({
   trackLaunchLead: vi.fn(),
   trackWaitlistAttempt: vi.fn(),
   trackWaitlistError: vi.fn(),
+  trackWaitlistStart: vi.fn(),
 }));
 beforeEach(() => {
   vi.clearAllMocks();
 });
 
 describe("WaitlistForm", () => {
+  it("mantém a origem Instagram no envio da landing", async () => {
+    const user = userEvent.setup();
+    const subscribeAction = vi
+      .fn()
+      .mockResolvedValue({
+        status: "success",
+        message: "Recebemos seu contato!",
+      });
+    render(
+      <WaitlistForm
+        variant="landing"
+        entry="instagram"
+        subscribeAction={subscribeAction}
+      />,
+    );
+    await user.type(
+      screen.getByRole("textbox", { name: "Seu e-mail" }),
+      "dono@example.com",
+    );
+    await user.click(screen.getByRole("button", { name: "Cadastrar-se" }));
+    await waitFor(() =>
+      expect(subscribeAction).toHaveBeenCalledWith(
+        expect.objectContaining({
+          email: "dono@example.com",
+          entry: "instagram",
+        }),
+      ),
+    );
+    expect(await screen.findByRole("status")).toHaveTextContent(
+      "Recebemos seu contato",
+    );
+  });
   it("pede o e-mail e leva o foco ao campo quando está vazio", async () => {
     const user = userEvent.setup();
     render(<WaitlistForm />);
@@ -79,6 +112,7 @@ describe("WaitlistForm", () => {
       email: "cliente@restaurante.com",
       verificationToken: "",
       website: "",
+      entry: "lancamento",
     });
     expect(await screen.findByRole("status")).toHaveTextContent(
       "Você será avisado",

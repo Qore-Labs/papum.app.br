@@ -52,25 +52,23 @@ export const LAUNCH_EMAIL_FOOTER_LINKS = [
 ] satisfies readonly EmailFooterLink[];
 
 export const CONFIRMATION_EMAIL_CONTENT = {
-  preheader:
-    "Seu contato já chegou por aqui. Que bom ter você com a gente nesse começo!",
+  preheader: "Seu interesse chegou. Que bom ter você com a Papum!",
   heading: "Seu contato chegou.",
   greeting: "Que bom ter você por aqui!",
   introduction:
     "Recebemos seu contato e ficamos felizes com seu interesse no Pápum Delivery.",
   nextStep:
-    "Estamos preparando uma forma simples, rápida e inteligente de colocar seu delivery no ar. Assim que tivermos novidades sobre o lançamento, vamos avisar por este e-mail.",
-  thanks: "Obrigado por acompanhar a gente desde o início!",
+    "Um app com a identidade do seu restaurante e um painel para organizar cardápio, pedidos e contatos: essa é a proposta da Papum. Vamos compartilhar as informações sobre a plataforma por este e-mail.",
+  thanks: "Obrigado pelo seu interesse!",
   footerNotice:
-    "Você recebeu esta mensagem por um contato feito na página de lançamento do Pápum Delivery. Para cancelar os avisos ou informar que não fez essa solicitação, responda a este e-mail.",
+    "Você recebeu esta mensagem porque demonstrou interesse na Papum Delivery. Para cancelar os avisos ou informar que não fez essa solicitação, responda a este e-mail.",
 } satisfies ConfirmationEmailContent;
 
 export const NOTIFICATION_EMAIL_CONTENT = {
-  preheader:
-    "Um novo contato chegou pela página de lançamento do Pápum Delivery.",
+  preheader: "Um novo contato chegou pelo site da Papum Delivery.",
   heading: "Mais um contato chegou.",
   introduction:
-    "Uma pessoa pediu para receber novidades sobre o lançamento do Pápum Delivery.",
+    "Uma pessoa demonstrou interesse na Papum Delivery e pediu para receber informações.",
   contactLabel: "E-mail do interessado",
   originLabel: "Origem",
   origin: "Página de lançamento · /lancamento",
@@ -78,5 +76,5 @@ export const NOTIFICATION_EMAIL_CONTENT = {
     "Use o botão abaixo ou responda a esta mensagem para entrar em contato com ela.",
   actionLabel: "Responder ao interessado",
   footerNotice:
-    "Notificação interna de um contato recebido na página de lançamento do Pápum Delivery.",
+    "Notificação interna de um contato recebido pelo site da Papum Delivery.",
 } satisfies NotificationEmailContent;

@@ -10,7 +10,7 @@ interface MainNavProps {
 }
 
 const linkClassName =
-  "border-b-2 border-transparent pb-0.5 text-base leading-6 text-[#613100] hover:text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white data-[active=true]:border-[#ffbb00] data-[active=true]:font-semibold data-[active=true]:text-white";
+  "border-b-2 border-transparent pb-0.5 text-base leading-6 text-home-ink hover:text-[#715000] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-home-ink data-[active=true]:border-[#ffbb00] data-[active=true]:font-semibold data-[active=true]:text-home-ink";
 
 export function MainNav({ links }: MainNavProps) {
   const pathname = usePathname();
@@ -23,7 +23,13 @@ export function MainNav({ links }: MainNavProps) {
       {links.map((link) => (
         <Link
           key={link.href}
-          href={link.href}
+          href={
+            link.href.startsWith("#") &&
+            pathname !== "/" &&
+            pathname !== "/instagram"
+              ? `/${link.href}`
+              : link.href
+          }
           data-analytics-cta={link.analyticsCta}
           data-analytics-location="header"
           target={link.openInNewTab ? "_blank" : undefined}

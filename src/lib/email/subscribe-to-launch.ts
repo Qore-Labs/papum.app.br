@@ -98,6 +98,7 @@ export async function submitLaunchInterest(
       email: request.data.email,
       sender: config.data.sender,
       notificationEmail: config.data.notificationEmail,
+      entry: request.data.entry,
     });
     const body = JSON.stringify(emails);
     // Stable payload + HMAC key: retries within Resend's 24h window do not resend the pair.
@@ -134,7 +135,7 @@ export async function submitLaunchInterest(
     return {
       status: "success",
       message:
-        "Recebemos seu contato! Obrigado pelo interesse. Vamos avisar você sobre as novidades do Pápum Delivery.",
+        "Recebemos seu contato! Você receberá informações da Papum pelo e-mail informado.",
     };
   } catch {
     // Never return provider errors, addresses, credentials or verification tokens to the browser.

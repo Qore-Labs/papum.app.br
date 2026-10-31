@@ -33,23 +33,15 @@ export const siteConfig = {
   name: "Papum Delivery",
   title: "Papum Delivery - Gestão de Delivery",
   description:
-    "Papum Delivery está em pré-lançamento. Conheça a proposta para organizar o cardápio digital e os pedidos do seu restaurante e receba novidades.",
-  tagline:
-    "A revolução na forma de pedir comida. Rápido, fresco e direto na sua porta.",
+    "App com a marca do seu restaurante e painel para organizar cardápio, pedidos e contatos. Conheça a proposta da Papum Delivery.",
+  tagline: "Seu restaurante na frente. A Papum nos bastidores.",
   url: "https://www.papum.app.br",
   navLinks: [
-    { href: "/", label: "Home" },
-    {
-      href: "/lancamento",
-      label: "Lançamento",
-      openInNewTab: true,
-      analyticsCta: "plans",
-    },
-    // { href: "/servicos", label: "Serviços" },
+    { href: "#produto", label: "Produto" },
+    { href: "#como-funciona", label: "Como funciona" },
   ],
   social: {
-    // Perfil fictício para demonstração. Substituir quando houver Instagram oficial.
-    instagram: "https://www.instagram.com/papum.delivery/",
+    instagram: "https://www.instagram.com/usepapumdelivery/",
     facebook: "https://facebook.com",
     linkedin: "https://www.linkedin.com/company/binaryinc/",
   },

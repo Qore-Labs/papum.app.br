@@ -16,5 +16,6 @@ export const launchInterestRequestSchema = waitlistFormSchema
   .extend({
     verificationToken: z.string().max(2048),
     website: z.string().max(200),
+    entry: z.enum(["home", "instagram", "lancamento"]).default("lancamento"),
   })
   .strict();

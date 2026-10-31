@@ -1,0 +1,7 @@
+import type { Metadata } from "next";
+import { LandingPage } from "@/components/home/landing-page";
+
+export const metadata: Metadata = { alternates: { canonical: "/" } };
+export default function InstagramPage() {
+  return <LandingPage entry="instagram" />;
+}

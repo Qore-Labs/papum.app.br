@@ -31,6 +31,29 @@ afterEach(() => {
 });
 
 describe("Cadastro de interesse no lançamento", () => {
+  it("leva a origem validada para a notificação sem misturar com a confirmação", async () => {
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(Response.json(verified))
+      .mockResolvedValueOnce(Response.json(accepted));
+    vi.stubGlobal("fetch", fetcher);
+    expect(
+      await subscribeToLaunch({ ...input, entry: "instagram" }),
+    ).toMatchObject({ status: "success" });
+    const messages = JSON.parse(String(fetcher.mock.calls[1][1]?.body));
+    expect(messages[0].text).toContain("Instagram");
+    expect(messages[0].text).toContain("/instagram");
+    expect(messages[1].text).not.toContain("/instagram");
+    expect(messages[1].html).toContain("instagram.com/usepapumdelivery/");
+  });
+  it("recusa uma origem fora da lista sem chamar os provedores", async () => {
+    const fetcher = vi.fn<typeof fetch>();
+    vi.stubGlobal("fetch", fetcher);
+    expect(
+      await subscribeToLaunch({ ...input, entry: "email=privado@example.com" }),
+    ).toMatchObject({ status: "error" });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
   it("valida o desafio antes de enviar os dois e-mails e só então confirma o contato", async () => {
     const fetcher = vi
       .fn<typeof fetch>()

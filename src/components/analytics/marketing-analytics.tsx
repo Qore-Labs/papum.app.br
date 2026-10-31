@@ -34,12 +34,20 @@ interface MarketingAnalyticsProps {
   clarityProjectId?: string;
 }
 const serverConsent = () => null;
+const subscribeClientReady = () => () => {};
+const clientReadySnapshot = () => true;
+const serverReadySnapshot = () => false;
 
 export function MarketingAnalytics({
   measurementId,
   clarityProjectId,
 }: MarketingAnalyticsProps) {
   const pathname = usePathname();
+  const clientReady = useSyncExternalStore(
+    subscribeClientReady,
+    clientReadySnapshot,
+    serverReadySnapshot,
+  );
   const consent = useSyncExternalStore(
     subscribeAnalyticsConsent,
     readAnalyticsConsent,
@@ -55,13 +63,18 @@ export function MarketingAnalytics({
   const enabled = gaEnabled || clarityEnabled;
   const marketingPage = isMarketingPath(pathname);
   const clarityAllowed =
+    clientReady &&
     clarityEnabled &&
-    consent === "granted" &&
+    consent !== "denied" &&
     marketingPage &&
     isClarityLocationAllowed();
 
   useLayoutEffect(() => {
-    if (clarityAllowed && clarityProjectId) configureClarity(clarityProjectId);
+    if (clarityAllowed && clarityProjectId)
+      configureClarity(
+        clarityProjectId,
+        readAnalyticsConsent() === "granted" ? "granted" : "denied",
+      );
     else if (stopClarity()) window.location.reload();
   }, [clarityAllowed, clarityProjectId, pathname, consent]);
 
@@ -101,12 +114,16 @@ export function MarketingAnalytics({
       if (
         !event.persisted ||
         !clarityProjectId ||
-        readAnalyticsConsent() !== "granted" ||
+        readAnalyticsConsent() === "denied" ||
         !isClarityLocationAllowed()
       )
         return;
       if (stopClarity()) window.location.reload();
-      else configureClarity(clarityProjectId);
+      else
+        configureClarity(
+          clarityProjectId,
+          readAnalyticsConsent() === "granted" ? "granted" : "denied",
+        );
     }
     document.addEventListener("click", guardNavigation, true);
     window.addEventListener("popstate", guardHistory, true);
@@ -121,7 +138,7 @@ export function MarketingAnalytics({
   }, [clarityEnabled, clarityProjectId]);
 
   useEffect(() => {
-    if (!enabled || !marketingPage) return;
+    if (!enabled) return;
     function openPreferences(event: MouseEvent) {
       const trigger =
         event.target instanceof Element
@@ -137,9 +154,10 @@ export function MarketingAnalytics({
 
   useEffect(() => {
     if (
+      !clientReady ||
       !gaEnabled ||
       !measurementId ||
-      consent !== "granted" ||
+      consent === "denied" ||
       !marketingPage
     ) {
       pauseMarketingAnalytics();
@@ -154,16 +172,17 @@ export function MarketingAnalytics({
     return () => {
       pauseMarketingAnalytics();
     };
-  }, [consent, gaEnabled, marketingPage, measurementId, pathname]);
+  }, [clientReady, consent, gaEnabled, marketingPage, measurementId, pathname]);
 
   useEffect(() => {
-    if (!enabled || consent !== "granted" || !marketingPage) return;
+    if (!clientReady || !enabled || consent === "denied" || !marketingPage)
+      return;
     document.addEventListener("click", trackMarketingClick, true);
     return () =>
       document.removeEventListener("click", trackMarketingClick, true);
-  }, [consent, enabled, marketingPage]);
+  }, [clientReady, consent, enabled, marketingPage]);
 
-  if (!enabled || !marketingPage) return null;
+  if (!enabled || (!marketingPage && !preferencesOpen)) return null;
   function choose(value: "granted" | "denied") {
     setAnalyticsConsent(value);
     setPreferencesOpen(false);
@@ -172,7 +191,7 @@ export function MarketingAnalytics({
 
   return (
     <>
-      {consent === "granted" && gaEnabled && (
+      {clientReady && consent !== "denied" && gaEnabled && marketingPage && (
         <Script
           id="papum-google-analytics"
           src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
@@ -186,7 +205,7 @@ export function MarketingAnalytics({
           strategy="afterInteractive"
         />
       )}
-      {consent === null || preferencesOpen ? (
+      {preferencesOpen ? (
         <section
           id="analytics-preferences"
           aria-label="Preferências de privacidade"
@@ -194,12 +213,18 @@ export function MarketingAnalytics({
         >
           <div className="min-w-0 flex-1">
             <h2 className="mb-1 text-base font-bold">
-              Podemos analisar sua visita?
+              Sua privacidade, sua escolha.
             </h2>
             <p className="text-sm leading-6 text-stone-600">
-              Permita estatísticas de navegação e, quando habilitado, reprodução
-              de sessões com Microsoft Clarity. Os campos do formulário ficam
-              mascarados. Você pode recusar ou mudar sua escolha no rodapé.
+              A análise básica usa o modo sem cookies do Google Analytics e do
+              Microsoft Clarity. Você pode desativar toda a análise ou permitir
+              cookies de análise para acompanhar a navegação entre páginas. Os
+              campos do formulário ficam mascarados e os recursos de publicidade
+              permanecem desativados.
+              <a href="/privacidade" className="ml-1 underline">
+                Saiba mais
+              </a>
+              .
             </p>
           </div>
           <div className="flex shrink-0 flex-wrap gap-2">
@@ -208,16 +233,27 @@ export function MarketingAnalytics({
               onClick={() => choose("denied")}
               className="min-h-11 rounded-lg border border-stone-300 px-4 py-2 text-sm font-semibold hover:bg-stone-100 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
             >
-              Recusar
+              Desativar análise
             </button>
             <button
               type="button"
               onClick={() => choose("granted")}
               className="min-h-11 rounded-lg bg-orange-500 px-4 py-2 text-sm font-semibold text-amber-950 hover:bg-orange-400 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-orange-700"
             >
-              Permitir análise
+              Permitir cookies de análise
             </button>
           </div>
+          <button
+            type="button"
+            aria-label="Fechar preferências"
+            className="min-h-11 px-2 underline"
+            onClick={() => {
+              setPreferencesOpen(false);
+              preferencesTrigger.current?.focus();
+            }}
+          >
+            Fechar
+          </button>
         </section>
       ) : null}
     </>
