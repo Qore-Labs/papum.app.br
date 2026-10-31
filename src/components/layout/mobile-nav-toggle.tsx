@@ -145,6 +145,7 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
                   data-analytics-location="mobile_menu"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`${link.label} (abre em nova aba)`}
                   className={linkClassName}
                   onClick={closeMenu}
                 >
@@ -158,6 +159,11 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
                   data-analytics-location="mobile_menu"
                   target={link.openInNewTab ? "_blank" : undefined}
                   rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+                  aria-label={
+                    link.openInNewTab
+                      ? `${link.label} (abre em nova aba)`
+                      : undefined
+                  }
                   className={linkClassName}
                   data-active={link.href === pathname}
                   aria-current={link.href === pathname ? "page" : undefined}
@@ -175,10 +181,11 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
             rel="noopener noreferrer"
             data-analytics-cta="start_now"
             data-analytics-location="mobile_menu"
+            aria-label="Receber novidades (abre em nova aba)"
             onClick={closeMenu}
             className="mt-auto flex min-h-12 items-center justify-center rounded-full bg-[#ffbb00] px-6 text-base font-semibold text-[#613100] transition-colors hover:bg-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
           >
-            Começar agora
+            Receber novidades
           </Link>
         </div>
       </dialog>

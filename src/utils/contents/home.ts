@@ -6,13 +6,20 @@ import {
   UtensilsIcon,
 } from "@/components/ui/icons";
 
-export interface PartnerBrand {
+export interface HomeProductIllustration {
   id: string;
-  first: string;
-  second?: string;
-  secondColor?: string;
-  underline?: boolean;
-  widthClass: string;
+  title: string;
+  src: string;
+  width: number;
+  height: number;
+}
+
+export interface HomeProductContent {
+  headline: readonly string[];
+  description: string;
+  invitation: string;
+  ctaLabel: string;
+  illustrations: readonly HomeProductIllustration[];
 }
 
 export interface HowItWorksStep {
@@ -29,42 +36,29 @@ export interface AppStat {
   star?: boolean;
 }
 
-export const PARTNER_BRANDS = [
-  {
-    id: "burger-king",
-    first: "BURGER",
-    second: "KING",
-    secondColor: "text-home-red",
-    widthClass: "xl:w-[174px]",
-  },
-  {
-    id: "sushi-zen",
-    first: "SUSHI",
-    second: "ZEN",
-    secondColor: "text-home-orange",
-    widthClass: "xl:w-[137px]",
-  },
-  {
-    id: "pizza-hut",
-    first: "PIZZA",
-    second: "HUT",
-    secondColor: "text-home-red",
-    widthClass: "xl:w-[127px]",
-  },
-  {
-    id: "subway",
-    first: "SUB",
-    second: "WAY",
-    secondColor: "text-home-orange",
-    widthClass: "xl:w-[121px]",
-  },
-  {
-    id: "giraffas",
-    first: "GIRAFFAS",
-    underline: true,
-    widthClass: "xl:w-[145px]",
-  },
-] satisfies PartnerBrand[];
+export const HOME_PRODUCT_INTRO = {
+  headline: ["A marca é sua.", "A estrutura é Pápum."],
+  description:
+    "Um app com a identidade do seu restaurante e um painel para organizar cardápio, pedidos e contatos.",
+  invitation: "Cadastre seu e-mail para acompanhar o lançamento.",
+  ctaLabel: "Quero ser avisado",
+  illustrations: [
+    {
+      id: "pedidos",
+      title: "Pedidos organizados",
+      src: "/home/product/orders.svg",
+      width: 340,
+      height: 255,
+    },
+    {
+      id: "contatos",
+      title: "Contatos em um só lugar",
+      src: "/home/product/contacts.svg",
+      width: 340,
+      height: 255,
+    },
+  ],
+} satisfies HomeProductContent;
 
 export const HOW_IT_WORKS_STEPS = [
   {
@@ -94,5 +88,3 @@ export const APP_STATS = [
   { id: "avaliacao", value: "4.9", label: "Avaliação Média", star: true },
   { id: "entrega", value: "15 min", label: "Entrega Média" },
 ] satisfies AppStat[];
-
-export const TESTIMONIAL_STARS = [1, 2, 3, 4, 5] as const;

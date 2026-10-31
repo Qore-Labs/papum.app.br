@@ -2,7 +2,7 @@
 
 ## O que está conectado
 
-- “Planos”, “Começar agora”, “Explorar Planos” e “Ver Planos” abrem `/lancamento` em outra aba. Os rótulos e a composição original da Home foram restaurados a pedido do usuário em 30/10/2026.
+- “Lançamento”, “Receber novidades”, “Acompanhar o lançamento” e “Quero ser avisado” abrem `/lancamento` em outra aba. Os rótulos de captação acompanham a nova seção de produto aprovada em 30/10/2026, preservando os nomes internos dos eventos e seus pontos de clique.
 - GA4 gratuito para cliques nos CTAs e conversões do formulário.
 - Microsoft Clarity para mapas de calor e reprodução de sessões consentidas na Home e em `/lancamento`, independente do GA4.
 - Resend para notificação interna e confirmação ao interessado, com texto e identidade Pápum Delivery.

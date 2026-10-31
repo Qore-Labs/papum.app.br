@@ -2,17 +2,15 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
 
+import { ProductIntroSection } from "@/components/home/product-intro-section";
 import { SiteStructuredData } from "@/components/seo/site-structured-data";
-import { LightningIcon, StarIcon } from "@/components/ui/icons";
+import { StarIcon } from "@/components/ui/icons";
 import { cn } from "@/lib/utils";
 import {
   APP_STATS,
   HOW_IT_WORKS_STEPS,
-  PARTNER_BRANDS,
-  TESTIMONIAL_STARS,
   type AppStat,
   type HowItWorksStep,
-  type PartnerBrand,
 } from "@/utils/contents/home";
 
 const focusClass =
@@ -21,23 +19,6 @@ const focusClass =
 export const metadata: Metadata = {
   alternates: { canonical: "/" },
 };
-
-function PartnerBrandLabel({ brand }: { brand: PartnerBrand }) {
-  return (
-    <span
-      className={cn(
-        "text-home-ink text-xl font-extrabold tracking-tight whitespace-nowrap sm:text-2xl",
-        brand.widthClass,
-        brand.underline && "decoration-home-red underline underline-offset-4",
-      )}
-    >
-      {brand.first}
-      {brand.second && (
-        <span className={brand.secondColor}>{brand.second}</span>
-      )}
-    </span>
-  );
-}
 
 function HowItWorksStepCard({ step }: { step: HowItWorksStep }) {
   const Icon = step.icon;
@@ -97,6 +78,20 @@ export default function Home() {
               Simples, rápido e sem complicação. <br />O seu delivery na
               velocidade que você precisa.
             </p>
+            <Link
+              href="/lancamento"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Acompanhar o lançamento (abre em nova aba)"
+              data-analytics-cta="start_now"
+              data-analytics-location="hero"
+              className={cn(
+                "bg-home-orange text-home-ink mt-6 inline-flex min-h-12 items-center justify-center rounded-full px-7 py-3 text-base font-semibold transition-colors hover:bg-amber-400 motion-reduce:transition-none",
+                focusClass,
+              )}
+            >
+              Acompanhar o lançamento
+            </Link>
           </div>
           <Image
             src="/home/hero-scooter.png"
@@ -111,117 +106,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section
-        className="bg-[#e7e7e7] py-14 xl:pt-20 xl:pb-[29px]"
-        aria-labelledby="speed-title"
-      >
-        <div className="site-safe-gutter mx-auto max-w-320">
-          <div className="mx-auto flex max-w-266 items-center gap-12 max-md:flex-wrap max-md:justify-center max-md:gap-6 xl:max-w-[1060px]">
-            <div className="flex items-center gap-4">
-              <span className="border-home-orange flex size-16 shrink-0 items-center justify-center rounded-full border-[3px]">
-                <LightningIcon className="h-7 w-6" aria-hidden="true" />
-              </span>
-              <h2
-                id="speed-title"
-                className="font-jakarta text-home-ink text-[clamp(1.4rem,3vw,1.875rem)] leading-9 font-bold whitespace-nowrap"
-              >
-                Rápido como um raio!
-              </h2>
-            </div>
-            <div className="bg-home-ink/70 h-px min-w-10 flex-1 max-md:hidden xl:ml-6" />
-            <a
-              href="#como-funciona"
-              className={cn(
-                "bg-home-red rounded-lg px-[22px] py-[11px] text-center text-base leading-6 font-semibold text-white transition-colors hover:bg-red-800 motion-reduce:transition-none",
-                focusClass,
-              )}
-            >
-              ENTREGA EXPRESSA
-            </a>
-          </div>
-          <div className="mx-auto mt-12 flex max-w-282 flex-wrap items-center justify-between gap-x-6 gap-y-5 opacity-60 max-lg:justify-center xl:max-w-[1128px] xl:gap-x-[106px]">
-            {PARTNER_BRANDS.map((brand) => (
-              <PartnerBrandLabel key={brand.id} brand={brand} />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section
-        className="site-safe-gutter bg-[#faf9f9] py-8 xl:h-[520px]"
-        aria-label="Restaurantes parceiros"
-      >
-        <div className="mx-auto grid max-w-[1232px] grid-cols-[2fr_1fr] gap-8 max-lg:grid-cols-1 xl:grid-cols-[27fr_13fr]">
-          <div className="relative flex min-h-112.5 flex-col justify-between overflow-hidden rounded-[40px] bg-linear-150 from-[#ff8a00] to-[#e6182a] px-12 pt-14 pb-12 max-sm:min-h-145 max-sm:p-8">
-            <Image
-              src="/home/pizza-showcase.png"
-              alt=""
-              width={601}
-              height={450}
-              sizes="(min-width: 1024px) 47vw, 90vw"
-              className="absolute inset-y-0 right-0 h-full w-auto max-sm:top-auto max-sm:h-auto max-sm:w-[90%] md:top-auto md:-right-16 md:bottom-0 md:h-[85%] lg:-right-32 xl:right-0 xl:h-full"
-            />
-            <div className="relative z-10 max-w-105">
-              <h2 className="text-[clamp(2rem,3.4vw,2.7rem)] leading-[1.11] font-extrabold text-white">
-                Os melhores <br />
-                restaurantes <br />
-                estão aqui!
-              </h2>
-              <p className="mt-3 max-w-68 text-lg leading-7 text-white/85">
-                De lanches rápidos a jantares gourmet, Nos conectamos você a
-                todas as mesas da cidade.
-              </p>
-            </div>
-            <Link
-              href="/lancamento"
-              target="_blank"
-              rel="noopener noreferrer"
-              data-analytics-cta="plans"
-              data-analytics-location="benefits"
-              className={cn(
-                "relative z-10 w-fit rounded-full bg-white px-10 py-3 text-center text-base leading-6 font-semibold text-[#613100] transition-colors hover:bg-orange-50 motion-reduce:transition-none",
-                focusClass,
-              )}
-            >
-              Explorar Planos
-            </Link>
-          </div>
-
-          <figure className="relative flex min-h-112.5 flex-col items-center text-center">
-            <div className="absolute inset-x-0 top-15 bottom-0 rounded-[40px] bg-[#e8e8e8] shadow-[0_8px_24px_-4px_rgba(27,28,28,0.06)]" />
-            <Image
-              src="/home/silvas-pizza-logo.png"
-              alt=""
-              width={196}
-              height={196}
-              className="relative size-49 rounded-full object-cover"
-            />
-            <figcaption className="text-home-ink relative mt-2 text-[22px] leading-8 font-semibold">
-              Silva’s Pizza
-            </figcaption>
-            <p className="text-home-ink/60 relative mt-1.5 text-sm leading-5">
-              Cliente desde 2022
-            </p>
-            <div
-              className="relative mt-[30px] flex"
-              role="img"
-              aria-label="Avaliação: 5 de 5 estrelas"
-            >
-              {TESTIMONIAL_STARS.map((star) => (
-                <StarIcon
-                  key={star}
-                  className="h-[19px] w-5"
-                  aria-hidden="true"
-                />
-              ))}
-            </div>
-            <blockquote className="text-home-ink/80 relative mt-5 max-w-[306px] text-left text-xl leading-[1.625] font-medium">
-              Lorem ipsum dolor sit amet consectetur. Sed suspendisse eget
-              faucibus sit. Vel molestie.
-            </blockquote>
-          </figure>
-        </div>
-      </section>
+      <ProductIntroSection />
 
       <section
         id="como-funciona"
@@ -331,27 +216,15 @@ export default function Home() {
                 href="/lancamento"
                 target="_blank"
                 rel="noopener noreferrer"
+                aria-label="Quero ser avisado (abre em nova aba)"
                 data-analytics-cta="start_now"
                 data-analytics-location="final_cta"
                 className={cn(
-                  "bg-home-red rounded-full px-10 py-4 text-center text-base leading-6 font-semibold text-white transition-colors hover:bg-red-800 motion-reduce:transition-none xl:px-12",
+                  "bg-home-red inline-flex min-h-12 items-center justify-center rounded-full px-10 py-4 text-center text-base leading-6 font-semibold text-white transition-colors hover:bg-red-800 motion-reduce:transition-none xl:px-12",
                   focusClass,
                 )}
               >
-                Começar Agora
-              </Link>
-              <Link
-                href="/lancamento"
-                target="_blank"
-                rel="noopener noreferrer"
-                data-analytics-cta="plans"
-                data-analytics-location="final_cta"
-                className={cn(
-                  "rounded-full border-2 border-white px-10 py-4 text-center text-base leading-6 font-semibold text-white transition-colors hover:bg-white/10 motion-reduce:transition-none xl:px-[43px]",
-                  focusClass,
-                )}
-              >
-                Ver Planos
+                Quero ser avisado
               </Link>
             </div>
           </div>

@@ -85,12 +85,56 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+@media (forced-colors: none) {
+  html {
+    scrollbar-width: thin;
+    scrollbar-color: var(--home-orange) transparent;
+  }
+
+  @supports selector(::-webkit-scrollbar) {
+    html {
+      scrollbar-width: auto;
+      scrollbar-color: auto;
+    }
+
+    html::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+
+    html::-webkit-scrollbar-track,
+    html::-webkit-scrollbar-corner {
+      background: transparent;
+    }
+
+    html::-webkit-scrollbar-thumb {
+      border-radius: 999px;
+      background: var(--home-orange);
+    }
+
+    html::-webkit-scrollbar-thumb:hover {
+      background: var(--brand-orange-dark);
+    }
+
+    html::-webkit-scrollbar-button {
+      display: none;
+    }
+  }
+}
+
 /* Safari can sample the document background for its surrounding browser UI. */
 html:has([data-site-shell]) {
   --background: var(--home-header);
   --foreground: var(--home-ink);
   background: var(--background);
   color-scheme: light;
+}
+
+/* Keep a transparent desktop scrollbar track from exposing the mobile canvas. */
+@media (hover: hover) and (pointer: fine) {
+  html:has([data-site-shell]) {
+    background: #ffffff;
+  }
 }
 
 .site-safe-gutter {

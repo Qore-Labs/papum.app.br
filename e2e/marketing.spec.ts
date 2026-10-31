@@ -1,12 +1,15 @@
 import { test, expect } from "./support/fixtures";
 
-test("Planos e Começar agora abrem o lançamento em outra aba", async ({
+test("Lançamento e cadastro de interesse abrem em outra aba", async ({
   page,
 }) => {
   await page.goto("/");
   const menu = page.getByRole("button", { name: "Abrir menu", exact: true });
   if (await menu.isVisible()) await menu.click();
-  const plans = page.getByRole("link", { name: "Planos", exact: true });
+  const plans = page.getByRole("link", {
+    name: "Lançamento (abre em nova aba)",
+    exact: true,
+  });
   await expect(plans).toHaveAttribute("href", "/lancamento");
   await expect(plans).toHaveAttribute("target", "_blank");
   const plansPopup = page.waitForEvent("popup");
@@ -21,16 +24,24 @@ test("Planos e Começar agora abrem o lançamento em outra aba", async ({
     page.getByRole("dialog", { name: "Menu", exact: true }),
   ).not.toBeVisible();
 
-  const start = page.getByRole("link", { name: "Começar Agora", exact: true });
-  await expect(start).toHaveAttribute("target", "_blank");
-  const startPopup = page.waitForEvent("popup");
-  await start.click();
-  const secondLaunch = await startPopup;
-  await expect(secondLaunch).toHaveURL(/\/lancamento$/);
-  await expect(
-    secondLaunch.getByRole("textbox", { name: "Seu e-mail" }),
-  ).toBeVisible();
-  await secondLaunch.close();
+  for (const selector of [
+    "#proposta",
+    'section[aria-labelledby="final-cta-title"]',
+  ]) {
+    const start = page.locator(selector).getByRole("link", {
+      name: "Quero ser avisado (abre em nova aba)",
+      exact: true,
+    });
+    await expect(start).toHaveAttribute("target", "_blank");
+    const startPopup = page.waitForEvent("popup");
+    await start.click();
+    const secondLaunch = await startPopup;
+    await expect(secondLaunch).toHaveURL(/\/lancamento$/);
+    await expect(
+      secondLaunch.getByRole("textbox", { name: "Seu e-mail" }),
+    ).toBeVisible();
+    await secondLaunch.close();
+  }
 });
 
 test("valida e-mail, exige verificação e recupera o cadastro após falha temporária", async ({

@@ -6,12 +6,57 @@ beforeEach(() => {
   window.history.replaceState({}, "", "/");
   delete window.gtag;
   delete window.dataLayer;
+  delete window.clarity;
 });
 afterEach(() => {
   vi.restoreAllMocks();
 });
 
 describe("Analytics de marketing com consentimento", () => {
+  it("mede uma única intenção do mockup no GA4 e Clarity e interrompe após recusa", async () => {
+    const analytics = await import("@/lib/analytics");
+    const clarity = await import("@/lib/clarity");
+    analytics.setAnalyticsConsent("granted");
+    window.gtag = vi.fn();
+    analytics.configureMarketingAnalytics("G-TEST123");
+    clarity.configureClarity("testproject");
+    vi.mocked(window.gtag).mockClear();
+    const link = document.createElement("a");
+    link.dataset.analyticsCta = "start_now";
+    link.dataset.analyticsLocation = "benefits";
+    const child = document.createElement("span");
+    link.append(child);
+    document.body.append(link);
+    document.addEventListener("click", analytics.trackMarketingClick);
+    try {
+      child.click();
+      expect(window.gtag).toHaveBeenCalledTimes(1);
+      expect(window.gtag).toHaveBeenCalledWith(
+        "event",
+        "cta_click",
+        expect.objectContaining({
+          cta_name: "start_now",
+          cta_location: "benefits",
+        }),
+      );
+      expect(window.clarity?.q).toContainEqual([
+        "set",
+        "cta_location",
+        "benefits",
+      ]);
+      expect(
+        window.clarity?.q?.filter((command) => command[0] === "event"),
+      ).toEqual([["event", "cta_start_now"]]);
+      analytics.setAnalyticsConsent("denied");
+      vi.mocked(window.gtag).mockClear();
+      child.click();
+      expect(window.gtag).not.toHaveBeenCalled();
+      expect(clarity.isClarityActive()).toBe(false);
+    } finally {
+      document.removeEventListener("click", analytics.trackMarketingClick);
+      link.remove();
+    }
+  });
   it("não configura nem envia eventos antes de receber consentimento", async () => {
     const analytics = await import("@/lib/analytics");
     analytics.configureMarketingAnalytics("G-TEST123");

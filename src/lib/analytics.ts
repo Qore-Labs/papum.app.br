@@ -11,7 +11,13 @@ export { isMarketingPath };
 export type AnalyticsConsent = "granted" | "denied" | null;
 export type MarketingCta = "start_now" | "plans";
 export type MarketingLocation =
-  "header" | "mobile_menu" | "hero" | "benefits" | "final_cta" | "footer";
+  | "header"
+  | "mobile_menu"
+  | "hero"
+  | "benefits"
+  | "app_preview"
+  | "final_cta"
+  | "footer";
 
 type GtagCommand =
   | ["js", Date]
@@ -223,6 +229,7 @@ export function trackMarketingClick(event: MouseEvent): void {
       "mobile_menu",
       "hero",
       "benefits",
+      "app_preview",
       "final_cta",
       "footer",
     ].includes(location)

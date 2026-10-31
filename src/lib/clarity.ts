@@ -119,6 +119,7 @@ export function tagClarityCtaLocation(location: string): void {
       "mobile_menu",
       "hero",
       "benefits",
+      "app_preview",
       "final_cta",
       "footer",
     ].includes(location)

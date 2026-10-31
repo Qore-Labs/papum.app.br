@@ -28,6 +28,9 @@ export function MainNav({ links }: MainNavProps) {
           data-analytics-location="header"
           target={link.openInNewTab ? "_blank" : undefined}
           rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+          aria-label={
+            link.openInNewTab ? `${link.label} (abre em nova aba)` : undefined
+          }
           className={linkClassName}
           data-active={link.href === pathname}
         >

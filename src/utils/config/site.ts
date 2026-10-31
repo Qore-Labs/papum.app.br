@@ -41,7 +41,7 @@ export const siteConfig = {
     { href: "/", label: "Home" },
     {
       href: "/lancamento",
-      label: "Planos",
+      label: "Lançamento",
       openInNewTab: true,
       analyticsCta: "plans",
     },
