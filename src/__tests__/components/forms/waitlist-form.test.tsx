@@ -21,12 +21,10 @@ beforeEach(() => {
 describe("WaitlistForm", () => {
   it("mantém a origem Instagram no envio da landing", async () => {
     const user = userEvent.setup();
-    const subscribeAction = vi
-      .fn()
-      .mockResolvedValue({
-        status: "success",
-        message: "Recebemos seu contato!",
-      });
+    const subscribeAction = vi.fn().mockResolvedValue({
+      status: "success",
+      message: "Recebemos seu contato!",
+    });
     render(
       <WaitlistForm
         variant="landing"

@@ -5,6 +5,13 @@ test("CTAs mantem o cadastro na propria landing e preservam a entrada Instagram"
   context,
 }) => {
   await page.goto("/instagram");
+  // A stale production stylesheet can load the new HTML without its layout.
+  await expect(page.locator(".landing-hero")).toHaveCSS("position", "relative");
+  await expect(page.locator(".landing-hero")).toHaveCSS(
+    "background-image",
+    /linear-gradient/,
+  );
+  await expect(page.locator(".hero-grid")).toHaveCSS("display", "grid");
   const signup = page
     .locator('section[aria-labelledby="final-cta-title"]')
     .getByRole("link");

@@ -80,7 +80,6 @@ export default async function OpenGraphImage() {
           }}
         >
           {/* This is the original local Figma SVG, embedded for the generated social image. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
           <img
             src={`data:image/svg+xml;base64,${illustration.toString("base64")}`}
             width={280}
