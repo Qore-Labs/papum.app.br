@@ -31,6 +31,29 @@ afterEach(() => {
 });
 
 describe("Cadastro de interesse no lançamento", () => {
+  it("leva a origem validada para a notificação sem misturar com a confirmação", async () => {
+    const fetcher = vi
+      .fn<typeof fetch>()
+      .mockResolvedValueOnce(Response.json(verified))
+      .mockResolvedValueOnce(Response.json(accepted));
+    vi.stubGlobal("fetch", fetcher);
+    expect(
+      await subscribeToLaunch({ ...input, entry: "instagram" }),
+    ).toMatchObject({ status: "success" });
+    const messages = JSON.parse(String(fetcher.mock.calls[1][1]?.body));
+    expect(messages[0].text).toContain("Instagram");
+    expect(messages[0].text).toContain("/instagram");
+    expect(messages[1].text).not.toContain("/instagram");
+    expect(messages[1].html).toContain("instagram.com/usepapumdelivery/");
+  });
+  it("recusa uma origem fora da lista sem chamar os provedores", async () => {
+    const fetcher = vi.fn<typeof fetch>();
+    vi.stubGlobal("fetch", fetcher);
+    expect(
+      await subscribeToLaunch({ ...input, entry: "email=privado@example.com" }),
+    ).toMatchObject({ status: "error" });
+    expect(fetcher).not.toHaveBeenCalled();
+  });
   it("valida o desafio antes de enviar os dois e-mails e só então confirma o contato", async () => {
     const fetcher = vi
       .fn<typeof fetch>()
@@ -52,13 +75,14 @@ describe("Cadastro de interesse no lançamento", () => {
       from: "Pápum Delivery <contato@binaryinc.com.br>",
       to: ["contato@binaryinc.com.br"],
       reply_to: "cliente@exemplo.com",
-      subject: "Cliente interessado nos serviços PAPUM Delivery",
+      subject: "Novo cadastro de interesse | Papum Delivery",
     });
     expect(body[1]).toMatchObject({
       to: ["cliente@exemplo.com"],
       reply_to: "contato@binaryinc.com.br",
+      subject: "Recebemos seu cadastro | Papum Delivery",
     });
-    expect(body[1].html).toContain("Recebemos seu contato");
+    expect(body[1].html).toContain("Seu cadastro de interesse");
     expect(body[1].html + body[1].text + body[1].subject).not.toMatch(
       /binary/i,
     );

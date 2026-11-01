@@ -13,12 +13,12 @@ const beVietnamPro = Be_Vietnam_Pro({
 const plusJakartaSans = Plus_Jakarta_Sans({
   variable: "--font-plus-jakarta-sans",
   subsets: ["latin"],
-  weight: ["700"],
+  weight: ["700", "800"],
   preload: false,
 });
 
 export const viewport: Viewport = {
-  themeColor: "#fb8d01",
+  themeColor: "#ffc400",
   viewportFit: "cover",
   colorScheme: "light",
 };

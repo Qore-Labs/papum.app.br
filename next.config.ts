@@ -2,6 +2,10 @@ import type { NextConfig } from "next";
 import { searchIndexingEnabled } from "./src/utils/config/indexing";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    // Avoid stale global CSS when deployment builds restore a Turbopack cache.
+    turbopackFileSystemCacheForBuild: false,
+  },
   async headers() {
     return searchIndexingEnabled
       ? []

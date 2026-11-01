@@ -80,7 +80,9 @@ describe("MobileNavToggle", () => {
 
     expect(screen.getByRole("dialog", { name: "Menu" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Home" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Planos" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("link", { name: /^Planos \(/ }),
+    ).toBeInTheDocument();
   });
 
   it("esconde os links novamente ao clicar no botão de fechar menu", async () => {
@@ -115,11 +117,14 @@ describe("MobileNavToggle", () => {
     const user = userEvent.setup();
     render(<MobileNavToggle links={LINKS} />);
     await user.click(screen.getByRole("button", { name: "Abrir menu" }));
-    for (const name of ["Planos", "Começar agora"]) {
+    for (const name of [/^Planos \(/]) {
       const link = screen.getByRole("link", { name });
       expect(link).toHaveAttribute("href", "/lancamento");
       expect(link).toHaveAttribute("target", "_blank");
       expect(link).toHaveAttribute("rel", "noopener noreferrer");
     }
+    const signup = screen.getByRole("link", { name: "Cadastrar-se" });
+    expect(signup).toHaveAttribute("href", "/#cadastro");
+    expect(signup).not.toHaveAttribute("target");
   });
 });

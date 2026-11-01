@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
 
 import { isExternalHref } from "@/lib/utils";
+import { focusSignup } from "@/lib/focus-signup";
 import type { NavLink } from "@/utils/config/site";
 
 interface MobileNavToggleProps {
@@ -59,7 +60,7 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
     });
   }
 
-  function closeMenu() {
+  function closeMenu(afterClose?: () => void) {
     const dialog = dialogRef.current;
     if (!dialog?.open || closeTimeoutRef.current !== null) return;
 
@@ -73,6 +74,7 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
       dialog.close();
       closeTimeoutRef.current = null;
       triggerRef.current?.focus();
+      afterClose?.();
     }, duration);
   }
 
@@ -100,7 +102,7 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
         aria-expanded={isOpen}
         aria-controls="mobile-navigation"
         onClick={openMenu}
-        className="flex size-11 items-center justify-center rounded-md text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        className="site-menu-trigger flex size-11 items-center justify-center rounded-md focus-visible:outline-2 focus-visible:outline-offset-2"
       >
         <Menu className="size-6" aria-hidden="true" />
       </button>
@@ -124,7 +126,7 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
             <button
               type="button"
               aria-label="Fechar menu"
-              onClick={closeMenu}
+              onClick={() => closeMenu()}
               className="flex size-11 items-center justify-center rounded-md text-white focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
             >
               <X className="size-6" aria-hidden="true" />
@@ -140,28 +142,46 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
               isExternalHref(link.href) ? (
                 <a
                   key={link.href}
-                  href={link.href}
+                  href={
+                    link.href.startsWith("#") &&
+                    pathname !== "/" &&
+                    pathname !== "/instagram"
+                      ? `/${link.href}`
+                      : link.href
+                  }
                   data-analytics-cta={link.analyticsCta}
                   data-analytics-location="mobile_menu"
                   target="_blank"
                   rel="noopener noreferrer"
+                  aria-label={`${link.label} (abre em nova aba)`}
                   className={linkClassName}
-                  onClick={closeMenu}
+                  onClick={() => closeMenu()}
                 >
                   {link.label}
                 </a>
               ) : (
                 <Link
                   key={link.href}
-                  href={link.href}
+                  href={
+                    link.href.startsWith("#") &&
+                    pathname !== "/" &&
+                    pathname !== "/instagram"
+                      ? `/${link.href}`
+                      : link.href
+                  }
                   data-analytics-cta={link.analyticsCta}
                   data-analytics-location="mobile_menu"
                   target={link.openInNewTab ? "_blank" : undefined}
                   rel={link.openInNewTab ? "noopener noreferrer" : undefined}
+                  aria-label={
+                    link.openInNewTab
+                      ? `${link.label} (abre em nova aba)`
+                      : undefined
+                  }
                   className={linkClassName}
                   data-active={link.href === pathname}
                   aria-current={link.href === pathname ? "page" : undefined}
-                  onClick={closeMenu}
+                  onClick={() => closeMenu()}
                 >
                   {link.label}
                 </Link>
@@ -170,15 +190,32 @@ export function MobileNavToggle({ links }: MobileNavToggleProps) {
           </nav>
 
           <Link
-            href="/lancamento"
-            target="_blank"
-            rel="noopener noreferrer"
+            href={
+              pathname === "/" || pathname === "/instagram"
+                ? "#cadastro"
+                : "/#cadastro"
+            }
             data-analytics-cta="start_now"
             data-analytics-location="mobile_menu"
-            onClick={closeMenu}
+            aria-label="Cadastrar-se"
+            onClick={(event) => {
+              if (
+                event.metaKey ||
+                event.ctrlKey ||
+                event.shiftKey ||
+                event.altKey
+              )
+                return;
+              if (document.getElementById("cadastro")) {
+                event.preventDefault();
+                closeMenu(() => {
+                  focusSignup();
+                });
+              } else closeMenu();
+            }}
             className="mt-auto flex min-h-12 items-center justify-center rounded-full bg-[#ffbb00] px-6 text-base font-semibold text-[#613100] transition-colors hover:bg-amber-300 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white motion-reduce:transition-none"
           >
-            Começar agora
+            Cadastrar-se
           </Link>
         </div>
       </dialog>

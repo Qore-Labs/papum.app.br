@@ -6,7 +6,6 @@ import { WaitlistForm } from "@/components/forms/waitlist-form";
 import { LogoWhite } from "@/components/ui/icons";
 import { subscribeToLaunch } from "@/lib/actions/subscribe-to-launch";
 import { siteConfig } from "@/utils/config/site";
-import { hasMarketingAnalytics } from "@/utils/config/analytics";
 
 const title = `Lançamento em breve | ${siteConfig.name}`;
 const description =
@@ -116,16 +115,14 @@ export default function LancamentoPage() {
           © {new Date().getFullYear()} {siteConfig.name}. Todos os direitos
           reservados.
         </p>
-        {hasMarketingAnalytics() && (
-          <button
-            type="button"
-            data-analytics-preferences
-            aria-controls="analytics-preferences"
-            className="min-h-11 text-sm text-zinc-300 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
-          >
-            Preferências de privacidade
-          </button>
-        )}
+        <button
+          type="button"
+          data-analytics-preferences
+          aria-controls="analytics-preferences"
+          className="min-h-11 text-sm text-zinc-300 underline underline-offset-4 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+        >
+          Preferências de privacidade
+        </button>
       </footer>
     </div>
   );

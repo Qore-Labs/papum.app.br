@@ -1,14 +1,20 @@
-# Analytics e contato da página de lançamento
+# Analytics e captação de interesse
 
 ## O que está conectado
 
-- “Planos”, “Começar agora”, “Explorar Planos” e “Ver Planos” abrem `/lancamento` em outra aba. Os rótulos e a composição original da Home foram restaurados a pedido do usuário em 30/10/2026.
+- “Cadastrar-se” leva ao formulário da própria landing e dá foco ao e-mail, mantendo a rota de entrada. `/lancamento` continua disponível para links antigos.
 - GA4 gratuito para cliques nos CTAs e conversões do formulário.
-- Microsoft Clarity para mapas de calor e reprodução de sessões consentidas na Home e em `/lancamento`, independente do GA4.
+- Microsoft Clarity nas rotas `/`, `/instagram` e `/lancamento`, independente do GA4, com sinal de armazenamento negado por padrão.
 - Resend para notificação interna e confirmação ao interessado, com texto e identidade Pápum Delivery.
 - Cloudflare Turnstile para verificar o visitante antes de permitir envios. O token é validado no servidor, incluindo hostname e ação `launch_waitlist`.
 
-Sem IDs de analytics não há aviso nem coleta. Com ao menos uma integração habilitada, o aviso permite aceitar ou recusar; sem configuração de envio não há e-mails nem confirmação falsa de cadastro. A integração de marketing é independente de `DELIVERY_DATA_SOURCE`: o dashboard continua na prévia local.
+Sem IDs de analytics não há coleta. Com integração habilitada, a análise limitada começa sem banner inicial e com cookies negados; as preferências no rodapé permitem desativar a análise ou permitir cookies. Recusas anteriores são respeitadas. Sem configuração de envio não há e-mails nem confirmação falsa de cadastro. A integração é independente de `DELIVERY_DATA_SOURCE`: o dashboard continua na prévia local.
+
+## Entrada do Instagram
+
+URL para a bio após publicação: **https://www.papum.app.br/instagram**. A rota serve a mesma landing com canonical da Home. Define valores controlados: `campaign_source=instagram`, `campaign_medium=social`, `campaign_name=validacao`, `campaign_content=bio`. A origem também aparece na notificação interna do cadastro. Não depende de UTM ou de persistência entre visitas; o link pode ser compartilhado fora do Instagram, portanto mede entradas atribuídas ao link, não uma comprovação da rede de cada pessoa.
+
+Instagram oficial do site e dos e-mails: [@usepapumdelivery](https://www.instagram.com/usepapumdelivery/).
 
 ## 1. Google Analytics 4 — gratuito
 
@@ -17,32 +23,33 @@ Sem IDs de analytics não há aviso nem coleta. Com ao menos uma integração ha
 3. **Desative a medição otimizada/Enhanced Measurement desse fluxo.** O código envia as visualizações e eventos manualmente. Isso evita duplicação por mudanças de histórico e coleta automática de formulários, busca e URLs que podem conter dados pessoais. Mantenha Google Signals, personalização de anúncios e recursos de dados fornecidos por usuários desativados.
 4. Em Administrador → Eventos/Eventos principais, marque `generate_lead` como evento principal. Se o objetivo for uma conversão por visitante em cada sessão, configure a contagem como uma vez por sessão.
 5. Crie dimensões personalizadas de escopo Evento para `cta_name`, `cta_location` e, se necessário, `form_name`.
-6. Publique/reinicie o ambiente e confira o relatório Em tempo real. Depois, use Explorações → Funil para acompanhar visita à home → `cta_click` → visita a `/lancamento` → `generate_lead`.
+6. Depois de publicar/reiniciar, confira o relatório Em tempo real. Em Explorações → Funil, acompanhe visita → `cta_click` → `form_start` → tentativa → `generate_lead`. Cadastros feitos diretamente no campo podem pular o clique no CTA.
 
 | Evento          | Momento                                                               | Parâmetros                                                                                                       |
 | --------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `page_view`     | Visualização de uma página pública permitida, após consentimento      | `page_path`, `page_location`, título fixo                                                                        |
+| `page_view`     | Visualização de uma página pública permitida, salvo recusa explícita  | `page_path`, `page_location`, título fixo e campanha controlada                                                  |
 | `cta_click`     | Clique em um CTA instrumentado                                        | `cta_name`: `start_now` ou `plans`; `cta_location`: `header`, `mobile_menu`, `benefits`, `final_cta` ou `footer` |
-| `generate_lead` | A Server Action retorna sucesso após o Resend aceitar os dois e-mails | `form_name`: `launch_waitlist`; `page_path`: `/lancamento`                                                       |
+| `form_start`    | Primeiro foco no campo por rota durante a execução da página          | `form_name`: `launch_waitlist` e rota permitida                                                                  |
+| `generate_lead` | A Server Action retorna sucesso após o Resend aceitar os dois e-mails | `form_name`: `launch_waitlist`; `page_path`: `/`, `/instagram` ou `/lancamento`                                  |
 
 Os eventos próprios não incluem e-mail, hash de e-mail, token de segurança ou valores dos campos. As URLs enviadas por eles não incluem query ou fragmento. Login e dashboard não recebem eventos de marketing. Os relatórios permitem contar usuários e eventos; não identificam o e-mail de cada visitante.
 
-A tag só é carregada após “Permitir análise”. “Recusar” mantém a coleta desativada. O botão “Preferências de privacidade”, no rodapé, permite mudar a escolha; revogar desativa novos envios e remove os cookies `_ga`, `_ga_*`, `_clck` e `_clsk` acessíveis nesse domínio. A preferência fica no localStorage, com fallback por sessão quando ele estiver bloqueado. A chave `papum:analytics-consent:v2` exige nova escolha de quem havia aceitado apenas as estatísticas anteriores.
+A tag carrega em modo avançado de consentimento: `analytics_storage`, `ad_storage`, `ad_user_data` e `ad_personalization` começam negados. “Permitir cookies de análise” libera somente armazenamento de análise. “Desativar análise” interrompe novos envios e remove os cookies `_ga`, `_ga_*`, `_clck` e `_clsk` acessíveis no domínio. Fechar as preferências não muda a escolha. Ela fica em `papum:analytics-consent:v2`, com fallback por sessão se localStorage estiver bloqueado; nenhum aceite é inventado para quem não escolheu. O aceite antigo da v1 não concede cookies.
 
 Bloqueadores de anúncios e visitantes que recusarem analytics não entram nessas estatísticas. O formulário de contato funciona independentemente da escolha. Não espere que o número de conversões do GA4 corresponda a todos os contatos recebidos por e-mail.
 
-Referências: [GA4 gratuito](https://marketingplatform.google.com/about/analytics/), [eventos](https://developers.google.com/analytics/devguides/collection/ga4/events), [consentimento básico](https://developers.google.com/tag-platform/security/guides/consent?consentmode=basic).
+Referências: [GA4](https://marketingplatform.google.com/about/analytics/), [eventos](https://developers.google.com/analytics/devguides/collection/ga4/events), [consentimento avançado](https://developers.google.com/tag-platform/security/guides/consent?consentmode=advanced).
 
 ## Microsoft Clarity — sessões e mapas de calor
 
 O usuário forneceu o ID público `z5hqjof5ys`. Ele está configurado em `.env.local`; na Vercel, definir `NEXT_PUBLIC_CLARITY_PROJECT_ID=z5hqjof5ys` antes de um novo build. O ID identifica o projeto e não é uma chave secreta.
 
-O script oficial carrega após consentimento, somente em builds de produção, em `/` e `/lancamento`. Desenvolvimento e E2E comuns não gravam. Não é necessário configurar GA4 para usar Clarity. O aviso compartilhado informa reprodução de sessões, mascaramento do formulário, recusa e revogação pelo rodapé.
+O script oficial carrega somente em produção nas três rotas públicas permitidas, salvo recusa explícita. Desenvolvimento e E2E comuns não gravam. Não é necessário configurar GA4 para usar Clarity. A política `/privacidade` e as preferências no rodapé explicam a coleta e seus controles. O modo limitado sem cookies não equivale a uma promessa de replay completo de toda visita; recursos e cobertura dependem do provedor e da região.
 
-- `consentv2` recebe `analytics_Storage: granted` no aceite e `ad_Storage: denied` sempre. A revogação nega analytics e encerra o runtime com `stop`; negar cookies isoladamente não garante ausência de gravação.
+- `consentv2` recebe `analytics_Storage: denied` por padrão, `granted` somente na escolha explícita de cookies e `ad_Storage: denied` sempre. A desativação nega armazenamento e encerra o runtime com `stop`; negar cookies isoladamente não significa ausência de análise.
 - A saída para uma área privada interrompe a gravação e abre um documento novo antes de renderizar o destino. Login e admin também têm mascaramento preventivo e não carregam a tag.
 - O formulário, suas mensagens e a verificação Turnstile ficam sob `data-clarity-mask="true"`. Não são enviados campos, e-mails, hashes, tokens nem mensagens livres em eventos.
-- URLs com query, fragmentos não previstos ou referência com query/fragmento não iniciam Clarity. Isso também exclui visitas com parâmetros UTM; é uma limitação deliberada desta entrega para evitar captura de dados em URLs. Links com fragmentos públicos `#proposta` e `#como-funciona` são permitidos.
+- URLs com query, fragmentos não previstos ou referência com query/fragmento não iniciam Clarity. Isso inclui alguns acessos vindos de redes sociais e URLs com UTM. É uma limitação preservada para evitar dados em URLs; não há promessa de gravar toda visita do Instagram. Fragmentos permitidos: `#proposta`, `#produto`, `#como-funciona` e `#cadastro`.
 - Se o visitante revogar enquanto o script ainda estiver carregando, a página é recarregada para encerrar o documento com a requisição pendente.
 
 | Evento                        | Momento                                                                                    |
@@ -52,7 +59,7 @@ O script oficial carrega após consentimento, somente em builds de produção, e
 | `waitlist_success`            | Resposta positiva real da ação de cadastro                                                 |
 | `waitlist_error`              | Categoria fixa: e-mail inválido, verificação pendente, indisponibilidade ou falha de envio |
 
-O contexto do CTA e a categoria do erro usam tags controladas. Depois da publicação, conferir no painel do projeto sessões consentidas, eventos, mapas de calor e o mascaramento, com dados fictícios. O acesso ao painel não esteve disponível nesta execução. O runtime oficial 0.8.72 foi testado localmente com uploads bloqueados: aceite, parada na revogação, retomada e ausência de runtime no login foram confirmados.
+O contexto do CTA, a origem e a categoria do erro usam valores controlados. Depois da publicação, conferir no painel sessões, eventos, mapas de calor e mascaramento com dados fictícios. O acesso ao painel e os uploads reais não foram validados nesta execução. A análise de audiência não representa uma base de interessados únicos.
 
 Referências: [instalação](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-setup), [consentimento](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-consent-api-v2), [mascaramento](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-masking), [API](https://learn.microsoft.com/en-us/clarity/setup-and-installation/clarity-api).
 
@@ -63,10 +70,10 @@ Referências: [instalação](https://learn.microsoft.com/en-us/clarity/setup-and
 3. Crie uma API key com permissão de envio, limitada ao domínio necessário quando disponível, e configure `RESEND_API_KEY` somente no servidor. Não envie essa chave pelo chat nem a coloque em variáveis `NEXT_PUBLIC_`.
 4. Configure os endereços abaixo e também o Turnstile da próxima seção antes de liberar o formulário.
 
-| Mensagem    | Destinatário               | Assunto                                                             | Responder para                    |
-| ----------- | -------------------------- | ------------------------------------------------------------------- | --------------------------------- |
-| Notificação | `contato@binaryinc.com.br` | Cliente interessado nos serviços PAPUM Delivery                     | E-mail informado pelo interessado |
-| Confirmação | E-mail do interessado      | Recebemos seu contato. Obrigado por chegar junto! \| Pápum Delivery | `contato@binaryinc.com.br`        |
+| Mensagem    | Destinatário               | Assunto                                         | Responder para                    |
+| ----------- | -------------------------- | ----------------------------------------------- | --------------------------------- |
+| Notificação | `contato@binaryinc.com.br` | Cliente interessado nos serviços PAPUM Delivery | E-mail informado pelo interessado |
+| Confirmação | E-mail do interessado      | Recebemos seu contato \| Pápum Delivery         | `contato@binaryinc.com.br`        |
 
 O nome exibido do remetente é **Pápum Delivery**. O corpo e o assunto da confirmação não mencionam Binary. O endereço aparece nos cabeçalhos porque o domínio utilizado é `binaryinc.com.br`.
 
@@ -78,19 +85,19 @@ O nome exibido do remetente é **Pápum Delivery**. O corpo e o assunto da confi
 >
 > Recebemos seu contato e ficamos felizes com seu interesse no Pápum Delivery.
 >
-> Estamos preparando uma forma simples, rápida e inteligente de colocar seu delivery no ar. Assim que tivermos novidades sobre o lançamento, vamos avisar por este e-mail.
+> Um app com a identidade do seu restaurante e um painel para organizar cardápio, pedidos e contatos: essa é a proposta da Papum. Vamos compartilhar as informações sobre a plataforma por este e-mail.
 >
-> Obrigado por acompanhar a gente desde o início!
+> Obrigado pelo seu interesse!
 >
 > Até já, Equipe Pápum Delivery
 
 Há versões HTML e texto simples. A mensagem também orienta responder ao e-mail para cancelar os avisos ou informar uma solicitação não reconhecida. Esses pedidos precisam ser atendidos pela equipe; não existe gerenciamento automático de inscrições nesta entrega.
 
-Os dois templates usam a logo Pápum em PNG, fundo claro e links de Instagram e site com ícones e rótulos de texto. A logo está em `public/email/papum-logo.png` e precisa estar disponível em `https://www.papum.app.br/email/papum-logo.png` após a publicação, assim como os ícones `instagram.png` e `website.png` da mesma pasta. A URL do Instagram em `siteConfig.social.instagram` é fictícia, autorizada para demonstração; substitua-a quando houver um perfil oficial. Conteúdo e links dos e-mails ficam em `src/utils/contents/launch-emails.ts`. A notificação interna tem uma ação de resposta e um rodapé próprio para a equipe.
+Os dois templates usam a logo Pápum em PNG, fundo claro e links de Instagram e site com ícones e rótulos de texto. A logo está em `public/email/papum-logo.png` e precisa estar disponível em `https://www.papum.app.br/email/papum-logo.png` após a publicação, assim como os ícones `instagram.png` e `website.png`. O Instagram oficial vem de `siteConfig.social.instagram`. Conteúdo e links ficam em `src/utils/contents/launch-emails.ts`. A notificação interna tem ação de resposta, rodapé próprio e origem controlada (`home`, `instagram` ou `lancamento`); não aceita texto livre de campanha.
 
 O envio usa um batch de duas mensagens com chave HMAC idempotente e payload determinístico. Tentativas equivalentes durante a janela de 24 horas do Resend não reenviam o par. Não há repetição automática de requisições de envio. Só retornamos sucesso quando a resposta contém dois IDs válidos; aceitação pelo provedor não garante entrega na caixa de entrada. Confira entregas, rejeições e bounces no painel.
 
-O plano gratuito consultado oferece **3.000 e-mails/mês e 100/dia**. Com duas mensagens por contato, o teto é até 1.500 contatos/mês e 50/dia, descontando outros envios da conta. Verifique a política vigente no painel.
+Cada cadastro aceito usa duas mensagens. Confira a cota vigente da conta Resend e acompanhe entregas, rejeições e bounces no painel.
 
 Os contatos chegam à caixa interna. **Não há banco de leads ou cadastro automático em uma audiência do Resend.** Preserve/organize esses contatos para avisar sobre o lançamento posteriormente; o histórico de envios do provedor não substitui um cadastro durável. Não usamos o endpoint de registro de usuários da API do dashboard para essa finalidade.
 
@@ -105,7 +112,9 @@ Referências: [preços](https://resend.com/pricing), [domínio verificado](https
 
 ### Falhas na verificação
 
-O widget mostra a referência numérica do erro e permite repetir desafios com falha de conexão ou expiração sem apagar o e-mail. Se o próprio script não carregar, oferece recarregar a página. Erros de configuração pedem intervenção da equipe, preservando o bloqueio de envio.
+Na Home e em `/instagram`, o SDK e o widget só são montados ao enviar um e-mail válido. A aparência `interaction-only` mantém a verificação discreta; um desafio interativo pode aparecer quando necessário. O botão informa “Verificando...” e permite cancelar. Após o token, o mesmo envio continua automaticamente. Em falha, o e-mail é preservado e aparece uma mensagem compacta; a próxima tentativa reinicia o desafio. Remover o bloco inicial não corrige uma sitekey ou hostname inválido.
+
+Em `/lancamento`, o widget antecipado e a recuperação anterior continuam disponíveis. Mostra a referência do erro e oferece repetir falhas recuperáveis ou recarregar se o script não carregou. Erros de configuração preservam o bloqueio do envio.
 
 - `110200`: domínio não autorizado no painel do Turnstile. Adicione o hostname exato usado no navegador (inclusive o hostname próprio da Vercel, se utilizar esse endereço).
 - `110100` / `110110`: conferir a sitekey e o widget no painel.
@@ -154,4 +163,4 @@ Os testes simulam as chamadas aos provedores; nenhum e-mail real é enviado por 
 
 Conferência inicial, anterior à integração Clarity: 226 testes passaram; consentimento, recusa, retorno do foco, abertura de novas abas e falha sem confirmação de cadastro foram verificados em navegador real. A LP foi conferida em 390, 768 e 1440 px e o e-mail em 390 e 1440 px, sem overflow horizontal. Na prévia de analytics foi usado um ID fictício com o script Google interceptado, sem coleta real. A validação mais recente está em [SEO e Clarity](seo-improvements-validation.md), com 237 testes aprovados e verificações adicionais nos dois motores de navegador.
 
-A recuperação do Turnstile foi conferida com SDK simulado e envio desativado: repetição por teclado, retorno do foco ao widget, preservação do e-mail, remoção do aviso de verificação pendente após sucesso e mensagem de domínio não autorizado. Na página publicada em `papumappbr.vercel.app/lancamento`, o Cloudflare retornou `110200` em 16/10/2026; liberar esse hostname no widget e atualizar a variável na Vercel são etapas de configuração das contas.
+A validação atual da nova landing está em [home-conversion-validation.md](design/home-conversion-validation.md), com fluxo de verificação sob demanda, atribuição e testes com provedores simulados. Nenhum envio real foi realizado nesta execução. O erro `110200` observado pelo usuário continua dependendo da autorização do hostname no painel Cloudflare e da configuração correspondente no servidor.

@@ -6,12 +6,19 @@ import {
   type WaitlistErrorReason,
 } from "@/lib/clarity";
 import { isMarketingPath } from "@/utils/config/analytics";
+import { getCampaign } from "@/utils/config/attribution";
 
 export { isMarketingPath };
 export type AnalyticsConsent = "granted" | "denied" | null;
 export type MarketingCta = "start_now" | "plans";
 export type MarketingLocation =
-  "header" | "mobile_menu" | "hero" | "benefits" | "final_cta" | "footer";
+  | "header"
+  | "mobile_menu"
+  | "hero"
+  | "benefits"
+  | "app_preview"
+  | "final_cta"
+  | "footer";
 
 type GtagCommand =
   | ["js", Date]
@@ -103,7 +110,7 @@ export function setAnalyticsConsent(
 }
 
 export function configureMarketingAnalytics(id: string): void {
-  if (!/^G-[A-Z0-9]+$/.test(id) || readAnalyticsConsent() !== "granted") return;
+  if (!/^G-[A-Z0-9]+$/.test(id) || readAnalyticsConsent() === "denied") return;
   setDisabled(id, false);
   window.dataLayer ??= [];
   window.gtag ??= function () {
@@ -123,11 +130,13 @@ export function configureMarketingAnalytics(id: string): void {
       allow_ad_personalization_signals: false,
       page_location: `${window.location.origin}${window.location.pathname}`,
       page_referrer: "",
+      ...getCampaign(window.location.pathname),
     });
     configuredId = id;
   }
   window.gtag("consent", "update", {
-    analytics_storage: "granted",
+    analytics_storage:
+      readAnalyticsConsent() === "granted" ? "granted" : "denied",
     ...deniedAdvertising,
   });
 }
@@ -140,7 +149,7 @@ export function pauseMarketingAnalytics(): void {
 export function trackMarketingPage(pathname: string): void {
   if (
     !configuredId ||
-    readAnalyticsConsent() !== "granted" ||
+    readAnalyticsConsent() === "denied" ||
     !isMarketingPath(pathname)
   )
     return;
@@ -152,6 +161,7 @@ export function trackMarketingPage(pathname: string): void {
         ? "Lançamento Pápum Delivery"
         : "Pápum Delivery",
     page_referrer: "",
+    ...getCampaign(pathname),
   });
 }
 
@@ -160,7 +170,7 @@ export function trackMarketingCta(
   location: MarketingLocation,
 ): void {
   if (
-    readAnalyticsConsent() !== "granted" ||
+    readAnalyticsConsent() === "denied" ||
     !isMarketingPath(window.location.pathname)
   )
     return;
@@ -173,37 +183,39 @@ export function trackMarketingCta(
       page_path: window.location.pathname,
       page_location: `${window.location.origin}${window.location.pathname}`,
       page_referrer: "",
+      ...getCampaign(window.location.pathname),
     });
 }
 
 export function trackLaunchLead(): void {
   if (
-    readAnalyticsConsent() !== "granted" ||
-    window.location.pathname !== "/lancamento"
+    readAnalyticsConsent() === "denied" ||
+    !isMarketingPath(window.location.pathname)
   )
     return;
   trackClarityEvent("waitlist_success");
   if (configuredId)
     window.gtag?.("event", "generate_lead", {
       form_name: "launch_waitlist",
-      page_path: "/lancamento",
-      page_location: `${window.location.origin}/lancamento`,
+      page_path: window.location.pathname,
+      page_location: `${window.location.origin}${window.location.pathname}`,
       page_referrer: "",
+      ...getCampaign(window.location.pathname),
     });
 }
 
 export function trackWaitlistAttempt(): void {
   if (
-    readAnalyticsConsent() === "granted" &&
-    window.location.pathname === "/lancamento"
+    readAnalyticsConsent() !== "denied" &&
+    isMarketingPath(window.location.pathname)
   )
     trackClarityEvent("waitlist_submit");
 }
 
 export function trackWaitlistError(reason: WaitlistErrorReason): void {
   if (
-    readAnalyticsConsent() === "granted" &&
-    window.location.pathname === "/lancamento"
+    readAnalyticsConsent() !== "denied" &&
+    isMarketingPath(window.location.pathname)
   )
     trackClarityError(reason);
 }
@@ -223,10 +235,31 @@ export function trackMarketingClick(event: MouseEvent): void {
       "mobile_menu",
       "hero",
       "benefits",
+      "app_preview",
       "final_cta",
       "footer",
     ].includes(location)
   )
     return;
   trackMarketingCta(cta, location as MarketingLocation);
+}
+
+let formStartedFor: string | null = null;
+export function trackWaitlistStart(): void {
+  if (
+    readAnalyticsConsent() === "denied" ||
+    !isMarketingPath(window.location.pathname)
+  )
+    return;
+  if (formStartedFor === window.location.pathname) return;
+  formStartedFor = window.location.pathname;
+  trackClarityEvent("waitlist_start");
+  if (configuredId)
+    window.gtag?.("event", "form_start", {
+      form_name: "launch_waitlist",
+      page_path: window.location.pathname,
+      page_location: window.location.origin + window.location.pathname,
+      page_referrer: "",
+      ...getCampaign(window.location.pathname),
+    });
 }

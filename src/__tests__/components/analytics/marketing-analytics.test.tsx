@@ -1,10 +1,14 @@
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { renderToString } from "react-dom/server";
 import { beforeEach, describe, expect, it, vi } from "vitest";
+import { usePathname } from "next/navigation";
 
 import { MarketingAnalytics } from "@/components/analytics/marketing-analytics";
+import { Footer } from "@/components/layout/footer";
+import { configureClarity } from "@/lib/clarity";
 
-vi.mock("next/navigation", () => ({ usePathname: () => "/" }));
+vi.mock("next/navigation", () => ({ usePathname: vi.fn(() => "/") }));
 vi.mock("@/lib/clarity", () => ({
   configureClarity: vi.fn(),
   isClarityActive: () => false,
@@ -16,66 +20,115 @@ vi.mock("@/lib/clarity", () => ({
 vi.mock("next/script", () => ({
   default: ({ src }: { src: string }) => <span role="status">{src}</span>,
 }));
-
 beforeEach(() => {
   window.localStorage.clear();
+  vi.clearAllMocks();
+  vi.mocked(usePathname).mockReturnValue("/");
 });
 
+function Preferences({ configured = true }: { configured?: boolean } = {}) {
+  return (
+    <>
+      <Footer analyticsEnabled />
+      <MarketingAnalytics
+        measurementId={configured ? "G-TEST123" : undefined}
+        clarityProjectId={configured ? "testproject" : undefined}
+      />
+    </>
+  );
+}
+
 describe("Preferências de analytics", () => {
-  it("fica desativado quando não existe ID de medição", () => {
+  it("não carrega fornecedores quando não existe ID de medição", () => {
     render(<MarketingAnalytics />);
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
   });
-  it("carrega o script apenas após permitir estatísticas", async () => {
-    const user = userEvent.setup();
-    render(<MarketingAnalytics measurementId="G-TEST123" />);
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Permitir análise" }));
-    expect(await screen.findByRole("status")).toHaveTextContent(
-      "googletagmanager.com/gtag/js?id=G-TEST123",
-    );
+  it.each(["/", "/privacidade"])(
+    "mantém as preferências acessíveis e salva a escolha em %s sem integrações configuradas",
+    async (pathname) => {
+      vi.mocked(usePathname).mockReturnValue(pathname);
+      const user = userEvent.setup();
+      render(<Preferences configured={false} />);
+      const trigger = screen.getByRole("button", {
+        name: "Preferências de privacidade",
+      });
+      await user.click(trigger);
+      expect(
+        screen.getByRole("region", { name: "Preferências de privacidade" }),
+      ).toBeVisible();
+      await user.click(
+        screen.getByRole("button", { name: "Desativar análise" }),
+      );
+      expect(localStorage.getItem("papum:analytics-consent:v2")).toBe("denied");
+      expect(trigger).toHaveFocus();
+      await user.click(trigger);
+      await user.click(
+        screen.getByRole("button", { name: "Permitir cookies de análise" }),
+      );
+      expect(localStorage.getItem("papum:analytics-consent:v2")).toBe(
+        "granted",
+      );
+      expect(trigger).toHaveFocus();
+      expect(screen.queryByRole("status")).not.toBeInTheDocument();
+      expect(configureClarity).not.toHaveBeenCalled();
+    },
+  );
+  it("inicia no modo sem cookies sem exibir aviso ou inventar aceite", () => {
+    render(<Preferences />);
+    expect(screen.getAllByRole("status")).toHaveLength(2);
+    expect(configureClarity).toHaveBeenCalledWith("testproject", "denied");
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
+    expect(localStorage.getItem("papum:analytics-consent:v2")).toBeNull();
   });
-  it("permite recusar e mudar de ideia depois", async () => {
+  it("permite desativar e reativar pelo rodapé, devolvendo o foco", async () => {
     const user = userEvent.setup();
-    render(
-      <>
-        <button type="button" data-analytics-preferences>
-          Preferências de privacidade
-        </button>
-        <MarketingAnalytics measurementId="G-TEST123" />
-      </>,
-    );
-    await user.click(screen.getByRole("button", { name: "Recusar" }));
+    render(<Preferences />);
+    const trigger = screen.getByRole("button", {
+      name: "Preferências de privacidade",
+    });
+    await user.click(trigger);
+    await user.click(screen.getByRole("button", { name: "Desativar análise" }));
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(localStorage.getItem("papum:analytics-consent:v2")).toBe("denied");
+    expect(trigger).toHaveFocus();
+    await user.click(trigger);
     await user.click(
-      screen.getByRole("button", { name: "Preferências de privacidade" }),
+      screen.getByRole("button", { name: "Permitir cookies de análise" }),
     );
-    await user.click(screen.getByRole("button", { name: "Permitir análise" }));
-    expect(await screen.findByRole("status")).toBeInTheDocument();
-    await user.click(
-      screen.getByRole("button", { name: "Preferências de privacidade" }),
-    );
-    await user.click(screen.getByRole("button", { name: "Recusar" }));
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    expect(
-      screen.getByRole("button", { name: "Preferências de privacidade" }),
-    ).toHaveFocus();
+    expect(screen.getAllByRole("status")).toHaveLength(2);
+    expect(configureClarity).toHaveBeenLastCalledWith("testproject", "granted");
   });
-  it("permite Clarity sem GA4 e não carrega a gravação antes da escolha", async () => {
-    const user = userEvent.setup();
-    render(<MarketingAnalytics clarityProjectId="testproject" />);
+  it("respeita recusa anterior sem carregar fornecedores", () => {
+    localStorage.setItem("papum:analytics-consent:v2", "denied");
+    render(<Preferences />);
     expect(screen.queryByRole("status")).not.toBeInTheDocument();
-    expect(screen.getByText(/reprodução de sessões/)).toBeInTheDocument();
-    await user.click(screen.getByRole("button", { name: "Permitir análise" }));
-    expect(await screen.findByRole("status")).toHaveTextContent(
-      "https://www.clarity.ms/tag/testproject",
-    );
+    expect(configureClarity).not.toHaveBeenCalled();
   });
-  it("não amplia silenciosamente um aceite da versão antiga de consentimento", () => {
+  it("aguarda a preferência salva durante a hidratação antes de iniciar fornecedores", () => {
+    const container = document.createElement("div");
+    container.innerHTML = renderToString(<Preferences />);
+    document.body.append(container);
+    localStorage.setItem("papum:analytics-consent:v2", "denied");
+    render(<Preferences />, { container, hydrate: true });
+    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    expect(configureClarity).not.toHaveBeenCalled();
+  });
+  it("um aceite antigo não habilita cookies na nova preferência", () => {
     localStorage.setItem("papum:analytics-consent:v1", "granted");
-    render(<MarketingAnalytics clarityProjectId="testproject" />);
-    expect(screen.getByRole("button", { name: "Recusar" })).toBeInTheDocument();
-    expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    render(<Preferences />);
+    expect(configureClarity).toHaveBeenCalledWith("testproject", "denied");
+  });
+  it("fechar o painel não altera a preferência", async () => {
+    const user = userEvent.setup();
+    render(<Preferences />);
+    await user.click(
+      screen.getByRole("button", { name: "Preferências de privacidade" }),
+    );
+    await user.click(
+      screen.getByRole("button", { name: "Fechar preferências" }),
+    );
+    expect(localStorage.getItem("papum:analytics-consent:v2")).toBeNull();
+    expect(screen.queryByRole("region")).not.toBeInTheDocument();
   });
 });

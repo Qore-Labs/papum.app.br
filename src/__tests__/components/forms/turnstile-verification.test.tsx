@@ -1,6 +1,6 @@
 import { act, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 
 import { TurnstileVerification } from "@/components/forms/turnstile-verification";
 
@@ -11,8 +11,15 @@ vi.mock("next/script", () => ({
     </button>
   ),
 }));
+beforeEach(() => {
+  vi.stubGlobal(
+    "matchMedia",
+    vi.fn(() => ({ matches: false })),
+  );
+});
 afterEach(() => {
   delete window.turnstile;
+  vi.unstubAllGlobals();
 });
 
 describe("Verificação de segurança", () => {

@@ -1,36 +1,153 @@
 import { test, expect } from "./support/fixtures";
 
-test("Planos e Começar agora abrem o lançamento em outra aba", async ({
+test("header fixo acompanha a seção e mantém cadastro visível", async ({
+  page,
+}) => {
+  await page.goto("/instagram");
+  const header = page.locator("[data-site-header]");
+  await expect(header).toHaveCSS("position", "fixed");
+  await expect(header).toHaveAttribute("data-header-tone", "hero");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCSS(
+    "font-weight",
+    "800",
+  );
+  await expect(page.locator(".relationship-bolt")).toHaveAttribute(
+    "aria-hidden",
+    "true",
+  );
+  await page
+    .locator("#como-funciona")
+    .evaluate((element) =>
+      window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY),
+    );
+  await expect(header).toHaveAttribute("data-header-tone", "dark");
+  await expect(header).toHaveCSS("color", "rgb(255, 250, 242)");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
+    "content",
+    "#191817",
+  );
+  await page.evaluate(() =>
+    window.scrollTo(0, document.documentElement.scrollHeight),
+  );
+  await expect(page.locator("html")).toHaveCSS(
+    "background-color",
+    "rgb(240, 238, 231)",
+  );
+  await page.locator(".landing-final").getByRole("link").click();
+  await expect(page.getByRole("textbox", { name: "Seu e-mail" })).toBeFocused();
+  await expect(page).toHaveURL(/\/instagram#cadastro$/);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          document.getElementById("waitlist-email")!.getBoundingClientRect()
+            .top >=
+          document.querySelector("[data-site-header]")!.getBoundingClientRect()
+            .bottom,
+      ),
+    )
+    .toBe(true);
+  await page
+    .getByRole("contentinfo")
+    .getByRole("link", { name: "Privacidade", exact: true })
+    .click();
+  await expect(header).toHaveAttribute("data-header-tone", "light");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
+    "content",
+    "#faf9f5",
+  );
+});
+
+test("CTAs mantem o cadastro na propria landing e preservam a entrada Instagram", async ({
+  page,
+  context,
+}) => {
+  await page.goto("/instagram");
+  // A stale production stylesheet can load the new HTML without its layout.
+  await expect(page.locator(".landing-hero")).toHaveCSS("position", "relative");
+  await expect(page.locator(".landing-hero")).toHaveCSS(
+    "background-image",
+    /linear-gradient/,
+  );
+  await expect(page.locator(".hero-grid")).toHaveCSS("display", "grid");
+  const signup = page
+    .locator('section[aria-labelledby="final-cta-title"]')
+    .getByRole("link");
+  await signup.click();
+  await expect(page).toHaveURL(/\/instagram#cadastro$/);
+  await expect(page.getByRole("textbox", { name: "Seu e-mail" })).toBeFocused();
+  expect(context.pages()).toHaveLength(1);
+  await expect(page.getByRole("heading", { level: 1 })).toContainText(
+    "Mais controle",
+  );
+  await expect(page.locator('link[rel="canonical"]')).toHaveAttribute(
+    "href",
+    /^https:\/\/www\.papum\.app\.br\/?$/,
+  );
+});
+
+test("landing carrega a verificação apenas no envio e mantém o cadastro na página", async ({
+  page,
+}) => {
+  await page.goto("/instagram");
+  const form = page.getByRole("form", { name: "Cadastro de interesse" });
+  await expect(
+    page.getByRole("group", { name: "Verificação de segurança" }),
+  ).toHaveCount(0);
+  await expect(page.locator("#papum-turnstile")).toHaveCount(0);
+  await form
+    .getByRole("textbox", { name: "Seu e-mail" })
+    .fill("qa-lead@example.com");
+  await form.getByRole("button", { name: "Cadastrar-se", exact: true }).click();
+  await expect(
+    form.getByRole("button", { name: "Verificando...", exact: true }),
+  ).toBeDisabled();
+  await page
+    .getByRole("button", { name: "Concluir verificação simulada" })
+    .click();
+  await expect(form.getByRole("status")).toContainText("Recebemos seu contato");
+  await expect(form.getByRole("textbox", { name: "Seu e-mail" })).toHaveValue(
+    "",
+  );
+  await expect(
+    page.getByRole("group", { name: "Verificação de segurança" }),
+  ).toHaveCount(0);
+});
+
+test("falha de verificação na landing não envia dados e permite nova tentativa", async ({
   page,
 }) => {
   await page.goto("/");
-  const menu = page.getByRole("button", { name: "Abrir menu", exact: true });
-  if (await menu.isVisible()) await menu.click();
-  const plans = page.getByRole("link", { name: "Planos", exact: true });
-  await expect(plans).toHaveAttribute("href", "/lancamento");
-  await expect(plans).toHaveAttribute("target", "_blank");
-  const plansPopup = page.waitForEvent("popup");
-  await plans.click();
-  const launch = await plansPopup;
-  await expect(launch).toHaveURL(/\/lancamento$/);
-  await expect(launch.getByRole("heading", { level: 1 })).toContainText(
-    "quase no ar",
+  const form = page.getByRole("form", { name: "Cadastro de interesse" });
+  let posts = 0;
+  page.on("request", (request) => {
+    if (request.method() === "POST") posts++;
+  });
+  await form
+    .getByRole("textbox", { name: "Seu e-mail" })
+    .fill("qa-lead@example.com");
+  await form.getByRole("button", { name: "Cadastrar-se", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Concluir verificação simulada" })
+    .waitFor();
+  await page.evaluate(() =>
+    window.dispatchEvent(
+      new CustomEvent("e2e:verification-error", { detail: "110200" }),
+    ),
   );
-  await launch.close();
-  await expect(
-    page.getByRole("dialog", { name: "Menu", exact: true }),
-  ).not.toBeVisible();
-
-  const start = page.getByRole("link", { name: "Começar Agora", exact: true });
-  await expect(start).toHaveAttribute("target", "_blank");
-  const startPopup = page.waitForEvent("popup");
-  await start.click();
-  const secondLaunch = await startPopup;
-  await expect(secondLaunch).toHaveURL(/\/lancamento$/);
-  await expect(
-    secondLaunch.getByRole("textbox", { name: "Seu e-mail" }),
-  ).toBeVisible();
-  await secondLaunch.close();
+  await expect(form.getByRole("alert")).toContainText(
+    "Não foi possível concluir a verificação",
+  );
+  await expect(form.getByRole("textbox", { name: "Seu e-mail" })).toHaveValue(
+    "qa-lead@example.com",
+  );
+  expect(posts).toBe(0);
+  await form.getByRole("button", { name: "Cadastrar-se", exact: true }).click();
+  await page
+    .getByRole("button", { name: "Concluir verificação simulada" })
+    .click();
+  await expect(form.getByRole("status")).toContainText("Recebemos seu contato");
+  expect(posts).toBe(1);
 });
 
 test("valida e-mail, exige verificação e recupera o cadastro após falha temporária", async ({

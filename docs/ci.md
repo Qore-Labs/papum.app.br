@@ -59,7 +59,7 @@ Ao terminar os E2E, `.next` contém um build com configuração de teste. Execut
 
 ## Cobertura inicial
 
-- Home: “Planos” e “Começar agora” abrem `/lancamento` em outra aba.
+- Home: “Lançamento” e “Quero ser avisado” abrem `/lancamento` em outra aba.
 - Lançamento: e-mail inválido, envio bloqueado sem verificação, falha temporária, repetição por teclado, preservação do e-mail e confirmação de sucesso.
 - Lançamento: rejeição do provedor mantém o e-mail e apresenta erro.
 - Login da prévia: navegação para o dashboard e entre Pedidos, Cardápio, Clientes e Configurações, sem overflow horizontal.
