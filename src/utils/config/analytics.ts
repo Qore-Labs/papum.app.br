@@ -26,8 +26,3 @@ export function getMarketingAnalyticsConfig() {
         : undefined,
   };
 }
-
-export function hasMarketingAnalytics(): boolean {
-  const config = getMarketingAnalyticsConfig();
-  return Boolean(config.measurementId || config.clarityProjectId);
-}

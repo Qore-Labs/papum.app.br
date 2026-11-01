@@ -3,6 +3,7 @@
 import { ArrowUpRight } from "lucide-react";
 import Link from "next/link";
 import type { MarketingLocation } from "@/lib/analytics";
+import { focusSignup } from "@/lib/focus-signup";
 
 export function SignupLink({
   location,
@@ -25,17 +26,7 @@ export function SignupLink({
           return;
         if (!document.getElementById("cadastro")) return;
         event.preventDefault();
-        history.replaceState(null, "", "#cadastro");
-        document.getElementById("cadastro")?.scrollIntoView({
-          behavior: window.matchMedia("(prefers-reduced-motion: reduce)")
-            .matches
-            ? "instant"
-            : "smooth",
-          block: "center",
-        });
-        document
-          .getElementById("waitlist-email")
-          ?.focus({ preventScroll: true });
+        focusSignup();
       }}
     >
       {children}

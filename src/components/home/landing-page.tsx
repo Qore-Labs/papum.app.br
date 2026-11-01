@@ -2,7 +2,7 @@ import Image from "next/image";
 import { ArrowDown, Check, Plus, Store } from "lucide-react";
 
 import { WaitlistForm } from "@/components/forms/waitlist-form";
-import { LogoWhite } from "@/components/ui/icons";
+import { LogoWhite, BrandBoltIcon } from "@/components/ui/icons";
 import { SiteStructuredData } from "@/components/seo/site-structured-data";
 import { subscribeToLaunch } from "@/lib/actions/subscribe-to-launch";
 import { CHANNEL_EVIDENCE, LANDING_FAQ } from "@/utils/contents/landing";
@@ -72,7 +72,11 @@ export function LandingPage({ entry = "home" }: { entry?: LeadEntry }) {
   return (
     <main className="landing-page">
       <SiteStructuredData />
-      <section className="landing-hero" aria-labelledby="landing-title">
+      <section
+        data-header-zone="hero"
+        className="landing-hero"
+        aria-labelledby="landing-title"
+      >
         <Image
           src="/home/product/lightning.svg"
           alt=""
@@ -111,6 +115,7 @@ export function LandingPage({ entry = "home" }: { entry?: LeadEntry }) {
 
       <section
         id="produto"
+        data-header-zone="light"
         className="landing-product landing-container"
         aria-labelledby="product-title"
       >
@@ -132,7 +137,7 @@ export function LandingPage({ entry = "home" }: { entry?: LeadEntry }) {
             <h3>Na mão do cliente.</h3>
             <p>O app do seu restaurante, com seu cardápio e sua identidade.</p>
           </div>
-          <Plus size={28} className="relationship-plus" aria-hidden="true" />
+          <BrandBoltIcon className="relationship-bolt" aria-hidden="true" />
           <div>
             <LogoWhite className="relationship-logo" aria-hidden="true" />
             <h3>Na sua operação.</h3>
@@ -143,6 +148,7 @@ export function LandingPage({ entry = "home" }: { entry?: LeadEntry }) {
 
       <section
         id="como-funciona"
+        data-header-zone="dark"
         className="landing-features"
         aria-labelledby="features-title"
       >
@@ -165,6 +171,7 @@ export function LandingPage({ entry = "home" }: { entry?: LeadEntry }) {
 
       <section
         className="landing-channel landing-container"
+        data-header-zone="light"
         aria-labelledby="channel-title"
       >
         <div>
@@ -188,6 +195,7 @@ export function LandingPage({ entry = "home" }: { entry?: LeadEntry }) {
 
       <section
         className="landing-faq landing-container"
+        data-header-zone="light"
         aria-labelledby="faq-title"
       >
         <h2 id="faq-title">Dúvidas frequentes</h2>
@@ -204,7 +212,11 @@ export function LandingPage({ entry = "home" }: { entry?: LeadEntry }) {
         </div>
       </section>
 
-      <section className="landing-final" aria-labelledby="final-cta-title">
+      <section
+        data-header-zone="yellow"
+        className="landing-final"
+        aria-labelledby="final-cta-title"
+      >
         <div className="landing-container">
           <div>
             <h2 id="final-cta-title">

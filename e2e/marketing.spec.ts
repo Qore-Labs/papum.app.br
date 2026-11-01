@@ -1,5 +1,63 @@
 import { test, expect } from "./support/fixtures";
 
+test("header fixo acompanha a seção e mantém cadastro visível", async ({
+  page,
+}) => {
+  await page.goto("/instagram");
+  const header = page.locator("[data-site-header]");
+  await expect(header).toHaveCSS("position", "fixed");
+  await expect(header).toHaveAttribute("data-header-tone", "hero");
+  await expect(page.getByRole("heading", { level: 1 })).toHaveCSS(
+    "font-weight",
+    "800",
+  );
+  await expect(page.locator(".relationship-bolt")).toHaveAttribute(
+    "aria-hidden",
+    "true",
+  );
+  await page
+    .locator("#como-funciona")
+    .evaluate((element) =>
+      window.scrollTo(0, element.getBoundingClientRect().top + window.scrollY),
+    );
+  await expect(header).toHaveAttribute("data-header-tone", "dark");
+  await expect(header).toHaveCSS("color", "rgb(255, 250, 242)");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
+    "content",
+    "#191817",
+  );
+  await page.evaluate(() =>
+    window.scrollTo(0, document.documentElement.scrollHeight),
+  );
+  await expect(page.locator("html")).toHaveCSS(
+    "background-color",
+    "rgb(240, 238, 231)",
+  );
+  await page.locator(".landing-final").getByRole("link").click();
+  await expect(page.getByRole("textbox", { name: "Seu e-mail" })).toBeFocused();
+  await expect(page).toHaveURL(/\/instagram#cadastro$/);
+  await expect
+    .poll(() =>
+      page.evaluate(
+        () =>
+          document.getElementById("waitlist-email")!.getBoundingClientRect()
+            .top >=
+          document.querySelector("[data-site-header]")!.getBoundingClientRect()
+            .bottom,
+      ),
+    )
+    .toBe(true);
+  await page
+    .getByRole("contentinfo")
+    .getByRole("link", { name: "Privacidade", exact: true })
+    .click();
+  await expect(header).toHaveAttribute("data-header-tone", "light");
+  await expect(page.locator('meta[name="theme-color"]')).toHaveAttribute(
+    "content",
+    "#faf9f5",
+  );
+});
+
 test("CTAs mantem o cadastro na propria landing e preservam a entrada Instagram", async ({
   page,
   context,

@@ -1,5 +1,114 @@
 @import "tailwindcss";
 
+@property --header-fill-a {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #faf9f5;
+}
+@property --header-fill-b {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #faf9f5;
+}
+@property --header-fill-c {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #faf9f5;
+}
+@property --header-cta-fill {
+  syntax: "<color>";
+  inherits: true;
+  initial-value: #1b1c1c;
+}
+.site-header {
+  --header-fill-a: #faf9f5;
+  --header-fill-b: #faf9f5;
+  --header-fill-c: #faf9f5;
+  --header-ink: #1b1c1c;
+  --header-cta-fill: #1b1c1c;
+  --header-cta-ink: #fffaf2;
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  padding-top: env(safe-area-inset-top);
+  color: var(--header-ink);
+  isolation: isolate;
+  transition:
+    --header-fill-a var(--header-duration, 200ms) var(--ease-out),
+    --header-fill-b var(--header-duration, 200ms) var(--ease-out),
+    --header-fill-c var(--header-duration, 200ms) var(--ease-out),
+    --header-cta-fill var(--header-duration, 200ms) var(--ease-out);
+}
+[data-site-shell]:has([data-header-zone="hero"]) .site-header {
+  --header-fill-a: #ffc400;
+  --header-fill-b: #ffbc00;
+  --header-fill-c: #ff9500;
+}
+.site-header-surface {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background-color: var(--header-fill-a);
+  background-image: linear-gradient(
+    125deg,
+    var(--header-fill-a) 20%,
+    var(--header-fill-b) 65%,
+    var(--header-fill-c)
+  );
+  background-size: var(--hero-scene-width, 100vw)
+    var(--hero-scene-height, 100svh);
+  background-position: 0 var(--hero-scene-y, 0px);
+  background-repeat: no-repeat;
+}
+.site-header[data-over-hero="true"][data-at-top="true"] .site-header-surface {
+  opacity: 0;
+}
+.site-header-content {
+  position: relative;
+}
+.site-header a:focus-visible,
+.site-menu-trigger:focus-visible {
+  outline-color: currentColor;
+}
+.site-header .landing-button {
+  flex-shrink: 0;
+  white-space: nowrap;
+  color: var(--header-cta-ink);
+  background: var(--header-cta-fill);
+}
+@media (hover: hover) and (pointer: fine) {
+  .site-header nav a:hover {
+    text-decoration: underline;
+    text-underline-offset: 6px;
+  }
+  .site-header .landing-button:hover {
+    background: var(--header-cta-fill);
+    outline: 1px solid currentColor;
+    outline-offset: -5px;
+  }
+}
+.site-header .landing-button:focus-visible {
+  outline: 2px solid var(--header-ink);
+  outline-offset: 4px;
+}
+@media (prefers-reduced-motion: reduce) {
+  .site-header {
+    transition: none;
+  }
+}
+@media (forced-colors: active) {
+  .site-header {
+    color: CanvasText;
+  }
+  .site-header-surface {
+    background: Canvas;
+  }
+  .site-header .landing-button {
+    background: ButtonFace;
+    color: ButtonText;
+  }
+}
 .landing-page {
   background: #faf9f5;
   color: #1b1c1c;
@@ -23,7 +132,7 @@
 .landing-hero {
   position: relative;
   overflow: clip;
-  padding: 160px 0 80px;
+  padding: max(160px, calc(var(--site-header-height, 82px) + 42px)) 0 80px;
   background: linear-gradient(125deg, #ffc400 20%, #ffbc00 65%, #ff9500);
 }
 .hero-grid {
@@ -39,8 +148,8 @@
 }
 .hero-copy h1 {
   font-size: clamp(2.6rem, 5.2vw, 4.7rem);
-  line-height: 1.07;
-  font-weight: 700;
+  line-height: 1.04;
+  font-weight: 800;
   letter-spacing: -0.04em;
 }
 .hero-copy h1 span {
@@ -54,7 +163,7 @@
 }
 .hero-signup {
   margin-top: 30px;
-  scroll-margin-top: 32px;
+  scroll-margin-top: 16px;
 }
 .hero-explore {
   display: inline-flex;
@@ -259,8 +368,12 @@
   line-height: 1.75;
   color: #625c53;
 }
-.relationship-plus {
-  color: #6d655a;
+.relationship-bolt {
+  width: 32px;
+  height: 40px;
+  margin-inline: auto;
+  color: #ff8a00;
+  pointer-events: none;
 }
 .landing-features {
   background: #191817;
@@ -548,7 +661,7 @@
   margin-top: 12px;
 }
 .landing-privacy {
-  scroll-margin-top: 32px;
+  scroll-margin-top: 0;
 }
 @keyframes product-change {
   from {
@@ -620,7 +733,7 @@
     width: calc(100% - 48px);
   }
   .landing-hero {
-    padding-top: 124px;
+    padding-top: max(124px, calc(var(--site-header-height, 82px) + 42px));
     padding-bottom: 40px;
   }
   .hero-grid {
@@ -702,7 +815,7 @@
   .relationship-logo {
     height: 60px;
   }
-  .relationship-plus {
+  .relationship-bolt {
     margin-left: 17px;
   }
   .landing-features {
@@ -978,16 +1091,25 @@ body {
 
 /* Safari can sample the document background for its surrounding browser UI. */
 html:has([data-site-shell]) {
-  --background: var(--home-header);
+  --site-canvas: #faf9f5;
+  --background: var(--site-canvas);
   --foreground: var(--home-ink);
   background: var(--background);
   color-scheme: light;
+  scroll-padding-top: var(--site-header-height, 82px);
+  transition: background-color 200ms var(--ease-out);
 }
-
-/* Keep a transparent desktop scrollbar track from exposing the mobile canvas. */
-@media (hover: hover) and (pointer: fine) {
-  html:has([data-site-shell]) {
-    background: #ffffff;
+html:has([data-site-shell] [data-header-zone="hero"]) {
+  --site-canvas: #ffc400;
+}
+html:has([data-site-shell]) body {
+  background: var(--site-canvas);
+  transition: background-color 200ms var(--ease-out);
+}
+@media (prefers-reduced-motion: reduce) {
+  html:has([data-site-shell]),
+  html:has([data-site-shell]) body {
+    transition: none;
   }
 }
 

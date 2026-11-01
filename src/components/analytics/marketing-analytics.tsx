@@ -138,7 +138,6 @@ export function MarketingAnalytics({
   }, [clarityEnabled, clarityProjectId]);
 
   useEffect(() => {
-    if (!enabled) return;
     function openPreferences(event: MouseEvent) {
       const trigger =
         event.target instanceof Element
@@ -150,7 +149,7 @@ export function MarketingAnalytics({
     }
     document.addEventListener("click", openPreferences);
     return () => document.removeEventListener("click", openPreferences);
-  }, [enabled, marketingPage]);
+  }, []);
 
   useEffect(() => {
     if (
@@ -182,7 +181,7 @@ export function MarketingAnalytics({
       document.removeEventListener("click", trackMarketingClick, true);
   }, [clientReady, consent, enabled, marketingPage]);
 
-  if (!enabled || (!marketingPage && !preferencesOpen)) return null;
+  if (!marketingPage && !preferencesOpen) return null;
   function choose(value: "granted" | "denied") {
     setAnalyticsConsent(value);
     setPreferencesOpen(false);

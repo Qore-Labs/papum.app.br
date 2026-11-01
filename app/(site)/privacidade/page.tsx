@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import Link from "next/link";
 
 export const metadata: Metadata = {
@@ -6,9 +6,14 @@ export const metadata: Metadata = {
   alternates: { canonical: "/privacidade" },
 };
 
+export const viewport: Viewport = { themeColor: "#faf9f5" };
+
 export default function PrivacyPage() {
   return (
-    <main className="landing-page min-h-svh pt-40 pb-24">
+    <main
+      data-header-zone="light"
+      className="landing-page min-h-svh pt-40 pb-24"
+    >
       <article className="landing-container max-w-200 space-y-8 text-base leading-8">
         <h1 className="text-4xl font-bold tracking-tight">
           Sua privacidade importa.

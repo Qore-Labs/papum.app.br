@@ -75,13 +75,14 @@ describe("Cadastro de interesse no lançamento", () => {
       from: "Pápum Delivery <contato@binaryinc.com.br>",
       to: ["contato@binaryinc.com.br"],
       reply_to: "cliente@exemplo.com",
-      subject: "Cliente interessado nos serviços PAPUM Delivery",
+      subject: "Novo cadastro de interesse | Papum Delivery",
     });
     expect(body[1]).toMatchObject({
       to: ["cliente@exemplo.com"],
       reply_to: "contato@binaryinc.com.br",
+      subject: "Recebemos seu cadastro | Papum Delivery",
     });
-    expect(body[1].html).toContain("Recebemos seu contato");
+    expect(body[1].html).toContain("Seu cadastro de interesse");
     expect(body[1].html + body[1].text + body[1].subject).not.toMatch(
       /binary/i,
     );

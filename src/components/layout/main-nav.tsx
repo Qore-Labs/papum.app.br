@@ -10,7 +10,7 @@ interface MainNavProps {
 }
 
 const linkClassName =
-  "border-b-2 border-transparent pb-0.5 text-base leading-6 text-home-ink hover:text-[#715000] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-home-ink data-[active=true]:border-[#ffbb00] data-[active=true]:font-semibold data-[active=true]:text-home-ink";
+  "border-b-2 border-transparent pb-0.5 text-base leading-6 focus-visible:outline-2 focus-visible:outline-offset-2 data-[active=true]:border-current data-[active=true]:font-semibold";
 
 export function MainNav({ links }: MainNavProps) {
   const pathname = usePathname();

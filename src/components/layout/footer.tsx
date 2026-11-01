@@ -1,7 +1,6 @@
 import Link from "next/link";
 import { LogoWhite, InstagramIcon, GlobeIcon } from "@/components/ui/icons";
 import { siteConfig } from "@/utils/config/site";
-import { hasMarketingAnalytics } from "@/utils/config/analytics";
 
 interface FooterProps {
   prefetch?: boolean;
@@ -9,7 +8,7 @@ interface FooterProps {
 }
 export function Footer({ analyticsEnabled = false }: FooterProps) {
   return (
-    <footer className="text-home-ink bg-[#f0eee7]">
+    <footer data-header-zone="footer" className="text-home-ink bg-[#f0eee7]">
       <div className="site-safe-gutter mx-auto max-w-320 py-12 sm:py-16">
         <div className="flex flex-col justify-between gap-10 sm:flex-row sm:items-start">
           <div>
@@ -48,7 +47,7 @@ export function Footer({ analyticsEnabled = false }: FooterProps) {
             >
               Privacidade
             </Link>
-            {analyticsEnabled && hasMarketingAnalytics() && (
+            {analyticsEnabled && (
               <button
                 type="button"
                 data-analytics-preferences
