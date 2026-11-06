@@ -1,0 +1,54 @@
+{
+  "state": {
+    "duration": 25,
+    "width": 1080,
+    "height": 1920,
+    "readyState": 4,
+    "frames": [
+      {
+        "time": 0,
+        "readyState": 4,
+        "error": null
+      },
+      {
+        "time": 1.5,
+        "readyState": 4,
+        "error": null
+      },
+      {
+        "time": 5,
+        "readyState": 4,
+        "error": null
+      },
+      {
+        "time": 9,
+        "readyState": 4,
+        "error": null
+      },
+      {
+        "time": 14,
+        "readyState": 4,
+        "error": null
+      },
+      {
+        "time": 17.5,
+        "readyState": 4,
+        "error": null
+      },
+      {
+        "time": 23.5,
+        "readyState": 4,
+        "error": null
+      },
+      {
+        "time": 24.9,
+        "readyState": 4,
+        "error": null
+      }
+    ],
+    "playbackTime": 1.163139,
+    "paused": false,
+    "overflow": false
+  },
+  "errors": []
+}

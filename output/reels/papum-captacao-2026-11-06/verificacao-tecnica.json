@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-11-06T04:18:34.792Z",
+  "video": {
+    "codec": "h264",
+    "width": 1080,
+    "height": 1920,
+    "frameRate": "30/1",
+    "frames": "750",
+    "pixelFormat": "yuv420p"
+  },
+  "audio": {
+    "codec": "aac",
+    "sampleRate": "48000",
+    "channels": 2,
+    "loudness": {
+      "input_i": "-15.79",
+      "input_tp": "-1.45",
+      "input_lra": "3.90",
+      "input_thresh": "-27.18",
+      "output_i": "-15.96",
+      "output_tp": "-1.50",
+      "output_lra": "3.50",
+      "output_thresh": "-27.40",
+      "normalization_type": "dynamic",
+      "target_offset": "-0.04"
+    }
+  },
+  "duration": "25.000000",
+  "bytes": "1700031",
+  "voice": "Microsoft Maria, pt-BR, síntese local do Windows",
+  "music": "Composição instrumental original gerada para esta peça; sem samples externos."
+}

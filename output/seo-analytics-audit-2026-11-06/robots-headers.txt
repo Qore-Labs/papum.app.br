@@ -1,0 +1,17 @@
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Access-Control-Allow-Origin: *
+Age: 70
+Cache-Control: public, max-age=0, must-revalidate
+Content-Disposition: inline; filename="robots.txt"
+Content-Length: 70
+Content-Type: text/plain; charset=utf-8
+Date: Fri, 06 Nov 2026 19:39:43 GMT
+Etag: "54873a1619016adf34b4a1d364523fe4"
+Last-Modified: Fri, 06 Nov 2026 19:38:33 GMT
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+X-Matched-Path: /robots.txt
+X-Vercel-Cache: HIT
+X-Vercel-Id: gru1::mf8xs-1793993983885-342067d6a445
+

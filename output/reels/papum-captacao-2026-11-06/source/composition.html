@@ -1,0 +1,113 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=1080,initial-scale=1">
+<title>Papum Delivery · Reels de captação</title>
+<style>
+@font-face{font-family:PapumHeading;src:url('./assets/plus-jakarta-latin.woff2') format('woff2');font-weight:200 800;font-display:block}
+@font-face{font-family:PapumBody;src:url('./assets/be-vietnam-regular.woff2') format('woff2');font-weight:400;font-display:block}
+@font-face{font-family:PapumBody;src:url('./assets/be-vietnam-semibold.woff2') format('woff2');font-weight:600;font-display:block}
+*{box-sizing:border-box}html,body{margin:0;width:1080px;height:1920px;overflow:hidden;background:#ffc400;color:#1b1c1c;font-family:PapumBody,sans-serif}
+#stage{position:relative;width:1080px;height:1920px;overflow:hidden;background:linear-gradient(125deg,#ffc400 20%,#ffbc00 65%,#ff9500)}
+.scene{position:absolute;inset:0;display:none;overflow:hidden}.scene.active{display:block}.dark{background:#191817;color:#fffaf2}.warm{background:linear-gradient(125deg,#ffc400 20%,#ffbc00 65%,#ff9500)}
+.bolt-bg{position:absolute;width:1300px;height:1300px;left:180px;top:1060px;opacity:.095;transform:rotate(-12deg);pointer-events:none}
+.orbit{position:absolute;left:210px;top:784px;width:920px;height:640px;border:2px solid #71500036;border-radius:50%;transform:rotate(-23deg);pointer-events:none}
+.header{position:absolute;left:100px;top:280px;width:820px;height:118px;display:flex;align-items:center;justify-content:space-between;z-index:20}
+.brand{width:280px;height:109px;color:#1b1c1c}.brand svg{width:100%;height:100%;display:block}.status{font-size:25px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;border:2px solid currentColor;border-radius:99px;padding:15px 22px;white-space:nowrap}
+.header.on-dark{color:#fffaf2}.header.on-dark .brand{color:#fffaf2}
+h1,h2,p{margin:0}.headline{position:absolute;left:100px;top:448px;width:820px;font-family:PapumHeading,sans-serif;font-weight:800;letter-spacing:-.055em;line-height:1.04;font-size:105px}
+.headline .line{display:block;transform-origin:left center}.headline .accent{color:#715000}.dark .headline .accent{color:#ffc400}
+.eyebrow{font-size:28px;line-height:1.5;letter-spacing:.01em;font-weight:600}.subline{position:absolute;left:104px;top:706px;font-size:33px;line-height:1.45;max-width:800px}
+.art{position:absolute;left:100px;top:805px;width:800px;height:280px;transform-origin:center center}
+.app-piece{position:absolute;left:50px;top:0;width:600px;height:255px;background:#fffaf2;border-radius:32px;padding:35px;box-shadow:0 24px 46px -28px #71450088;transform:rotate(-5deg)}
+.app-head{display:flex;align-items:center;gap:24px}.store-mark{width:88px;height:88px;display:flex;align-items:center;justify-content:center;background:#ffc400;border-radius:24px;flex-shrink:0}.store-mark svg{width:51px;height:51px;stroke-width:2}
+.app-name{font-family:PapumHeading;font-size:41px;font-weight:800;letter-spacing:-.04em}.app-desc{font-size:24px;line-height:1.5;color:#625c53;margin-top:5px}.skeletons{display:grid;gap:14px;margin-top:27px}.skeletons span{display:block;height:15px;background:#e8e4da;border-radius:30px}.skeletons span:last-child{width:65%;background:#ffc400}
+.small-order{position:absolute;right:2px;top:66px;width:255px;height:191px;transform:rotate(7deg)}.small-order img{width:100%;height:100%;object-fit:contain}
+.small-contact{position:absolute;left:15px;top:176px;width:200px;height:150px;transform:rotate(-6deg)}.small-contact img{width:100%;height:100%;object-fit:contain}
+.identity-art{top:760px;height:324px}.identity-piece{left:0;top:0;width:800px;height:324px;transform:none;padding:38px 42px;border-radius:36px}.identity-piece .store-mark{width:100px;height:100px}.identity-piece .app-name{font-size:46px}.identity-piece .app-desc{font-size:27px}
+.identity-tags{display:flex;gap:15px;margin-top:30px}.identity-tag{font-size:28px;line-height:1.3;padding:15px 25px;background:#efede6;border-radius:99px;display:flex;align-items:center;gap:12px}.identity-tag.selected{background:#ffc400}.color-dot{display:inline-block;width:23px;height:23px;background:#ff8a00;border-radius:50%}
+.menu-art{top:747px;height:345px}.menu-board{width:800px;height:345px;background:#fffaf2;border-radius:34px;padding:30px 34px;box-shadow:0 25px 46px -27px #71450088}.menu-top{display:flex;align-items:center;gap:18px}.menu-top .store-mark{width:62px;height:62px;border-radius:18px}.menu-top .store-mark svg{width:38px;height:38px}.menu-top .app-name{font-size:32px}.menu-categories{display:flex;gap:12px;margin-top:23px}.category{font-size:23px;padding:10px 19px;border-radius:99px;background:#eeece4}.category.selected{background:#ffc400;color:#1b1c1c}.menu-rows{display:flex;gap:16px;margin-top:24px}.menu-product{flex:1;display:flex;align-items:center;gap:14px;padding:15px 12px;background:#f0eee7;border-radius:18px}.product-swatch{width:52px;height:52px;flex-shrink:0;border-radius:14px;background:#ffc400;display:flex;align-items:center;justify-content:center}.product-swatch svg{width:30px;height:30px}.product-lines{flex:1;display:grid;gap:10px}.product-lines span{height:9px;border-radius:8px;background:#c9c5bb}.product-lines span:last-child{width:66%;background:#dedbd2}
+.panel-head{top:438px;font-size:102px}.feature-labels{position:absolute;left:104px;top:694px;display:flex;gap:14px}.feature-labels span{font-size:26px;border-radius:99px;padding:13px 20px;background:#ffffff12;color:#fffaf2}.feature-labels span.selected{color:#191817;background:#ffc400}
+.feature-art{position:absolute;left:100px;top:788px;width:800px;display:flex;gap:24px}.feature-piece{width:388px;height:284px;background:#fffaf2;border-radius:30px;padding:14px 17px 20px;color:#1b1c1c;transform-origin:center center}.feature-piece img{width:100%;height:202px;display:block;object-fit:contain}.feature-piece p{font-family:PapumHeading;font-size:29px;font-weight:700;letter-spacing:-.035em;text-align:center;margin-top:2px}
+.aligned-art{position:absolute;left:100px;top:804px;display:flex;gap:18px;width:800px}.aligned{width:254px;height:258px;background:#fffaf2;color:#1b1c1c;border-radius:25px;padding:14px 12px;display:flex;flex-direction:column;align-items:center;justify-content:space-between}.aligned img{width:230px;height:172px;object-fit:contain}.aligned p{font-family:PapumHeading;font-size:26px;font-weight:700;letter-spacing:-.02em;line-height:1.5}.menu-symbol{height:172px;display:flex;align-items:center;justify-content:center}.menu-symbol span{display:flex;align-items:center;justify-content:center;width:107px;height:119px;border-radius:24px;background:#ffc400}.menu-symbol svg{width:64px;height:64px;stroke-width:1.8}
+.closing .headline{top:460px;font-size:112px}.cta-visual{position:absolute;left:100px;top:774px;display:flex;align-items:center;justify-content:space-between;width:800px;height:136px;padding:0 42px;background:#191817;color:#fffaf2;border-radius:100px;font-size:54px;font-weight:600;letter-spacing:-.025em}.cta-visual svg{width:68px;height:68px;stroke-width:1.8}.closing-note{position:absolute;left:106px;top:959px;font-size:29px;line-height:1.55}.closing-site{position:absolute;left:106px;top:1044px;font-size:29px;line-height:1.5;letter-spacing:.015em}
+.caption{position:absolute;left:100px;top:1110px;width:840px;height:132px;display:none;align-items:center;justify-content:center;border-radius:24px;background:#191817f5;color:#fffaf2;font-family:PapumBody,sans-serif;font-size:40px;font-weight:600;line-height:1.37;text-align:center;white-space:pre-line;padding:10px 28px;z-index:30}
+.caption-mode,.caption-mode body{background:transparent!important;height:132px!important;width:840px!important}.caption-mode #stage{display:none}.caption-mode .caption{left:0;top:0;display:flex}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+</style>
+</head>
+<body>
+<main id="stage" aria-label="Reels de apresentação Papum Delivery, 25 segundos">
+  <section class="scene warm active" id="scene-0" aria-label="Seu restaurante. Sua marca. Seu app.">
+    <img class="bolt-bg" data-asset="bolt" alt=""><div class="orbit"></div>
+    <h1 class="headline" style="font-size:102px;top:440px"><span class="line" id="hook-0">Seu restaurante.</span><span class="line" id="hook-1">Sua marca.</span><span class="line accent" id="hook-2">Seu app.</span></h1>
+    <div class="art" id="hero-art"><div class="app-piece"><div class="app-head"><div class="store-mark" data-icon="store"></div><div><p class="app-name">Sua marca.<br>Seu app.</p></div></div><div class="skeletons"><span></span><span></span></div></div><div class="small-order"><img data-asset="orders" alt="Ilustração de pedidos"></div><div class="small-contact"><img data-asset="contacts" alt="Ilustração de contatos"></div></div>
+  </section>
+  <section class="scene warm" id="scene-1" aria-label="App com a identidade do restaurante">
+    <img class="bolt-bg" data-asset="bolt" alt=""><h2 class="headline" id="identity-title">A marca<br><span class="accent">é sua.</span></h2>
+    <div class="art identity-art" id="identity-art"><div class="app-piece identity-piece"><div class="app-head"><div class="store-mark" data-icon="store"></div><div><p class="app-name">Seu restaurante</p><p class="app-desc">A identidade do seu negócio.</p></div></div><div class="identity-tags"><span class="identity-tag" id="tag-name">Nome</span><span class="identity-tag" id="tag-logo">Logo</span><span class="identity-tag" id="tag-colors"><i class="color-dot"></i>Cores</span></div></div></div>
+  </section>
+  <section class="scene warm" id="scene-2" aria-label="Cardápio com a identidade do restaurante">
+    <img class="bolt-bg" data-asset="bolt" alt=""><h2 class="headline" id="menu-title" style="font-size:96px">Seu cardápio,<br><span class="accent">com a sua cara.</span></h2>
+    <div class="art menu-art" id="menu-art"><div class="menu-board"><div class="menu-top"><div class="store-mark" data-icon="store"></div><p class="app-name">Seu restaurante</p></div><div class="menu-categories"><span class="category selected" id="cat-products">Produtos</span><span class="category" id="cat-categories">Categorias</span><span class="category">Sua identidade</span></div><div class="menu-rows"><div class="menu-product"><div class="product-swatch" data-icon="utensils"></div><div class="product-lines"><span></span><span></span></div></div><div class="menu-product"><div class="product-swatch" data-icon="utensils"></div><div class="product-lines"><span></span><span></span></div></div><div class="menu-product"><div class="product-swatch" data-icon="utensils"></div><div class="product-lines"><span></span><span></span></div></div></div></div></div>
+  </section>
+  <section class="scene dark" id="scene-3" aria-label="Cardápio, pedidos e contatos em um painel">
+    <img class="bolt-bg" data-asset="bolt" alt=""><h2 class="headline panel-head" id="panel-title">Cada parte<br><span class="accent">no seu lugar.</span></h2>
+    <div class="feature-labels" id="feature-labels"><span>Cardápio</span><span id="label-orders" class="selected">Pedidos</span><span id="label-contacts">Contatos</span></div>
+    <div class="feature-art"><div class="feature-piece" id="orders-piece"><img data-asset="orders" alt="Ilustração de pedidos"><p>Pedidos organizados</p></div><div class="feature-piece" id="contacts-piece"><img data-asset="contacts" alt="Ilustração de contatos"><p>Contatos por perto</p></div></div>
+  </section>
+  <section class="scene dark" id="scene-4" aria-label="Menos bagunça. Mais controle.">
+    <img class="bolt-bg" data-asset="bolt" alt=""><h2 class="headline" id="control-title" style="font-size:96px">Menos bagunça.<br><span class="accent">Mais controle.</span></h2>
+    <div class="aligned-art"><div class="aligned" id="aligned-0"><div class="menu-symbol"><span data-icon="book"></span></div><p>Cardápio</p></div><div class="aligned" id="aligned-1"><img data-asset="orders" alt=""><p>Pedidos</p></div><div class="aligned" id="aligned-2"><img data-asset="contacts" alt=""><p>Contatos</p></div></div>
+  </section>
+  <section class="scene warm closing" id="scene-5" aria-label="Cadastre seu interesse no link da bio">
+    <img class="bolt-bg" data-asset="bolt" alt=""><h2 class="headline" id="closing-title">Cadastre seu<br><span class="accent">interesse.</span></h2>
+    <div class="cta-visual" id="cta-visual"><span>Link na bio</span><span data-icon="arrow"></span></div>
+    <p class="closing-note" id="closing-note">Pré-lançamento.<br>Cadastro de interesse gratuito.</p><p class="closing-site" id="closing-site">www.papum.app.br</p>
+  </section>
+  <div class="header" id="brand-header"><div class="brand" id="brand"></div><div class="status">Pré-lançamento</div></div>
+</main>
+<div class="caption" id="caption" aria-live="polite"></div>
+<script src="assets.js"></script>
+<script>
+const A=window.PAPUM_ASSETS;
+document.querySelector('#brand').innerHTML=A.logo;
+document.querySelectorAll('[data-asset]').forEach(el=>el.src=A[el.dataset.asset]);
+document.querySelectorAll('[data-icon]').forEach(el=>el.innerHTML=A.icons[el.dataset.icon]);
+const C=[
+  [0,3,'Seu restaurante.\nSua marca. Seu app.'],
+  [3,7,'A proposta da Papum Delivery:\num app com sua identidade.'],
+  [7,11,'Seu cardápio,\ncom a sua cara.'],
+  [11,16,'Pedidos e contatos\norganizados em um painel.'],
+  [16,19,'Menos bagunça.\nMais controle.'],
+  [19,22,'Estamos em pré-lançamento.'],
+  [22,25,'Cadastre seu interesse\nno link da bio.']
+];
+const starts=[0,3,7,11,16,19];
+function bezier(x,a,b,c,d){x=Math.min(1,Math.max(0,x));let t=x;for(let i=0;i<6;i++){const v=3*(1-t)*(1-t)*t*a+3*(1-t)*t*t*c+t*t*t-x;const dv=3*(1-t)*(1-t)*a+6*(1-t)*t*(c-a)+3*t*t*(1-c);if(Math.abs(dv)<1e-6)break;t=Math.min(1,Math.max(0,t-v/dv))}return 3*(1-t)*(1-t)*t*b+3*(1-t)*t*t*d+t*t*t}
+const out=x=>bezier(x,.23,1,.32,1);
+const move=x=>bezier(x,.77,0,.175,1);
+const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches;
+function enter(id,time,delay=0,dy=32,scale=.97){const el=document.getElementById(id);const p=reduced?1:out((time-delay)/.2);el.style.opacity=String(p);el.style.transform=`translateY(${(1-p)*dy}px) scale(${scale+(1-scale)*p})`;}
+window.renderAt=(time,options={})=>{
+  const t=Math.min(24.999,Math.max(0,time));let i=starts.length-1;while(starts[i]>t)i--;
+  document.querySelectorAll('.scene').forEach((el,k)=>el.classList.toggle('active',k===i));
+  document.getElementById('brand-header').classList.toggle('on-dark',i===3||i===4);
+  const q=t-starts[i];
+  if(i===0){['hook-0','hook-1','hook-2'].forEach((id,k)=>enter(id,q,k===0?-.2:k*.43,20,1));enter('hero-art',q,.12,46,.97)}
+  if(i===1){enter('identity-title',q,-.12,20,1);enter('identity-art',q,.12,42,.97);['tag-name','tag-logo','tag-colors'].forEach((id,k)=>document.getElementById(id).classList.toggle('selected',q>=.6+k*.7));}
+  if(i===2){enter('menu-title',q,-.12,20,1);enter('menu-art',q,.13,38,.97);const category=q>=1.7;document.getElementById('cat-products').classList.toggle('selected',!category);document.getElementById('cat-categories').classList.toggle('selected',category);}
+  if(i===3){enter('panel-title',q,-.12,20,1);enter('feature-labels',q,.1,20,1);enter('orders-piece',q,.28,40,.97);enter('contacts-piece',q,1.7,40,.97);document.getElementById('label-orders').classList.toggle('selected',q<1.7);document.getElementById('label-contacts').classList.toggle('selected',q>=1.7);}
+  if(i===4){enter('control-title',q,-.12,20,1);for(let k=0;k<3;k++){const p=reduced?1:move((q-.06*k)/.48);const el=document.getElementById('aligned-'+k);el.style.opacity=String(.4+.6*p);el.style.transform=`translate(${(1-p)*(k-1)*90}px,${(1-p)*[55,-35,45][k]}px) rotate(${(1-p)*[-6,4,7][k]}deg)`}}
+  if(i===5){enter('closing-title',q,-.12,20,1);enter('cta-visual',q,.2,28,.97);enter('closing-note',q,.35,20,1);enter('closing-site',q,.45,20,1)}
+  const current=C.find(([s,e])=>t>=s&&t<e);const caption=document.getElementById('caption');caption.textContent=current[2];caption.style.display=options.captions?'flex':'none';
+  return {time:t,scene:i,caption:current[2]};
+};
+window.showCaption=index=>{document.documentElement.classList.add('caption-mode');const el=document.getElementById('caption');el.textContent=C[index][2];el.style.display='flex'};
+window.restoreComposition=()=>document.documentElement.classList.remove('caption-mode');
+window.playReel=()=>{const start=performance.now();return new Promise(resolve=>{const step=now=>{const time=(now-start)/1000;window.renderAt(Math.min(time,24.999),{captions:true});if(time<25)requestAnimationFrame(step);else resolve()};requestAnimationFrame(step)})};
+window.renderAt(0);
+if(new URLSearchParams(location.search).get('play')==='1')document.fonts.ready.then(()=>window.playReel());
+</script>
+</body></html>

@@ -1,0 +1,35 @@
+{
+  "voice": "Microsoft Maria, pt-BR, síntese local do Windows",
+  "music": "Composição instrumental original gerada para esta peça; sem samples externos.",
+  "musicPeak": 0.049376964949793066,
+  "speech": [
+    {
+      "file": "voice-01.wav",
+      "durationSeconds": 3.546125
+    },
+    {
+      "file": "voice-02.wav",
+      "durationSeconds": 3.460625
+    },
+    {
+      "file": "voice-03.wav",
+      "durationSeconds": 1.9035
+    },
+    {
+      "file": "voice-04.wav",
+      "durationSeconds": 2.402375
+    },
+    {
+      "file": "voice-05.wav",
+      "durationSeconds": 2.265375
+    },
+    {
+      "file": "voice-06.wav",
+      "durationSeconds": 2.073125
+    },
+    {
+      "file": "voice-07.wav",
+      "durationSeconds": 1.934
+    }
+  ]
+}

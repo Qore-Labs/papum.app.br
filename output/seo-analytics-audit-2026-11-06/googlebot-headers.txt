@@ -1,0 +1,19 @@
+HTTP/1.1 200 OK
+Accept-Ranges: bytes
+Access-Control-Allow-Origin: *
+Age: 423862
+Cache-Control: public, max-age=0, must-revalidate
+Content-Disposition: inline
+Content-Length: 240530
+Content-Type: text/html; charset=utf-8
+Date: Fri, 06 Nov 2026 19:39:43 GMT
+Etag: "7d520ee09467ac41248677ced852b816"
+Server: Vercel
+Strict-Transport-Security: max-age=63072000
+Vary: rsc, next-router-state-tree, next-router-prefetch, next-router-segment-prefetch
+X-Matched-Path: /
+X-Nextjs-Prerender: 1
+X-Nextjs-Stale-Time: 300
+X-Vercel-Cache: HIT
+X-Vercel-Id: gru1::xbxh9-1793993983267-1ff1428050f3
+

@@ -1,0 +1,69 @@
+{
+  "fontState": [
+    {
+      "family": "PapumHeading",
+      "status": "loaded"
+    },
+    {
+      "family": "PapumBody",
+      "status": "loaded"
+    },
+    {
+      "family": "PapumBody",
+      "status": "loaded"
+    }
+  ],
+  "errors": [],
+  "layout": [
+    {
+      "text": "Cadastre seu interesse.",
+      "x": 100,
+      "y": 460,
+      "width": 820,
+      "height": 232.9375
+    },
+    {
+      "text": "Link na bio",
+      "x": 100,
+      "y": 774,
+      "width": 800,
+      "height": 136
+    },
+    {
+      "text": "Pré-lançamento. Cadastro de interesse gratuito.",
+      "x": 106,
+      "y": 959,
+      "width": 439.734375,
+      "height": 89.875
+    },
+    {
+      "text": "www.papum.app.br",
+      "x": 106,
+      "y": 1044,
+      "width": 294.59375,
+      "height": 43.5
+    },
+    {
+      "text": "PRÉ-LANÇAMENTO",
+      "x": 100,
+      "y": 280,
+      "width": 820,
+      "height": 118
+    },
+    {
+      "text": "Cadastre seu interesse no link da bio.",
+      "x": 100,
+      "y": 1110,
+      "width": 840,
+      "height": 132
+    }
+  ],
+  "stillTimes": [
+    1.3,
+    5.4,
+    9,
+    14,
+    17.2,
+    22.8
+  ]
+}
