@@ -1,4 +1,8 @@
-@import "tailwindcss";
+@import "tailwindcss" source(none);
+
+/* Scan application sources only; saved HTML audits are not build inputs. */
+@source "./";
+@source "../src";
 
 @property --header-fill-a {
   syntax: "<color>";
