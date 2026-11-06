@@ -10,15 +10,15 @@ O histórico do projeto registra um bloqueio deliberado de pré-lançamento por 
 
 ## Respostas públicas verificadas
 
-| Recurso | Resultado |
-| --- | --- |
-| `https://papum.app.br/` | Redireciona para a versão com `www`; destino HTTP 200. |
-| `https://www.papum.app.br/` | HTTP 200; título `Papum Delivery - Gestão de Delivery`; meta robots `index, follow`; canonical `https://www.papum.app.br`; ausência de `X-Robots-Tag: noindex`. |
-| Home com User-Agent de Googlebot | Mesmos sinais de indexação e HTTP 200. Essa simulação não substitui um acesso real do Google ou o teste publicado do Search Console. |
-| `/robots.txt` | HTTP 200; `User-Agent: *`, `Allow: /` e anúncio de `https://www.papum.app.br/sitemap.xml`. |
-| `/sitemap.xml` | HTTP 200; XML contendo Home e `/lancamento`. |
-| `/lancamento` | HTTP 200; `index, follow`, canonical próprio e ausência de cabeçalho `noindex`. |
-| `/login` | HTTP 200; `noindex, follow`, conforme a regra intencional da área de acesso. |
+| Recurso                          | Resultado                                                                                                                                                       |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `https://papum.app.br/`          | Redireciona para a versão com `www`; destino HTTP 200.                                                                                                          |
+| `https://www.papum.app.br/`      | HTTP 200; título `Papum Delivery - Gestão de Delivery`; meta robots `index, follow`; canonical `https://www.papum.app.br`; ausência de `X-Robots-Tag: noindex`. |
+| Home com User-Agent de Googlebot | Mesmos sinais de indexação e HTTP 200. Essa simulação não substitui um acesso real do Google ou o teste publicado do Search Console.                            |
+| `/robots.txt`                    | HTTP 200; `User-Agent: *`, `Allow: /` e anúncio de `https://www.papum.app.br/sitemap.xml`.                                                                      |
+| `/sitemap.xml`                   | HTTP 200; XML contendo Home e `/lancamento`.                                                                                                                    |
+| `/lancamento`                    | HTTP 200; `index, follow`, canonical próprio e ausência de cabeçalho `noindex`.                                                                                 |
+| `/login`                         | HTTP 200; `noindex, follow`, conforme a regra intencional da área de acesso.                                                                                    |
 
 O conteúdo principal da Home está presente no HTML, incluindo apresentação, funcionalidades e FAQ. Não foi identificado, nas respostas verificadas, bloqueio de acesso ou conteúdo principal dependente exclusivamente de JavaScript.
 

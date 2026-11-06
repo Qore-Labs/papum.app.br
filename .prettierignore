@@ -7,3 +7,9 @@ playwright-report
 test-results
 blob-report
 .playwright-cli
+
+# Generated deliverables and audit snapshots are not application source.
+/output/
+
+# Preserve the verification file exactly as supplied by Google.
+/public/google0353e42140b893ca.html

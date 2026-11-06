@@ -22,16 +22,16 @@ Destino recomendado para a bio: `https://www.papum.app.br/instagram#cadastro`. O
 
 Fonte de identidade: `DESIGN.md`, landing atual e assets originais, conferidos no repositório. A referência mobile `output/playwright/fixed-header/chromium/hero-390.png` foi inspecionada nesta preparação. O Figma não foi reaberto nesta etapa de planejamento.
 
-| Elemento | Direção |
-| --- | --- |
-| Fundo principal | Gradiente 125 graus: `#FFC400` 20%, `#FFBC00` 65%, `#FF9500`. |
-| Contraponto | Carvão `#191817`, com texto creme `#FFFAF2`. |
-| Superfície clara | Creme `#FAF9F5`; tinta `#1B1C1C`. |
-| Destaque | Raio original em laranja `#FF8A00`. |
-| Títulos | Plus Jakarta Sans 700/800; entrelinha compacta e poucas palavras. |
-| Apoios e legendas | Be Vietnam Pro; peso 400/600 e contraste alto. |
-| Formas | Peças gráficas com cantos arredondados, pílulas pontuais e linhas discretas. |
-| Logo | Vetor original PapumLogo/LogoWhite/LogoColored em `src/components/ui/icons.tsx`; preservar desenho e proporção. |
+| Elemento          | Direção                                                                                                         |
+| ----------------- | --------------------------------------------------------------------------------------------------------------- |
+| Fundo principal   | Gradiente 125 graus: `#FFC400` 20%, `#FFBC00` 65%, `#FF9500`.                                                   |
+| Contraponto       | Carvão `#191817`, com texto creme `#FFFAF2`.                                                                    |
+| Superfície clara  | Creme `#FAF9F5`; tinta `#1B1C1C`.                                                                               |
+| Destaque          | Raio original em laranja `#FF8A00`.                                                                             |
+| Títulos           | Plus Jakarta Sans 700/800; entrelinha compacta e poucas palavras.                                               |
+| Apoios e legendas | Be Vietnam Pro; peso 400/600 e contraste alto.                                                                  |
+| Formas            | Peças gráficas com cantos arredondados, pílulas pontuais e linhas discretas.                                    |
+| Logo              | Vetor original PapumLogo/LogoWhite/LogoColored em `src/components/ui/icons.tsx`; preservar desenho e proporção. |
 
 A cor é parte da composição: amarelo identifica a proposta e o fechamento; carvão diferencia a organização no painel. O creme dá contraste às peças. Não criar outra marca para o filme.
 
@@ -39,14 +39,14 @@ A cor é parte da composição: amarelo identifica a proposta e o fechamento; ca
 
 Os intervalos abaixo somam exatamente 25 segundos. Narração total: 43 palavras. A leitura deve ser gravada e cronometrada, com pausas naturais, antes de fixar a edição.
 
-| Tempo | Texto principal na tela | Narração | Visual e animação |
-| --- | --- | --- | --- |
-| 00–03 s | Seu restaurante. / Sua marca. / Seu app. | Seu restaurante. Sua marca. Seu app. | Começar com texto e composição já reconhecíveis. Fundo amarelo, marca pequena e peça de app ilustrada. Revelar as três frases em blocos inteiros, com entradas curtas e pequenos deslocamentos; a última frase permanece. Sem vinheta de abertura. |
-| 03–07 s | A marca é sua. / Nome · Logo · Cores | A proposta da Papum Delivery: um app com sua identidade. | Aproximar a peça clara da arte atual, com o rótulo genérico “Seu restaurante”. Nome, logo e cores ganham destaque em sequência. Usar uma ilustração conceitual, sem criar cliente fictício. Exibir “Pré-lançamento” de forma legível. |
-| 07–11 s | Seu cardápio, / com a sua cara. | Seu cardápio, com a sua cara. | A peça mantém a mesma posição enquanto produtos/categorias são representados por blocos gráficos simples. Um destaque percorre as categorias. Texto de apoio curto, sem preços, avaliações ou dados inventados. |
-| 11–16 s | Cardápio. Pedidos. Contatos. / Em um painel. | Pedidos e contatos organizados em um painel. | A peça do app se desloca para um lado e se conecta ao conjunto da operação. Trocar para carvão. Destacar pedidos com `orders.svg` e depois contatos com `contacts.svg`. Apresentação explicativa da proposta, sem simular pedidos reais ou integrações. |
-| 16–19 s | Menos bagunça. / Mais controle. | Menos bagunça. Mais controle. | As três partes se alinham em uma composição estável. O movimento termina assim que a organização fica clara. Dar tempo de leitura; não mover os dados continuamente. |
-| 19–25 s | Cadastre seu interesse. / Link na bio. | Estamos em pré-lançamento. Cadastre seu interesse no link da bio. | Fechamento amarelo, logo original e CTA em alto contraste no centro. Apoio: “Pré-lançamento · Cadastro de interesse gratuito”. Manter CTA e marca até o último quadro, com pelo menos 4 segundos de leitura estável. |
+| Tempo   | Texto principal na tela                      | Narração                                                          | Visual e animação                                                                                                                                                                                                                                       |
+| ------- | -------------------------------------------- | ----------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 00–03 s | Seu restaurante. / Sua marca. / Seu app.     | Seu restaurante. Sua marca. Seu app.                              | Começar com texto e composição já reconhecíveis. Fundo amarelo, marca pequena e peça de app ilustrada. Revelar as três frases em blocos inteiros, com entradas curtas e pequenos deslocamentos; a última frase permanece. Sem vinheta de abertura.      |
+| 03–07 s | A marca é sua. / Nome · Logo · Cores         | A proposta da Papum Delivery: um app com sua identidade.          | Aproximar a peça clara da arte atual, com o rótulo genérico “Seu restaurante”. Nome, logo e cores ganham destaque em sequência. Usar uma ilustração conceitual, sem criar cliente fictício. Exibir “Pré-lançamento” de forma legível.                   |
+| 07–11 s | Seu cardápio, / com a sua cara.              | Seu cardápio, com a sua cara.                                     | A peça mantém a mesma posição enquanto produtos/categorias são representados por blocos gráficos simples. Um destaque percorre as categorias. Texto de apoio curto, sem preços, avaliações ou dados inventados.                                         |
+| 11–16 s | Cardápio. Pedidos. Contatos. / Em um painel. | Pedidos e contatos organizados em um painel.                      | A peça do app se desloca para um lado e se conecta ao conjunto da operação. Trocar para carvão. Destacar pedidos com `orders.svg` e depois contatos com `contacts.svg`. Apresentação explicativa da proposta, sem simular pedidos reais ou integrações. |
+| 16–19 s | Menos bagunça. / Mais controle.              | Menos bagunça. Mais controle.                                     | As três partes se alinham em uma composição estável. O movimento termina assim que a organização fica clara. Dar tempo de leitura; não mover os dados continuamente.                                                                                    |
+| 19–25 s | Cadastre seu interesse. / Link na bio.       | Estamos em pré-lançamento. Cadastre seu interesse no link da bio. | Fechamento amarelo, logo original e CTA em alto contraste no centro. Apoio: “Pré-lançamento · Cadastro de interesse gratuito”. Manter CTA e marca até o último quadro, com pelo menos 4 segundos de leitura estável.                                    |
 
 O aviso de pré-lançamento deve acompanhar as cenas que apresentam o produto e o fechamento. Se for incluída qualquer captura do painel, acrescentar **Prévia demonstrativa** e conferir legibilidade no celular.
 
@@ -90,14 +90,14 @@ Função principal do movimento: explicação da relação app/painel e indicaç
 
 ## Assets para produção
 
-| Asset | Uso |
-| --- | --- |
-| `src/components/ui/icons.tsx` — PapumLogo e variantes | Exportar o vetor correto da marca, sem redesenho por IA. |
-| `public/home/product/orders.svg` | Peça de recibo e sacola para a parte de pedidos. Preservar proporção 4:3. |
-| `public/home/product/contacts.svg` | Peça de contatos; preservar proporção 4:3. |
-| `public/home/product/lightning.svg` | Raio decorativo original. |
-| `src/components/home/landing-page.tsx` e `product-explorer.tsx` | Referência da arte e da separação entre app e painel. |
-| `output/playwright/fixed-header/chromium/hero-390.png` | Referência de composição e identidade; não ampliar como master de vídeo. |
+| Asset                                                           | Uso                                                                       |
+| --------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `src/components/ui/icons.tsx` — PapumLogo e variantes           | Exportar o vetor correto da marca, sem redesenho por IA.                  |
+| `public/home/product/orders.svg`                                | Peça de recibo e sacola para a parte de pedidos. Preservar proporção 4:3. |
+| `public/home/product/contacts.svg`                              | Peça de contatos; preservar proporção 4:3.                                |
+| `public/home/product/lightning.svg`                             | Raio decorativo original.                                                 |
+| `src/components/home/landing-page.tsx` e `product-explorer.tsx` | Referência da arte e da separação entre app e painel.                     |
+| `output/playwright/fixed-header/chromium/hero-390.png`          | Referência de composição e identidade; não ampliar como master de vídeo.  |
 
 Não usar `public/home/app-screen.png`: é material legado com marketplace, restaurante, avaliação e condições fictícios. Evitar PNGs pequenos da marca e cenas de entregador que possam sugerir frota própria. A preferência é animar os vetores atuais.
 
