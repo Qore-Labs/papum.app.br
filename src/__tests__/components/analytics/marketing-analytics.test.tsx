@@ -31,7 +31,15 @@ function Preferences({ configured = true }: { configured?: boolean } = {}) {
     <>
       <Footer analyticsEnabled />
       <MarketingAnalytics
-        measurementId={configured ? "G-TEST123" : undefined}
+        hostname={window.location.hostname}
+        google={
+          configured
+            ? {
+                tagManagerId: "GTM-TEST123",
+                measurementId: "G-TEST123",
+              }
+            : undefined
+        }
         clarityProjectId={configured ? "testproject" : undefined}
       />
     </>
@@ -77,10 +85,24 @@ describe("Preferências de analytics", () => {
   it("inicia no modo sem cookies sem exibir aviso ou inventar aceite", () => {
     render(<Preferences />);
     expect(screen.getAllByRole("status")).toHaveLength(2);
+    expect(
+      screen.getByText(
+        "https://www.googletagmanager.com/gtm.js?id=GTM-TEST123",
+      ),
+    ).toBeInTheDocument();
     expect(configureClarity).toHaveBeenCalledWith("testproject", "denied");
     expect(screen.queryByRole("region")).not.toBeInTheDocument();
     expect(localStorage.getItem("papum:analytics-consent:v2")).toBeNull();
   });
+  it.each(["/privacidade", "/login", "/dashboard"])(
+    "mantém o GTM fora de %s mesmo com consentimento salvo",
+    (pathname) => {
+      vi.mocked(usePathname).mockReturnValue(pathname);
+      localStorage.setItem("papum:analytics-consent:v2", "granted");
+      render(<Preferences />);
+      expect(screen.queryByRole("status")).not.toBeInTheDocument();
+    },
+  );
   it("permite desativar e reativar pelo rodapé, devolvendo o foco", async () => {
     const user = userEvent.setup();
     render(<Preferences />);

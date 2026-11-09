@@ -21,7 +21,6 @@ jobs:
       CI: "true"
       NEXT_TELEMETRY_DISABLED: "1"
       DELIVERY_DATA_SOURCE: mock
-      NEXT_PUBLIC_GA4_ID: ""
       RESEND_API_KEY: ""
       TURNSTILE_SECRET_KEY: ""
       NEXT_PUBLIC_TURNSTILE_SITE_KEY: ""

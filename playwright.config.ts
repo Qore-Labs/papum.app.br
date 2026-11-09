@@ -42,7 +42,6 @@ export default defineConfig({
       PAPUM_E2E: "1",
       DELIVERY_DATA_SOURCE: "mock",
       DELIVERY_API_BASE_URL: "http://127.0.0.1:9/api",
-      NEXT_PUBLIC_GA4_ID: "",
       NEXT_PUBLIC_TURNSTILE_SITE_KEY: "e2e-public-site-key",
       TURNSTILE_SECRET_KEY: "e2e-turnstile-secret",
       WAITLIST_ALLOWED_HOSTNAMES: "127.0.0.1",

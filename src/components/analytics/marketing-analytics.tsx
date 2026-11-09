@@ -16,7 +16,10 @@ import {
   isClarityUrlAllowed,
   stopClarity,
 } from "@/lib/clarity";
-import { isValidClarityId } from "@/utils/config/analytics";
+import {
+  isValidClarityId,
+  type GoogleAnalyticsConfig,
+} from "@/utils/config/analytics";
 
 import {
   configureMarketingAnalytics,
@@ -30,7 +33,8 @@ import {
 } from "@/lib/analytics";
 
 interface MarketingAnalyticsProps {
-  measurementId?: string;
+  hostname?: string;
+  google?: GoogleAnalyticsConfig;
   clarityProjectId?: string;
 }
 const serverConsent = () => null;
@@ -39,7 +43,8 @@ const clientReadySnapshot = () => true;
 const serverReadySnapshot = () => false;
 
 export function MarketingAnalytics({
-  measurementId,
+  hostname,
+  google,
   clarityProjectId,
 }: MarketingAnalyticsProps) {
   const pathname = usePathname();
@@ -55,19 +60,18 @@ export function MarketingAnalytics({
   );
   const [preferencesOpen, setPreferencesOpen] = useState(false);
   const previousPage = useRef<string | null>(null);
+  const googleStarted = useRef(false);
   const preferencesTrigger = useRef<HTMLElement | null>(null);
-  const gaEnabled = Boolean(
-    measurementId && /^G-[A-Z0-9]+$/.test(measurementId),
-  );
   const clarityEnabled = isValidClarityId(clarityProjectId);
-  const enabled = gaEnabled || clarityEnabled;
+  const enabled = Boolean(google) || clarityEnabled;
   const marketingPage = isMarketingPath(pathname);
-  const clarityAllowed =
+  const canLoadAnalytics =
     clientReady &&
-    clarityEnabled &&
+    hostname === window.location.hostname &&
     consent !== "denied" &&
-    marketingPage &&
-    isClarityLocationAllowed();
+    marketingPage;
+  const clarityAllowed =
+    canLoadAnalytics && clarityEnabled && isClarityLocationAllowed();
 
   useLayoutEffect(() => {
     if (clarityAllowed && clarityProjectId)
@@ -79,10 +83,9 @@ export function MarketingAnalytics({
   }, [clarityAllowed, clarityProjectId, pathname, consent]);
 
   useEffect(() => {
-    if (!clarityEnabled) return;
+    if (!enabled || hostname !== window.location.hostname) return;
     function guardNavigation(event: MouseEvent) {
       if (
-        !isClarityActive() ||
         event.defaultPrevented ||
         event.button !== 0 ||
         event.metaKey ||
@@ -98,15 +101,25 @@ export function MarketingAnalytics({
       if (!link || link.target === "_blank" || link.hasAttribute("download"))
         return;
       const url = new URL(link.href, window.location.href);
-      if (url.origin !== window.location.origin || isClarityUrlAllowed(url))
-        return;
+      if (url.origin !== window.location.origin) return;
+      const leavesGoogle =
+        googleStarted.current && !isMarketingPath(url.pathname);
+      const leavesClarity = isClarityActive() && !isClarityUrlAllowed(url);
+      if (!leavesGoogle && !leavesClarity) return;
       event.preventDefault();
       event.stopPropagation();
+      if (leavesGoogle) pauseMarketingAnalytics();
       stopClarity();
-      // Crossing the recording boundary gets a fresh document, before private DOM exists.
+      // A fresh document keeps loaded providers outside untracked routes.
       window.location.assign(url.href);
     }
     function guardHistory() {
+      if (googleStarted.current && !isMarketingPath(window.location.pathname)) {
+        pauseMarketingAnalytics();
+        stopClarity();
+        window.location.reload();
+        return;
+      }
       if (!isClarityLocationAllowed() && stopClarity())
         window.location.reload();
     }
@@ -135,7 +148,7 @@ export function MarketingAnalytics({
       window.removeEventListener("hashchange", guardHistory, true);
       window.removeEventListener("pageshow", resumeDocument);
     };
-  }, [clarityEnabled, clarityProjectId]);
+  }, [enabled, clarityProjectId, hostname]);
 
   useEffect(() => {
     function openPreferences(event: MouseEvent) {
@@ -151,19 +164,16 @@ export function MarketingAnalytics({
     return () => document.removeEventListener("click", openPreferences);
   }, []);
 
-  useEffect(() => {
-    if (
-      !clientReady ||
-      !gaEnabled ||
-      !measurementId ||
-      consent === "denied" ||
-      !marketingPage
-    ) {
+  useLayoutEffect(() => {
+    if (!google || !canLoadAnalytics) {
       pauseMarketingAnalytics();
       previousPage.current = null;
+      if (!marketingPage && googleStarted.current) window.location.reload();
       return;
     }
-    configureMarketingAnalytics(measurementId);
+    // Queue consent and the GTM startup event before next/script loads it.
+    configureMarketingAnalytics(google.measurementId);
+    googleStarted.current = true;
     if (previousPage.current !== pathname) {
       trackMarketingPage(pathname);
       previousPage.current = pathname;
@@ -171,15 +181,14 @@ export function MarketingAnalytics({
     return () => {
       pauseMarketingAnalytics();
     };
-  }, [clientReady, consent, gaEnabled, marketingPage, measurementId, pathname]);
+  }, [consent, google, canLoadAnalytics, marketingPage, pathname]);
 
   useEffect(() => {
-    if (!clientReady || !enabled || consent === "denied" || !marketingPage)
-      return;
+    if (!canLoadAnalytics || !enabled) return;
     document.addEventListener("click", trackMarketingClick, true);
     return () =>
       document.removeEventListener("click", trackMarketingClick, true);
-  }, [clientReady, consent, enabled, marketingPage]);
+  }, [canLoadAnalytics, enabled]);
 
   if (!marketingPage && !preferencesOpen) return null;
   function choose(value: "granted" | "denied") {
@@ -190,10 +199,10 @@ export function MarketingAnalytics({
 
   return (
     <>
-      {clientReady && consent !== "denied" && gaEnabled && marketingPage && (
+      {google && canLoadAnalytics && (
         <Script
-          id="papum-google-analytics"
-          src={`https://www.googletagmanager.com/gtag/js?id=${measurementId}`}
+          id="papum-google-tag-manager"
+          src={`https://www.googletagmanager.com/gtm.js?id=${google.tagManagerId}`}
           strategy="afterInteractive"
         />
       )}

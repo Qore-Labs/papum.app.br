@@ -3,12 +3,12 @@
 ## O que está conectado
 
 - “Cadastrar-se” leva ao formulário da própria landing e dá foco ao e-mail, mantendo a rota de entrada. `/lancamento` continua disponível para links antigos.
-- GA4 gratuito para cliques nos CTAs e conversões do formulário.
+- GA4 via Google Tag Manager para cliques nos CTAs e conversões do formulário.
 - Microsoft Clarity nas rotas `/`, `/instagram` e `/lancamento`, independente do GA4, com sinal de armazenamento negado por padrão.
 - Resend para notificação interna e confirmação ao interessado, com texto e identidade Pápum Delivery.
 - Cloudflare Turnstile para verificar o visitante antes de permitir envios. O token é validado no servidor, incluindo hostname e ação `launch_waitlist`.
 
-Sem IDs de analytics não há coleta. Com integração habilitada, a análise limitada começa sem banner inicial e com cookies negados; as preferências no rodapé permitem desativar a análise ou permitir cookies. Recusas anteriores são respeitadas. Sem configuração de envio não há e-mails nem confirmação falsa de cadastro. A integração é independente de `DELIVERY_DATA_SOURCE`: o dashboard continua na prévia local.
+Com a integração habilitada, a análise limitada começa sem banner inicial e com cookies negados. As preferências no rodapé permitem desativar a análise ou permitir cookies. Recusas anteriores são respeitadas. Sem configuração de envio não há e-mails nem confirmação falsa de cadastro. A integração é independente de `DELIVERY_DATA_SOURCE`: o dashboard continua na prévia local.
 
 ## Entrada do Instagram
 
@@ -18,12 +18,12 @@ Instagram oficial do site e dos e-mails: [@usepapumdelivery](https://www.instagr
 
 ## 1. Google Analytics 4 — gratuito
 
-1. Crie uma conta/propriedade em [Google Analytics](https://analytics.google.com/) e um fluxo de dados da Web para `https://www.papum.app.br`.
-2. Copie o ID de medição (formato `G-...`) para `NEXT_PUBLIC_GA4_ID` em `.env.local` e no ambiente de hospedagem.
-3. **Desative a medição otimizada/Enhanced Measurement desse fluxo.** O código envia as visualizações e eventos manualmente. Isso evita duplicação por mudanças de histórico e coleta automática de formulários, busca e URLs que podem conter dados pessoais. Mantenha Google Signals, personalização de anúncios e recursos de dados fornecidos por usuários desativados.
-4. Em Administrador → Eventos/Eventos principais, marque `generate_lead` como evento principal. Se o objetivo for uma conversão por visitante em cada sessão, configure a contagem como uma vez por sessão.
-5. Crie dimensões personalizadas de escopo Evento para `cta_name`, `cta_location` e, se necessário, `form_name`.
-6. Depois de publicar/reiniciar, confira o relatório Em tempo real. Em Explorações → Funil, acompanhe visita → `cta_click` → `form_start` → tentativa → `generate_lead`. Cadastros feitos diretamente no campo podem pular o clique no CTA.
+O contêiner `GTM-KS26GKCL` direciona a medição para `G-8K7CRHKFQJ`. Os IDs públicos ficam em `src/utils/config/analytics.ts`. O carregamento ocorre nas rotas `/`, `/instagram` e `/lancamento` do domínio de produção.
+
+1. **Desative a medição otimizada do fluxo.** O código envia visualizações e eventos manualmente. Isso evita duplicação por mudanças de histórico e coleta automática de formulários e URLs. Mantenha Google Signals, personalização de anúncios e recursos de dados fornecidos por usuários desativados.
+2. Em Administrador → Eventos/Eventos principais, marque `generate_lead` como evento principal. Se o objetivo for uma conversão por visitante em cada sessão, configure a contagem como uma vez por sessão.
+3. Crie dimensões personalizadas de escopo Evento para `cta_name`, `cta_location` e, se necessário, `form_name`.
+4. Depois de publicar, confira o relatório Em tempo real. Em Explorações → Funil, acompanhe visita → `cta_click` → `form_start` → tentativa → `generate_lead`. Cadastros feitos diretamente no campo podem pular o clique no CTA.
 
 | Evento          | Momento                                                               | Parâmetros                                                                                                       |
 | --------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
@@ -42,9 +42,9 @@ Referências: [GA4](https://marketingplatform.google.com/about/analytics/), [eve
 
 ## Microsoft Clarity — sessões e mapas de calor
 
-O usuário forneceu o ID público `z5hqjof5ys`. Ele está configurado em `.env.local`; na Vercel, definir `NEXT_PUBLIC_CLARITY_PROJECT_ID=z5hqjof5ys` antes de um novo build. O ID identifica o projeto e não é uma chave secreta.
+O ID público do projeto Clarity é `zaxq92pq94` e fica em `src/utils/config/analytics.ts`. O próximo deploy usa esse projeto diretamente.
 
-O script oficial carrega somente em produção nas três rotas públicas permitidas, salvo recusa explícita. Desenvolvimento e E2E comuns não gravam. Não é necessário configurar GA4 para usar Clarity. A política `/privacidade` e as preferências no rodapé explicam a coleta e seus controles. O modo limitado sem cookies não equivale a uma promessa de replay completo de toda visita; recursos e cobertura dependem do provedor e da região.
+O script oficial carrega em `www.papum.app.br`, nas três rotas públicas permitidas, salvo recusa explícita. Desenvolvimento e E2E comuns não gravam. Não é necessário configurar GA4 para usar Clarity. A política `/privacidade` e as preferências no rodapé explicam a coleta e seus controles. O modo limitado sem cookies não equivale a uma promessa de replay completo de toda visita; recursos e cobertura dependem do provedor e da região.
 
 - `consentv2` recebe `analytics_Storage: denied` por padrão, `granted` somente na escolha explícita de cookies e `ad_Storage: denied` sempre. A desativação nega armazenamento e encerra o runtime com `stop`; negar cookies isoladamente não significa ausência de análise.
 - A saída para uma área privada interrompe a gravação e abre um documento novo antes de renderizar o destino. Login e admin também têm mascaramento preventivo e não carregam a tag.
@@ -135,8 +135,6 @@ Referências: [plano gratuito](https://developers.cloudflare.com/turnstile/plans
 Use `.env.example` como modelo. No `.env.local`/ambiente de hospedagem:
 
 ```dotenv
-NEXT_PUBLIC_GA4_ID=G-SEU_ID
-NEXT_PUBLIC_CLARITY_PROJECT_ID=z5hqjof5ys
 SITE_INDEXING_ENABLED=false
 RESEND_API_KEY=sua_chave_secreta
 RESEND_FROM_EMAIL=contato@binaryinc.com.br

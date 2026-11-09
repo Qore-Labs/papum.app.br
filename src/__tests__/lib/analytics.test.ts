@@ -28,6 +28,7 @@ describe("Analytics de marketing com consentimento", () => {
         campaign_source: "instagram",
         campaign_medium: "social",
         page_path: "/instagram",
+        send_to: "G-TEST123",
       }),
     );
     expect(window.gtag).toHaveBeenCalledWith(
@@ -86,9 +87,24 @@ describe("Analytics de marketing com consentimento", () => {
   it("inicia a medição sem conceder cookies e interrompe após desativação", async () => {
     const analytics = await import("@/lib/analytics");
     analytics.configureMarketingAnalytics("G-TEST123");
+    analytics.configureMarketingAnalytics("G-TEST123");
     analytics.trackMarketingCta("start_now", "final_cta");
-    expect(window.gtag).toBeDefined();
-    expect(Array.from(window.dataLayer?.at(-2) as IArguments)).toEqual([
+    const queue = window.dataLayer ?? [];
+    const startup = { "gtm.start": expect.any(Number), event: "gtm.js" };
+    const startIndex = queue.findIndex(
+      (message) => (message as { event?: string }).event === "gtm.js",
+    );
+    expect(queue[startIndex]).toEqual(startup);
+    expect(
+      queue.filter(
+        (message) => (message as { event?: string }).event === "gtm.js",
+      ),
+    ).toHaveLength(1);
+    expect(
+      queue
+        .slice(0, startIndex)
+        .map((message) => Array.from(message as IArguments)),
+    ).toContainEqual([
       "consent",
       "update",
       expect.objectContaining({

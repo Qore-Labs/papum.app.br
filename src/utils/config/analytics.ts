@@ -1,3 +1,5 @@
+import { siteConfig } from "@/utils/config/site";
+
 export function isMarketingPath(pathname: string): boolean {
   return (
     pathname === "/" || pathname === "/instagram" || pathname === "/lancamento"
@@ -8,21 +10,22 @@ export function isValidClarityId(value?: string): value is string {
   return Boolean(value && /^[a-z0-9]{6,20}$/i.test(value));
 }
 
+export interface GoogleAnalyticsConfig {
+  tagManagerId: string;
+  measurementId: string;
+}
+
+const googleAnalytics: GoogleAnalyticsConfig = {
+  tagManagerId: "GTM-KS26GKCL",
+  measurementId: "G-8K7CRHKFQJ",
+};
+
 export function getMarketingAnalyticsConfig() {
-  const ga4Id = process.env.NEXT_PUBLIC_GA4_ID;
-  const clarityId = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID;
+  const enabled =
+    process.env.NODE_ENV === "production" && process.env.PAPUM_E2E !== "1";
   return {
-    measurementId:
-      (process.env.NODE_ENV === "production" ||
-        process.env.PAPUM_E2E === "1") &&
-      /^G-[A-Z0-9]+$/.test(ga4Id ?? "")
-        ? ga4Id
-        : undefined,
-    clarityProjectId:
-      process.env.NODE_ENV === "production" &&
-      process.env.PAPUM_E2E !== "1" &&
-      isValidClarityId(clarityId)
-        ? clarityId
-        : undefined,
+    hostname: new URL(siteConfig.url).hostname,
+    google: enabled ? googleAnalytics : undefined,
+    clarityProjectId: enabled ? "zaxq92pq94" : undefined,
   };
 }

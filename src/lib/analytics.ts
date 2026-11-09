@@ -20,11 +20,13 @@ export type MarketingLocation =
   | "final_cta"
   | "footer";
 
+type MarketingEvent =
+  "page_view" | "cta_click" | "form_start" | "generate_lead";
+
 type GtagCommand =
-  | ["js", Date]
-  | ["config", string, Record<string, unknown>]
+  | ["set", Record<string, unknown>]
   | ["consent", "default" | "update", Record<string, string>]
-  | ["event", string, Record<string, string>];
+  | ["event", MarketingEvent, Record<string, string>];
 
 declare global {
   interface Window {
@@ -110,7 +112,8 @@ export function setAnalyticsConsent(
 }
 
 export function configureMarketingAnalytics(id: string): void {
-  if (!/^G-[A-Z0-9]+$/.test(id) || readAnalyticsConsent() === "denied") return;
+  const consent = readAnalyticsConsent();
+  if (!/^G-[A-Z0-9]+$/.test(id) || consent === "denied") return;
   setDisabled(id, false);
   window.dataLayer ??= [];
   window.gtag ??= function () {
@@ -118,27 +121,30 @@ export function configureMarketingAnalytics(id: string): void {
     // eslint-disable-next-line prefer-rest-params -- Keep Google's documented queue protocol.
     window.dataLayer?.push(arguments);
   };
-  if (configuredId !== id) {
+  const firstLoad = configuredId === null;
+  if (firstLoad) {
     window.gtag("consent", "default", {
       analytics_storage: "denied",
       ...deniedAdvertising,
     });
-    window.gtag("js", new Date());
-    window.gtag("config", id, {
+    window.gtag("set", {
       send_page_view: false,
       allow_google_signals: false,
       allow_ad_personalization_signals: false,
-      page_location: `${window.location.origin}${window.location.pathname}`,
-      page_referrer: "",
-      ...getCampaign(window.location.pathname),
+      user_data: {},
     });
-    configuredId = id;
   }
+  configuredId = id;
+  window.gtag("set", {
+    page_location: `${window.location.origin}${window.location.pathname}`,
+    page_referrer: "",
+  });
   window.gtag("consent", "update", {
-    analytics_storage:
-      readAnalyticsConsent() === "granted" ? "granted" : "denied",
+    analytics_storage: consent === "granted" ? "granted" : "denied",
     ...deniedAdvertising,
   });
+  if (firstLoad)
+    window.dataLayer.push({ "gtm.start": Date.now(), event: "gtm.js" });
 }
 
 export function pauseMarketingAnalytics(): void {
@@ -146,14 +152,17 @@ export function pauseMarketingAnalytics(): void {
     setDisabled(configuredId, true);
 }
 
+function sendMarketingEvent(
+  name: MarketingEvent,
+  parameters: Record<string, string>,
+): void {
+  if (!configuredId) return;
+  window.gtag?.("event", name, { ...parameters, send_to: configuredId });
+}
+
 export function trackMarketingPage(pathname: string): void {
-  if (
-    !configuredId ||
-    readAnalyticsConsent() === "denied" ||
-    !isMarketingPath(pathname)
-  )
-    return;
-  window.gtag?.("event", "page_view", {
+  if (readAnalyticsConsent() === "denied" || !isMarketingPath(pathname)) return;
+  sendMarketingEvent("page_view", {
     page_path: pathname,
     page_location: `${window.location.origin}${pathname}`,
     page_title:
@@ -176,15 +185,14 @@ export function trackMarketingCta(
     return;
   tagClarityCtaLocation(location);
   trackClarityEvent(cta === "start_now" ? "cta_start_now" : "cta_plans");
-  if (configuredId)
-    window.gtag?.("event", "cta_click", {
-      cta_name: cta,
-      cta_location: location,
-      page_path: window.location.pathname,
-      page_location: `${window.location.origin}${window.location.pathname}`,
-      page_referrer: "",
-      ...getCampaign(window.location.pathname),
-    });
+  sendMarketingEvent("cta_click", {
+    cta_name: cta,
+    cta_location: location,
+    page_path: window.location.pathname,
+    page_location: `${window.location.origin}${window.location.pathname}`,
+    page_referrer: "",
+    ...getCampaign(window.location.pathname),
+  });
 }
 
 export function trackLaunchLead(): void {
@@ -194,14 +202,13 @@ export function trackLaunchLead(): void {
   )
     return;
   trackClarityEvent("waitlist_success");
-  if (configuredId)
-    window.gtag?.("event", "generate_lead", {
-      form_name: "launch_waitlist",
-      page_path: window.location.pathname,
-      page_location: `${window.location.origin}${window.location.pathname}`,
-      page_referrer: "",
-      ...getCampaign(window.location.pathname),
-    });
+  sendMarketingEvent("generate_lead", {
+    form_name: "launch_waitlist",
+    page_path: window.location.pathname,
+    page_location: `${window.location.origin}${window.location.pathname}`,
+    page_referrer: "",
+    ...getCampaign(window.location.pathname),
+  });
 }
 
 export function trackWaitlistAttempt(): void {
@@ -254,12 +261,11 @@ export function trackWaitlistStart(): void {
   if (formStartedFor === window.location.pathname) return;
   formStartedFor = window.location.pathname;
   trackClarityEvent("waitlist_start");
-  if (configuredId)
-    window.gtag?.("event", "form_start", {
-      form_name: "launch_waitlist",
-      page_path: window.location.pathname,
-      page_location: window.location.origin + window.location.pathname,
-      page_referrer: "",
-      ...getCampaign(window.location.pathname),
-    });
+  sendMarketingEvent("form_start", {
+    form_name: "launch_waitlist",
+    page_path: window.location.pathname,
+    page_location: window.location.origin + window.location.pathname,
+    page_referrer: "",
+    ...getCampaign(window.location.pathname),
+  });
 }
